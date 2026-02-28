@@ -9,29 +9,8 @@
   },
   "navigation": {
     "pages": [
-      "index"
-    ],
-    "tabs": [
-      {
-        
-        "tab": "Guides",
-        "groups": [
-          {
-            "group": "Linux",
-            "pages": [
-              "linux/general",
-              "linux/ci-cd"
-            ]
-          },
-          {
-            "group": "DevOps",
-            "pages": [
-              "devops/general"
-            ]
-          }
-        ]
-      }
-      
+      "index",
+      ""
     ]
   },
   "navbar": {

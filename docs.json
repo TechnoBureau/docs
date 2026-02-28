@@ -33,45 +33,6 @@
         "href": "https://external-link.com/blog"
       }
     ],
-    "products": [
-      {
-        "product": "Core API",
-        "description": "Core API description",    
-        "icon": "api",
-        "groups": [
-          {
-            "group": "Getting started",
-            "pages": [
-              "core-api/quickstart",
-              "core-api/authentication"
-            ]
-          },
-          {
-            "group": "Endpoints",
-            "pages": [
-              "core-api/users",
-              "core-api/orders"
-            ]
-          }
-        ]
-      },
-      {
-        "product": "Analytics Platform",
-        "description": "Analytics Platform description",
-        "icon": "chart-bar",
-        "pages": [
-          "analytics/overview",
-          "analytics/dashboard",
-          "analytics/reports"
-        ]
-      },
-      {
-        "product": "Mobile SDK",
-        "description": "Mobile SDK description",
-        "icon": "smartphone",
-        "href": "https://mobile-sdk-docs.example.com"
-      }
-    ],
     "tabs": [
       {
         "tab": "Guides",

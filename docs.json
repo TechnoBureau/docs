@@ -8,12 +8,30 @@
     "dark": "#15803D"
   },
   "navigation": {
-    "pages": [
-      "settings",
-      "pages",
-      "navigation",
-      "themes",
-      "custom-domain"
+    "dropdowns": [
+      {
+        "dropdown": "Documentation",
+        "icon": "book-open",
+        "pages": [
+          "quickstart",
+          "index",
+          "quickstart"
+        ]
+      },
+      {
+        "dropdown": "API reference",
+        "icon": "square-terminal",
+        "pages": [
+          "api-reference/endpoint/get",
+          "api-reference/endpoint/create",
+          "api-reference/endpoint/delete",
+          "api-reference/endpoint/webhook"
+        ]
+      },
+      {
+        "dropdown": "Blog",
+        "href": "https://external-link.com/blog"
+      }
     ],
     "tabs": [
       {

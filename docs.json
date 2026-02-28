@@ -8,64 +8,30 @@
     "dark": "#15803D"
   },
   "navigation": {
-    "dropdowns": [
-      {
-        "dropdown": "Documentation",
-        "icon": "book-open",
-        "pages": [
-          "quickstart",
-          "index",
-          "quickstart"
-        ]
-      },
-      {
-        "dropdown": "API reference",
-        "icon": "square-terminal",
-        "pages": [
-          "api-reference/endpoint/get",
-          "api-reference/endpoint/create",
-          "api-reference/endpoint/delete",
-          "api-reference/endpoint/webhook"
-        ]
-      },
-      {
-        "dropdown": "Blog",
-        "href": "https://external-link.com/blog"
-      }
+    "pages": [
+      "index"
     ],
     "tabs": [
       {
+        
         "tab": "Guides",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "Linux",
             "pages": [
-              "index",
-              "quickstart"
+              "linux/general",
+              "linux/ci-cd"
             ]
           },
           {
-            "group": "Writing content",
+            "group": "DevOps",
             "pages": [
-              "essentials/reusable-snippets"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "API reference",
-        "groups": [
-          {
-            "group": "Endpoint examples",
-            "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "devops/general"
             ]
           }
         ]
       }
+      
     ]
   },
   "navbar": {
@@ -77,10 +43,7 @@
      "view",
      "chatgpt",
      "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
+     "mcp"
    ]
   },
   "footer": {

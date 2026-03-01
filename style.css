@@ -1,98 +1,139 @@
-/* Stable Mintlify desktop layout override */
+/* ── Mintlify sidebar/ToC toggle – Tailwind-compatible overrides ── */
 
 :root {
-  --tb-content-max-width: 1500px;
-  --tb-sidebar-width: 220px;
-  --tb-toc-width: 220px;
+  --tb-sidebar-w: 220px;
+  --tb-toc-w: 220px;
+  --tb-speed: 0.25s;
+  --tb-ease: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* ── Desktop layout (≥ 1280 px) ── */
 @media (min-width: 1280px) {
-  /* Keep sidebars in normal flow; only control widths and content expansion. */
+
+  /* Sidebar – keep in flow, allow smooth collapse */
   #sidebar,
   #sidebar-content {
-    width: var(--tb-sidebar-width) !important;
-    min-width: var(--tb-sidebar-width) !important;
-    max-width: var(--tb-sidebar-width) !important;
+    flex-shrink: 0;
+    overflow: hidden;
+    transition:
+      width var(--tb-speed) var(--tb-ease),
+      min-width var(--tb-speed) var(--tb-ease),
+      opacity var(--tb-speed) var(--tb-ease),
+      visibility var(--tb-speed) var(--tb-ease);
   }
 
+  /* ToC – same treatment */
   #table-of-contents-layout,
   #table-of-contents,
   #table-of-contents-content {
-    width: var(--tb-toc-width) !important;
-    min-width: var(--tb-toc-width) !important;
-    max-width: var(--tb-toc-width) !important;
+    flex-shrink: 0;
+    overflow: hidden;
+    transition:
+      width var(--tb-speed) var(--tb-ease),
+      min-width var(--tb-speed) var(--tb-ease),
+      opacity var(--tb-speed) var(--tb-ease),
+      visibility var(--tb-speed) var(--tb-ease);
   }
 
-  #content-container,
+  /* Content areas – flex-grow to fill freed space */
   #content-area,
-  #content-side-layout,
-  #body,
-  #body-content {
+  #content-side-layout {
+    flex: 1 1 0% !important;
+    min-width: 0 !important;
     max-width: none !important;
+    transition: flex var(--tb-speed) var(--tb-ease);
   }
 
-  #body-content > * {
-    max-width: var(--tb-content-max-width) !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-  }
-
-  /* Toggle states */
+  /* ── Collapse sidebar ── */
   html.tb-hide-sidebar #sidebar,
   html.tb-hide-sidebar #sidebar-content {
-    display: none !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
   }
 
+  /* ── Collapse ToC ── */
   html.tb-hide-toc #table-of-contents-layout,
   html.tb-hide-toc #table-of-contents,
   html.tb-hide-toc #table-of-contents-content {
-    display: none !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
   }
 }
 
-/* Side-edge icon buttons */
-.tb-edge-toggle {
+/* ── Toggle buttons (pill on the sidebar edge) ── */
+.tb-toggle-btn {
   position: fixed;
-  top: 110px;
-  z-index: 9999;
-  width: 28px;
-  height: 28px;
-  border-radius: 999px;
-  border: 1px solid rgba(0, 0, 0, 0.18);
-  background: rgba(255, 255, 255, 0.96);
-  color: #111827;
-  display: inline-flex;
+  top: 50%;
+  translate: 0 -50%;
+  z-index: 50;                       /* tw: z-50 */
+  display: flex;
   align-items: center;
   justify-content: center;
+  width: 1.25rem;                    /* tw: w-5 */
+  height: 3rem;                      /* tw: h-12 */
+  border: 1px solid rgb(229 231 235);/* tw: border-gray-200 */
+  background: rgb(255 255 255 / .95);
+  color: rgb(107 114 128);           /* tw: text-gray-500 */
+  font-size: 0.75rem;
   line-height: 1;
-  font-size: 15px;
   cursor: pointer;
+  backdrop-filter: blur(4px);
+  transition:
+    left var(--tb-speed) var(--tb-ease),
+    right var(--tb-speed) var(--tb-ease),
+    background var(--tb-speed) var(--tb-ease),
+    color var(--tb-speed) var(--tb-ease),
+    border-color var(--tb-speed) var(--tb-ease);
 }
 
+.tb-toggle-btn:hover {
+  background: rgb(243 244 246);      /* tw: bg-gray-100 */
+  color: rgb(17 24 39);              /* tw: text-gray-900 */
+  border-color: rgb(209 213 219);    /* tw: border-gray-300 */
+}
+
+/* Left toggle – sits at the sidebar's right edge */
 .tb-nav-toggle {
-  left: calc(var(--tb-sidebar-width) - 14px);
+  left: var(--tb-sidebar-w);
+  border-radius: 0 0.375rem 0.375rem 0; /* tw: rounded-r-md */
+  border-left: none;
 }
 
+/* Right toggle – sits at the ToC's left edge */
 .tb-toc-toggle {
-  right: calc(var(--tb-toc-width) - 14px);
+  right: var(--tb-toc-w);
+  border-radius: 0.375rem 0 0 0.375rem;  /* tw: rounded-l-md */
+  border-right: none;
 }
 
-html.tb-hide-sidebar .tb-nav-toggle {
-  left: 8px;
+/* Slide buttons to the viewport edge when panel is hidden */
+html.tb-hide-sidebar .tb-nav-toggle { left: 0; }
+html.tb-hide-toc   .tb-toc-toggle  { right: 0; }
+
+/* ── Dark mode ── */
+html.dark .tb-toggle-btn {
+  border-color: rgb(55 65 81);       /* tw: border-gray-700 */
+  background: rgb(17 24 39 / .95);   /* tw: bg-gray-900 */
+  color: rgb(156 163 175);           /* tw: text-gray-400 */
 }
 
-html.tb-hide-toc .tb-toc-toggle {
-  right: 8px;
+html.dark .tb-toggle-btn:hover {
+  background: rgb(31 41 55);         /* tw: bg-gray-800 */
+  color: rgb(243 244 246);           /* tw: text-gray-100 */
+  border-color: rgb(75 85 99);       /* tw: border-gray-600 */
 }
 
-html.dark .tb-edge-toggle {
-  border-color: rgba(255, 255, 255, 0.25);
-  background: rgba(17, 24, 39, 0.92);
-  color: #f3f4f6;
-}
-
+/* ── Hide buttons below desktop ── */
 @media (max-width: 1279px) {
-  .tb-edge-toggle {
-    display: none !important;
-  }
+  .tb-toggle-btn { display: none !important; }
 }

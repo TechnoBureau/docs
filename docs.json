@@ -9,7 +9,18 @@
   },
   "navigation": {
     "pages": [
-      "index"
+      "index",
+      {
+        "group": "Linux",
+        "pages": [
+          {
+            "group": "Administration",
+            "pages": [
+              
+            ]
+          }
+        ]
+      }
     ]
   },
   "navbar": {

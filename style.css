@@ -1,56 +1,81 @@
 /*
-  Mintlify layout overrides for a wider desktop reading area.
-  Uses official Mintlify IDs from the Custom Scripts docs.
+  Mintlify desktop layout overrides:
+  - wider center content
+  - collapsible left navigation and right "On this page"
 */
 
 :root {
   --tb-content-max-width: 1480px;
   --tb-sidebar-width: 220px;
   --tb-toc-width: 220px;
+  --tb-top-offset: 64px;
 }
 
 @media (min-width: 1280px) {
-  /* Drive the outer desktop layout directly to avoid offset/blank columns. */
-  #content-wrapper {
-    display: grid !important;
-    grid-template-columns: var(--tb-sidebar-width) minmax(0, 1fr) !important;
-    align-items: start !important;
-  }
-
-  #sidebar,
-  #sidebar-content {
+  #sidebar {
+    position: fixed !important;
+    top: var(--tb-top-offset) !important;
+    left: 0 !important;
+    bottom: 0 !important;
     width: var(--tb-sidebar-width) !important;
     min-width: var(--tb-sidebar-width) !important;
     max-width: var(--tb-sidebar-width) !important;
+    overflow-y: auto !important;
+    z-index: 60 !important;
+    background: var(--background, #ffffff) !important;
+    border-right: 1px solid rgba(0, 0, 0, 0.08);
+    transform: translateX(0);
+    opacity: 1;
+    transition: transform 0.2s ease, opacity 0.2s ease;
   }
 
-  #content-side-layout {
-    display: grid !important;
-    grid-template-columns: minmax(0, 1fr) var(--tb-toc-width) !important;
-    align-items: start !important;
+  #sidebar-content {
     width: 100% !important;
     max-width: none !important;
-    margin: 0 !important;
   }
 
-  #table-of-contents-layout,
-  #table-of-contents,
-  #table-of-contents-content {
+  #table-of-contents-layout {
+    position: fixed !important;
+    top: var(--tb-top-offset) !important;
+    right: 0 !important;
+    bottom: 0 !important;
     width: var(--tb-toc-width) !important;
     min-width: var(--tb-toc-width) !important;
     max-width: var(--tb-toc-width) !important;
+    overflow-y: auto !important;
+    z-index: 60 !important;
+    background: var(--background, #ffffff) !important;
+    border-left: 1px solid rgba(0, 0, 0, 0.08);
+    transform: translateX(0);
+    opacity: 1;
+    transition: transform 0.2s ease, opacity 0.2s ease;
   }
 
-  #content-container,
-  #content-area,
-  #body,
-  #body-content {
+  #table-of-contents,
+  #table-of-contents-content {
     width: 100% !important;
     max-width: none !important;
-    margin: 0 !important;
+  }
+
+  #content-wrapper,
+  #content-container,
+  #content-area,
+  #content-side-layout,
+  #body,
+  #body-content {
+    max-width: none !important;
+  }
+
+  #content-side-layout {
+    margin-left: var(--tb-sidebar-width) !important;
+    margin-right: var(--tb-toc-width) !important;
+    width: auto !important;
+    min-width: 0 !important;
   }
 
   #body-content {
+    width: 100% !important;
+    margin: 0 !important;
     padding-left: 2rem !important;
     padding-right: 2rem !important;
   }
@@ -61,38 +86,38 @@
     margin-right: auto !important;
   }
 
-  /* Hide left sidebar and reflow grid */
-  html.tb-hide-sidebar #content-wrapper {
-    grid-template-columns: minmax(0, 1fr) !important;
+  html.tb-hide-sidebar #sidebar {
+    transform: translateX(calc(-1 * var(--tb-sidebar-width))) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
   }
 
-  html.tb-hide-sidebar #sidebar,
-  html.tb-hide-sidebar #sidebar-content {
-    display: none !important;
+  html.tb-hide-sidebar #content-side-layout {
+    margin-left: 0 !important;
   }
 
-  /* Hide right TOC and reflow grid */
+  html.tb-hide-toc #table-of-contents-layout {
+    transform: translateX(var(--tb-toc-width)) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
   html.tb-hide-toc #content-side-layout {
-    grid-template-columns: minmax(0, 1fr) !important;
-  }
-
-  html.tb-hide-toc #table-of-contents-layout,
-  html.tb-hide-toc #table-of-contents,
-  html.tb-hide-toc #table-of-contents-content {
-    display: none !important;
+    margin-right: 0 !important;
   }
 }
 
 /* Edge icon toggles created by layout-toggle.js */
 .tb-edge-toggle {
   position: fixed;
-  top: 5.1rem;
-  z-index: 9999;
-  width: 28px;
-  height: 28px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10000;
+  width: 30px;
+  height: 30px;
   border-radius: 999px;
   border: 1px solid rgba(0, 0, 0, 0.18);
-  background: rgba(255, 255, 255, 0.94);
+  background: rgba(255, 255, 255, 0.96);
   color: #111827;
   display: inline-flex;
   align-items: center;
@@ -108,11 +133,11 @@
 }
 
 .tb-nav-toggle {
-  left: calc(var(--tb-sidebar-width) - 14px);
+  left: calc(var(--tb-sidebar-width) - 15px);
 }
 
 .tb-toc-toggle {
-  right: calc(var(--tb-toc-width) - 14px);
+  right: calc(var(--tb-toc-width) - 15px);
 }
 
 html.tb-hide-sidebar .tb-nav-toggle {
@@ -125,7 +150,7 @@ html.tb-hide-toc .tb-toc-toggle {
 
 html.dark .tb-edge-toggle {
   border-color: rgba(255, 255, 255, 0.2);
-  background: rgba(17, 24, 39, 0.88);
+  background: rgba(17, 24, 39, 0.9);
   color: #f3f4f6;
 }
 

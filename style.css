@@ -1,0 +1,109 @@
+/*
+  Mintlify layout overrides for wider reading area on desktop.
+  Uses official Mintlify IDs from the Custom Scripts docs.
+*/
+
+:root {
+  --tb-content-max-width: 1400px;
+  --tb-sidebar-width: 220px;
+  --tb-toc-width: 220px;
+}
+
+/* Keep mobile and tablet defaults to avoid breaking responsive navigation. */
+@media (min-width: 1280px) {
+  /* Reduce left navigation width */
+  #sidebar,
+  #sidebar-content {
+    width: var(--tb-sidebar-width) !important;
+    min-width: var(--tb-sidebar-width) !important;
+    max-width: var(--tb-sidebar-width) !important;
+  }
+
+  /* Reduce right "On this page" width */
+  #table-of-contents-layout,
+  #table-of-contents,
+  #table-of-contents-content {
+    width: var(--tb-toc-width) !important;
+    min-width: var(--tb-toc-width) !important;
+    max-width: var(--tb-toc-width) !important;
+  }
+
+  /* Let article use more horizontal room */
+  #content-container,
+  #content-area,
+  #content-side-layout,
+  #body-content {
+    max-width: none !important;
+  }
+
+  #body-content {
+    width: min(
+      var(--tb-content-max-width),
+      calc(100vw - var(--tb-sidebar-width) - var(--tb-toc-width) - 5rem)
+    ) !important;
+  }
+}
+
+/* Toggle classes applied by layout-toggle.js */
+@media (min-width: 1280px) {
+  html.tb-hide-sidebar #sidebar,
+  html.tb-hide-sidebar #sidebar-content {
+    display: none !important;
+  }
+
+  html.tb-hide-sidebar #body-content {
+    width: min(var(--tb-content-max-width), calc(100vw - var(--tb-toc-width) - 4rem)) !important;
+  }
+
+  html.tb-hide-toc #table-of-contents-layout,
+  html.tb-hide-toc #table-of-contents,
+  html.tb-hide-toc #table-of-contents-content {
+    display: none !important;
+  }
+
+  html.tb-hide-toc #body-content {
+    width: min(var(--tb-content-max-width), calc(100vw - var(--tb-sidebar-width) - 4rem)) !important;
+  }
+
+  html.tb-hide-sidebar.tb-hide-toc #body-content {
+    width: min(var(--tb-content-max-width), calc(100vw - 3rem)) !important;
+  }
+}
+
+/* Floating controls injected by layout-toggle.js */
+.tb-layout-controls {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 9999;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.tb-layout-controls button {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.92);
+  color: #111827;
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.75rem;
+  line-height: 1;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+}
+
+.tb-layout-controls button:hover {
+  background: #ffffff;
+}
+
+html.dark .tb-layout-controls button {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(17, 24, 39, 0.88);
+  color: #f3f4f6;
+}
+
+@media (max-width: 1279px) {
+  .tb-layout-controls {
+    display: none;
+  }
+}

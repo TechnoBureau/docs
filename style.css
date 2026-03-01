@@ -1,17 +1,22 @@
 /*
-  Mintlify layout overrides for wider reading area on desktop.
+  Mintlify layout overrides for a wider desktop reading area.
   Uses official Mintlify IDs from the Custom Scripts docs.
 */
 
 :root {
-  --tb-content-max-width: 1400px;
+  --tb-content-max-width: 1480px;
   --tb-sidebar-width: 220px;
   --tb-toc-width: 220px;
 }
 
-/* Keep mobile and tablet defaults to avoid breaking responsive navigation. */
 @media (min-width: 1280px) {
-  /* Reduce left navigation width */
+  /* Drive the outer desktop layout directly to avoid offset/blank columns. */
+  #content-wrapper {
+    display: grid !important;
+    grid-template-columns: var(--tb-sidebar-width) minmax(0, 1fr) !important;
+    align-items: start !important;
+  }
+
   #sidebar,
   #sidebar-content {
     width: var(--tb-sidebar-width) !important;
@@ -19,7 +24,15 @@
     max-width: var(--tb-sidebar-width) !important;
   }
 
-  /* Reduce right "On this page" width */
+  #content-side-layout {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) var(--tb-toc-width) !important;
+    align-items: start !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+  }
+
   #table-of-contents-layout,
   #table-of-contents,
   #table-of-contents-content {
@@ -28,31 +41,39 @@
     max-width: var(--tb-toc-width) !important;
   }
 
-  /* Let article use more horizontal room */
   #content-container,
   #content-area,
-  #content-side-layout,
+  #body,
   #body-content {
+    width: 100% !important;
     max-width: none !important;
+    margin: 0 !important;
   }
 
   #body-content {
-    width: min(
-      var(--tb-content-max-width),
-      calc(100vw - var(--tb-sidebar-width) - var(--tb-toc-width) - 5rem)
-    ) !important;
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
   }
-}
 
-/* Toggle classes applied by layout-toggle.js */
-@media (min-width: 1280px) {
+  #body-content > * {
+    max-width: var(--tb-content-max-width) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  /* Hide left sidebar and reflow grid */
+  html.tb-hide-sidebar #content-wrapper {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
   html.tb-hide-sidebar #sidebar,
   html.tb-hide-sidebar #sidebar-content {
     display: none !important;
   }
 
-  html.tb-hide-sidebar #body-content {
-    width: min(var(--tb-content-max-width), calc(100vw - var(--tb-toc-width) - 4rem)) !important;
+  /* Hide right TOC and reflow grid */
+  html.tb-hide-toc #content-side-layout {
+    grid-template-columns: minmax(0, 1fr) !important;
   }
 
   html.tb-hide-toc #table-of-contents-layout,
@@ -60,50 +81,56 @@
   html.tb-hide-toc #table-of-contents-content {
     display: none !important;
   }
-
-  html.tb-hide-toc #body-content {
-    width: min(var(--tb-content-max-width), calc(100vw - var(--tb-sidebar-width) - 4rem)) !important;
-  }
-
-  html.tb-hide-sidebar.tb-hide-toc #body-content {
-    width: min(var(--tb-content-max-width), calc(100vw - 3rem)) !important;
-  }
 }
 
-/* Floating controls injected by layout-toggle.js */
-.tb-layout-controls {
+/* Edge icon toggles created by layout-toggle.js */
+.tb-edge-toggle {
   position: fixed;
-  right: 1rem;
-  bottom: 1rem;
+  top: 5.1rem;
   z-index: 9999;
-  display: flex;
-  gap: 0.5rem;
-}
-
-.tb-layout-controls button {
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  background: rgba(255, 255, 255, 0.92);
-  color: #111827;
+  width: 28px;
+  height: 28px;
   border-radius: 999px;
-  padding: 0.35rem 0.75rem;
-  font-size: 0.75rem;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  background: rgba(255, 255, 255, 0.94);
+  color: #111827;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   line-height: 1;
+  font-size: 15px;
   cursor: pointer;
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(4px);
 }
 
-.tb-layout-controls button:hover {
+.tb-edge-toggle:hover {
   background: #ffffff;
 }
 
-html.dark .tb-layout-controls button {
+.tb-nav-toggle {
+  left: calc(var(--tb-sidebar-width) - 14px);
+}
+
+.tb-toc-toggle {
+  right: calc(var(--tb-toc-width) - 14px);
+}
+
+html.tb-hide-sidebar .tb-nav-toggle {
+  left: 8px;
+}
+
+html.tb-hide-toc .tb-toc-toggle {
+  right: 8px;
+}
+
+html.dark .tb-edge-toggle {
   border-color: rgba(255, 255, 255, 0.2);
   background: rgba(17, 24, 39, 0.88);
   color: #f3f4f6;
 }
 
 @media (max-width: 1279px) {
-  .tb-layout-controls {
-    display: none;
+  .tb-edge-toggle {
+    display: none !important;
   }
 }

@@ -1,25 +1,26 @@
 (function () {
   'use strict';
 
-  var ROOT      = document.documentElement;
-  var NAV_CLS   = 'tb-hide-sidebar';
-  var TOC_CLS   = 'tb-hide-toc';
-  var NAV_KEY   = 'tb-sidebar-hidden';
-  var TOC_KEY   = 'tb-toc-hidden';
-  var DESKTOP   = window.matchMedia('(min-width: 1280px)');
+  var ROOT = document.documentElement;
+  var NAV_CLS = 'tb-hide-sidebar';
+  var TOC_CLS = 'tb-hide-toc';
+  var NAV_KEY = 'tb-sidebar-hidden';
+  var TOC_KEY = 'tb-toc-hidden';
+  var DESKTOP = window.matchMedia('(min-width: 1280px)');
 
-  /* ── SVG chevron arrows (lightweight, no external deps) ── */
-  var CHEVRON_R = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>';
-  var CHEVRON_L = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>';
+  /* ── SVG three-lines/dots arrows ── */
+  var ICON_NAV = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>';
+  var ICON_TOC = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>';
+
 
   /* ── Helpers ── */
   function hasEl(id) { return !!document.getElementById(id); }
-  function btn(cls)  { return document.querySelector('.' + cls); }
+  function btn(cls) { return document.querySelector('.' + cls); }
 
   function toggle(cls, storageKey) {
     ROOT.classList.toggle(cls);
     var hidden = ROOT.classList.contains(cls);
-    try { localStorage.setItem(storageKey, hidden ? '1' : '0'); } catch (_) {}
+    try { localStorage.setItem(storageKey, hidden ? '1' : '0'); } catch (_) { }
     syncIcons();
   }
 
@@ -28,15 +29,15 @@
     try {
       if (localStorage.getItem(NAV_KEY) === '1') ROOT.classList.add(NAV_CLS);
       if (localStorage.getItem(TOC_KEY) === '1') ROOT.classList.add(TOC_CLS);
-    } catch (_) {}
+    } catch (_) { }
   }
 
   /* ── Icon sync ── */
   function syncIcons() {
     var nav = btn('tb-nav-toggle');
     var toc = btn('tb-toc-toggle');
-    if (nav) nav.innerHTML = ROOT.classList.contains(NAV_CLS) ? CHEVRON_R : CHEVRON_L;
-    if (toc) toc.innerHTML = ROOT.classList.contains(TOC_CLS) ? CHEVRON_L : CHEVRON_R;
+    if (nav) nav.innerHTML = ICON_NAV;
+    if (toc) toc.innerHTML = ICON_TOC;
   }
 
   /* ── Create a toggle button ── */
@@ -55,7 +56,7 @@
   function ensureControls() {
     var isDesktop = DESKTOP.matches;
     var navExists = hasEl('sidebar');
-    var tocExists = hasEl('table-of-contents-layout');
+    var tocExists = hasEl('table-of-contents-layout') || hasEl('table-of-contents');
 
     /* Navigation toggle */
     if (isDesktop && navExists) {

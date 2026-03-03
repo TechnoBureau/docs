@@ -54,11 +54,16 @@
                 "path": "career",
                 "show-page-navigation": false,
                 "ask-feedback": false,
-                "content-width": "wide"
+                "content-width": "wide",
+                "show-toc": false
               }
             ]
           }
         ]
+      },
+      {
+        "tab": "DevOps",
+        "pages": []
       }
     ]
   },

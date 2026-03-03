@@ -56,7 +56,16 @@
       },
       {
         "tab": "Career",
-        "pages": []
+        "pages": [
+          {
+            "title": "Career/tell_me_about_yourself",
+            "path": "career/tell_me_about_yourself"
+          },
+          {
+            "title": "Career",
+            "path": "career"
+          }
+        ]
       }
     ]
   },

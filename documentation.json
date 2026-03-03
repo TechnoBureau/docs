@@ -11,53 +11,19 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Documentation",
+        "tab": "Home",
         "icon": "book",
-        "groups": [
+        "pages": [
           {
-            "group": "Home",
-            "icon": "rocket",
-            "pages": [
-              {
-                "title": "Home",
-                "path": "README",
-                "icon": "home",
-                "show-sidebar": false,
-                "show-toc": false,
-                "show-parent-label": false,
-                "show-page-navigation": false,
-                "ask-feedback": false,
-                "content-width": "wide"
-              }
-            ]
-          },
-          {
-            "group": "DevOps",
-            "icon": "layers",
-            "pages": []
-          },
-          {
-            "group": "Kubernetes",
-            "pages": [],
-            "icon": "cloudy"
-          },
-          {
-            "group": "Linux",
-            "pages": [],
-            "icon": "terminal"
-          },
-          {
-            "group": "Career",
-            "pages": [
-              {
-                "title": "General",
-                "path": "career",
-                "show-page-navigation": false,
-                "ask-feedback": false,
-                "content-width": "wide",
-                "show-toc": false
-              }
-            ]
+            "title": "Home",
+            "path": "README",
+            "icon": "home",
+            "show-sidebar": false,
+            "show-toc": false,
+            "show-parent-label": false,
+            "show-page-navigation": false,
+            "ask-feedback": false,
+            "content-width": "wide"
           }
         ]
       },
@@ -65,8 +31,35 @@
         "tab": "DevOps",
         "pages": [
           {
-            "title": "DevOps/ipv6",
-            "path": "DevOps/ipv6"
+            "title": "DevOps",
+            "path": "devops"
+          }
+        ]
+      },
+      {
+        "tab": "Kubernetes",
+        "pages": [
+          {
+            "title": "Kubernets",
+            "path": "kubernetes"
+          }
+        ]
+      },
+      {
+        "tab": "Linux",
+        "pages": [
+          {
+            "title": "Linux",
+            "path": "linux"
+          }
+        ]
+      },
+      {
+        "tab": "Career",
+        "pages": [
+          {
+            "title": "Career",
+            "path": "career"
           }
         ]
       }

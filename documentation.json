@@ -18,10 +18,10 @@
             "title": "Home",
             "path": "README",
             "icon": "home",
-            "show-sidebar": false,
+            "show-sidebar": true,
             "show-toc": false,
             "show-parent-label": false,
-            "show-page-navigation": false,
+            "show-page-navigation": true,
             "ask-feedback": false,
             "content-width": "wide"
           },

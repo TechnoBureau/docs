@@ -1,0 +1,69 @@
+{
+  "name": "Starter Kit",
+  "colors": {
+    "light": {
+      "brand": "#F97316"
+    },
+    "dark": {
+      "brand": "#FDBA74"
+    }
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "icon": "book",
+        "groups": [
+          {
+            "group": "Home",
+            "icon": "rocket",
+            "pages": [
+              {
+                "title": "Home",
+                "path": "README",
+                "icon": "home",
+                "show-sidebar": false,
+                "show-toc": false,
+                "show-parent-label": false,
+                "show-page-navigation": false,
+                "ask-feedback": false,
+                "content-width": "wide"
+              }
+            ]
+          },
+          {
+            "group": "DevOps",
+            "icon": "layers",
+            "pages": []
+          },
+          {
+            "group": "Kubernetes",
+            "pages": [],
+            "icon": "cloudy"
+          },
+          {
+            "group": "Linux",
+            "pages": [],
+            "icon": "terminal"
+          },
+          {
+            "group": "Career",
+            "pages": []
+          }
+        ]
+      }
+    ]
+  },
+  "template": "atlas",
+  "ai": {
+    "ai-assistant:enabled": false,
+    "page-actions": [
+      "copy",
+      "view",
+      "claude",
+      "chatgpt",
+      "grok",
+      "mcp"
+    ]
+  }
+}

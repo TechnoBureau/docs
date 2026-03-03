@@ -9,18 +9,7 @@
   },
   "navigation": {
     "pages": [
-      "index",
-      {
-        "group": "Linux",
-        "pages": [
-          {
-            "group": "Administration",
-            "pages": [
-              
-            ]
-          }
-        ]
-      }
+      "README"
     ]
   },
   "navbar": {

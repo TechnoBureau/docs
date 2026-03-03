@@ -50,8 +50,11 @@
             "group": "Career",
             "pages": [
               {
-                "title": "Career",
-                "path": "career"
+                "title": "General",
+                "path": "career",
+                "show-page-navigation": false,
+                "ask-feedback": false,
+                "content-width": "wide"
               }
             ]
           }

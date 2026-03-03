@@ -15,24 +15,13 @@
         "icon": "book",
         "pages": [
           {
-            "title": "Home",
+            "title": "About",
             "path": "README",
             "icon": "home",
             "show-sidebar": true,
             "show-toc": false,
             "show-parent-label": false,
             "show-page-navigation": false,
-            "ask-feedback": false,
-            "content-width": "wide"
-          },
-          {
-            "title": "DevOps",
-            "path": "DevOps/ipv6",
-            "icon": "cloudy",
-            "show-sidebar": true,
-            "show-toc": false,
-            "show-parent-label": false,
-            "show-page-navigation": true,
             "ask-feedback": false,
             "content-width": "wide"
           }

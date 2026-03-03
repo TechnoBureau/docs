@@ -21,7 +21,7 @@
             "show-sidebar": true,
             "show-toc": false,
             "show-parent-label": false,
-            "show-page-navigation": true,
+            "show-page-navigation": false,
             "ask-feedback": false,
             "content-width": "wide"
           },

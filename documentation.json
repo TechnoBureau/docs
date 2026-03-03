@@ -65,8 +65,7 @@
             "title": "Tell Me About Yourself",
             "path": "career/tell_me_about_yourself",
             "show-page-navigation": false,
-            "ask-feedback": false,
-            "badge": "career"
+            "ask-feedback": false
           }
         ]
       }

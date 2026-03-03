@@ -1,0 +1,197 @@
+---
+title: NFS (Network File System): A Comprehensive Guide to Sharing and Accessing Files over a Network
+description: Network File System (NFS) is a distributed file system,lets a computer user to access the files on a remote computer as though they were on the users own computer.Depending upon the configuration files are accessible over the network and allow mounting the distributed file system on remote hosts.The users system needs to have an NFS client and the other computer needs the NFS server.
+author: Ganapathi Chidambaram
+date: 2023-03-22
+keywords:
+  - NFS
+  - File Share
+  - Network File System
+  - Network File Share
+---
+
+## What is NFS ?
+
+Network File System (NFS) is a distributed file system,lets a computer user to access the files
+on a remote computer as though they were on the user's own computer.Depending upon the configuration
+files are accessible over the network and allow mounting the distributed file system on remote hosts.
+on  The user's system needs to have an NFS client and the other computer needs the NFS server. Both
+of them require that you also have TCP/IP installed since the NFS server and client use TCP/IP as the
+program that sends the files and updates back and forth. (However, the User Datagram Protocol, UDP,
+which comes with TCP/IP, is used instead of TCP with earlier versions of NFS.)
+
+## Required Services for NFS
+
+
+| Services                  | Description                                 | Port Number      | Transport          |
+|---------------------------|---------------------------------------------|------------------|--------------------|
+| nfs                       | NFS Server- Shared file System              | 2049             | TCP/UDP            |
+| nfslock                   | NFS Lock Manager-Lock files on the server.  | 32803 (Optional) | TCP/UDP            |
+| portmapper                | Accepts Port reservation for RPC Services   | 111              | TCP/UDP            |
+
+And following RPC Services facilities the NFS Services.
+
+- **rpc.mountd** — This process receives mount requests from NFS clients and verifies the requested file system is currently exported. This process is started automatically by the nfs service and does not require user configuration.
+
+- **rpc.nfsd** — Allows explicit NFS versions and protocols the server advertises to be defined. It works with the Linux kernel to meet the dynamic demands of NFS clients, such as providing server threads each time an NFS client connects. This process corresponds to the nfs service.
+
+- **rpc.lockd**  — allows NFS clients to lock files on the server. If rpc.lockd is not started, file locking will fail. rpc.lockd implements the Network Lock Manager (NLM) protocol. This process corresponds to the nfslock service. This is not used with NFSv4.
+
+- **rpc.statd** — This process implements the Network Status Monitor (NSM) RPC protocol which notifies NFS clients when an NFS server is restarted without being gracefully brought down. This process is started automatically by the nfslock service and does not require user configuration. This is not used with NFSv4.
+
+- **rpc.rquotad** — This process provides user quota information for remote users. This process is started automatically by the nfs service and does not require user configuration.
+
+- **rpc.idmapd** — This process provides NFSv4 client and server upcalls which map between on-the-wire NFSv4 names (which are strings in the form of user@domain) and local UIDs and GIDs. For idmapd to function with NFSv4, the /etc/idmapd.conf must be configured. This service is required for use with NFSv4.
+
+
+## Installation of NFS
+
+
+### Server Installation of NFS
+
+
+In Server side we need to install **nfs-kernel-server** and **nfs-common** packages need to install for further configuration and using the NFS service.
+
+<CodeGroup tag="BASH" label="Server Installation of NFS">
+
+    ```bash {{ title: 'Ubuntu/Debian' }}
+    apt-get install nfs-kernel-server
+
+    apt-get install nfs-common
+    ```
+
+    ```bash {{ title: 'CentOS/RHEL' }}
+    yum install nfs-utils nfs-utils-lib
+    ```
+</CodeGroup>
+
+### Client Installation of NFS
+
+
+In client side we need an **nfs-common** package required to using the NFS Service.
+
+<CodeGroup tag="BASH" label="Client Installation of NFS">
+
+    ```bash {{ title: 'Ubuntu/Debian' }}
+    apt-get install nfs-common
+    ```
+
+    ```bash {{ title: 'CentOS/RHEL' }}
+    yum install nfs-utils nfs-utils-lib
+    ```
+</CodeGroup>
+
+## Configuration of NFS
+
+### Server Configuration of NFS
+
+In Server /etc/exports file are the configuration file and using this we can able to export the directory to accessing on remote computer. ::
+
+```bash
+vi /etc/exports
+```
+
+And Using below command we can able to export/sharing the directory to any other computer network user to access the directory files with read-only permission.
+
+```bash
+echo '/home/nfs/ *(ro,sync)' > /etc/exports
+```
+
+And also please find the below various other options to share the network file system on remote network user.
+
+
+| Entries in /etc/exports Configuration                 |  Description                                                                        |
+|-------------------------------------------------------|-------------------------------------------------------------------------------------|
+| /home/nfs/ 192.168.1.55(rw,sync)                      | /home/nfs/ directory accessible only for IP address 192.168.1.55 with read,write permissions, and synchronized mode|
+| /home/nfs/ 192.168.1.55(rw,sync,no_root_squash)       | /home/nfs directory accessible only for an IP address 192.168.1.55 with read,write permissions, synchronized mode and the remote root user will be treated as a root and will be able to change any file and directory                        |
+| /home/nfs/ 192.168.1.0/24(ro,sync)                    | /home/nfs directory accessible for an 192.168.1.0 network with Subnet Mask 255.255.255.0 with read only permissions, and synchronized mode|
+| /home/nfs/ 192.168.1.55(rw,sync) 192.168.1.10(ro,sync)| /home/nfs directory accessible for an IP address 192.168.1.55 with read, write permissions, and synchronized mode,and for an IP address 192.168.1.10 with read only permission and synchronize mode.                                     |
+| /home/nfs/ technobureau(rw,sync)                      | /home/nfs/ directory accessible only for an Hostname **technobureau** with read,write permissions, and synchronized mode|
+| /home/nfs/ \*.technobureau.com(rw,sync)               | /home/nfs/ directory accessible for any hostname under **technobureau.com** with read and write permissions, and synchronized mode.|
+
+Once export configuration file are edited and then need to restart the nfs service to reflect the changes.
+
+<CodeGroup tag="BASH" label="Restart NFS Service">
+
+    ```bash {{ title: 'Ubuntu/Debian' }}
+    service nfs-kernel-server restart
+    ```
+
+    ```bash {{ title: 'CentOS/RHEL' }}
+    service nfs restart
+    ```
+</CodeGroup>
+
+### Client Configuration of NFS
+
+Once successfully server setup and need to access the filesystem shared by the server from the client through network.And depending upon the export option client would got permission to access network file system directory and files available on network file system.
+
+Before we need to mount the network file system ,first we need an mount point and need to create by command mentioned below.
+
+```bash
+mkdir /home/nfslocal
+```
+
+Then we need to mount the network system with the server ip and server hostname by mentioned below. And let us assume server IP as **192.168.1.50** ::
+
+```bash
+mount 192.168.1.50:/home/nfs /home/nfslocal
+```
+
+Also we can able to mount the network file system by speficy the type of file system by mentioned below.
+
+```bash
+mount -t nfs 192.168.1.50:/home/nfs /home/nfslocal
+```
+We can pass the nfs version to mount when server version is different from client.Let us assume client nfs version is 3 and use this command to mount the network file system.
+
+```bash
+mount -t nfs -o nfsvers=3 192.168.1.50:/home/nfs /home/nfslocal
+```
+
+!!! warning
+
+    Kindly note that this mounted network file system will not be accesible once client rebooted and need to mount again to get access the same.
+
+#### Common NFS Mount Options
+
+- **fsid=num** - Forces the file handle and file attributes settings on the wire to be *num*, instead of a number derived from the major and minor number of the block device on the mounted file system. The value 0 has special meaning when used with NFSv4. NFSv4 has a concept of a root of the overall exported file system. The export point exported with fsid=0 is used as this root.
+
+- **hard** - It doesn't wait for NFS server to communicate.User cannot terminate the process waiting for NFS communication to resume unless *intr* option is also specified.
+
+- **soft** - Wait for NFS Server to communicate in-case of connectivity loss untill the timout period which is specified in `*timeo=<value>*` option in seconds.Then once after timeout period exceeded and it would report an error.
+
+- **intr** - Allows NFS requests to be interrupted if the server goes down or cannot be reached.
+
+- `**nfsvers=<NFS version 2/3>**` - Able to mention the NFS version in-case of NFS version differences between the server.And also able to use which version to be used for this mount where multiple NFS version installed.It is not supported on NFSv4.
+
+- **noacl** - To Turns of all ACL processing. This may be needed when interfacing with older version of Redhat or Solaris because recent ACL is not campatible with older version on those.
+
+- **nolock** - To disable file locking in NFS.It is required when connecting with older version of NFS server.
+
+- **noexec** - To Prevent execution of binaries on mounted file system.
+
+- **nosuid** - To disable ser-user-identifier or set-group-identifier bits.This prevents remote users from gaining higherr privileges by running a setuid program.
+
+- `**port=<number>**` - Specifies the numeric value of NFS Server port when NFS server port has changed from default. If *num* is 0(default),then mount queries the remote host's portmapper for the port number which need to be use.If the remote host's NFS daemon is not registered with its portmapper,then standard NFS port number 2049 is used insted.
+
+- `**rsize=<number> and wsize=<number>**` - This would be used to speed up the read/write communication of NFS by mentioning a larger data block size in bytes from default block size to be transfer on each time.Default value of NFSv2&3 are 8192 and 32768 for NFSv4.
+
+- **tcp** - By Specifying for NFS mount to use TCP protocol.
+
+- **udp** - By Specifying for NFS mount to use UDP protocol.
+
+- `**sec=<mode>**` - To specify the security protocol for NFS mount connection.And modes are
+   #. *sys* - default UNIX UID/GID for authentication.And it is used by default where nothing specified when mounting NFS.
+   #. *krb5* - To Use Kerberos V5 authentication.
+   #. *krb5i* - To Use Kerberos V5 authentication and performs integrity.
+   #. *krb5p* - To Use Kerberos V5 authentication and prevents traffic sniffing.and also performs integrity to prevent data tampering.
+
+
+#### For Automount of NFS
+
+To autmatic mount the network file system ,need to add entry on fstab to get access once after every restart. And kindly make sure NFS Server should accessible once before booting into the client system.Else it may fail to access the same. ::
+
+```bash
+echo "10.1.1.50:/home/nfs /home/nfs_local/ nfs defaults 0 0" >> /etc/fstab
+```

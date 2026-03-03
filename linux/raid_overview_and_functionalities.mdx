@@ -1,0 +1,59 @@
+---
+title: RAID - Overview and Functionality
+description: RAID (Redundant Array of Independent Disks) is a storage virtualization technology that enhances data redundancy and performance by creating a logical unit of storage using multiple disk drive components. This document provides an in-depth explanation of RAID, including its various levels, such as RAID 0 and RAID 1, and their respective benefits in terms of reliability, availability, performance, and capacity.
+author: Ganapathi Chidambaram
+date: 2023-03-22
+keywords:
+  - RAID
+  - Data Mirroring
+  - Disk Performance
+  - Disk Redundancy
+---
+
+## Introduction
+
+RAID (Redundant Array of Independent Disks) is a storage virtualization technology that enhances data redundancy and performance by creating a logical unit of storage using multiple disk drive components. This document provides an in-depth explanation of RAID, including its various levels, such as RAID 0 and RAID 1, and their respective benefits in terms of reliability, availability, performance, and capacity.
+
+## RAID Levels
+RAID levels are specific schemes or architectures that determine how data is distributed across drives. Each RAID level offers a different balance of the key goals mentioned above. RAID levels higher than RAID 0 provide protection against unrecoverable read errors and complete disk failures. The different RAID levels include:
+
+### RAID 0 - Data Striping
+RAID 0 utilizes data striping, which involves dividing logically sequential data and distributing it across multiple storage devices. This technique significantly improves input/output (I/O) performance but does not provide redundancy.
+
+- Excellent performance (Striping)
+- Data Blocks are striped between the disks.
+- Minimum of 2 disks
+- No Redundancy/Mirror/Parity.
+- Not advisable for any critical system.
+
+### RAID 1 - Data Mirroring
+RAID 1 involves data mirroring, where the same set of data blocks is stored across multiple storage devices. This redundancy technique ensures that if one storage device fails within a mirrored group, the data remains accessible.
+
+- Excellent Redundancy (Mirroring)
+- Good Performance
+- Minimum of 2 disks
+- No Striping/ Parity.
+
+### RAID Parity - Data Parity
+RAID parity employs the technique of storing parity information on dedicated disks or distributing it across all disks in a RAID group. Parity information represents the XOR sum of the elements stored on the remaining disks in the RAID. In the event of a single disk failure, the lost data can be reconstructed by subtracting the remaining data across the RAID set.
+
+- Good Performance (Data Striping)
+- Good redundancy (Distributed parity)
+- Minimum of 3 disks.
+- No Mirroring.
+
+## Benefits of RAID
+
+By implementing RAID, organizations can achieve the following advantages:
+
+### Improved Data Redundancy:
+RAID levels with redundancy, such as RAID 1 and those higher than RAID 1, provide protection against data loss due to disk failures. Redundancy ensures that even if a disk becomes inaccessible, the data remains intact and accessible from other disks in the array.
+
+### Enhanced Performance
+RAID, particularly RAID 0, significantly improves data access and transfer speeds by distributing data across multiple drives. This parallelization of data retrieval enhances overall system performance and reduces response times.
+
+### Increased Storage Capacity
+RAID allows the combination of multiple physical drives into a single logical unit, providing an aggregated storage capacity. By utilizing larger drives or adding more drives to the array, organizations can expand their overall storage capacity.
+
+## Conclusion
+RAID technology offers a flexible and efficient approach to storage virtualization by combining multiple disks into a logical unit. By understanding the different RAID levels, organizations can choose the appropriate configuration based on their specific requirements for data redundancy, performance, and capacity. Implementing RAID can result in improved data protection, faster data access, and increased storage capacity, contributing to enhanced system reliability and efficiency.

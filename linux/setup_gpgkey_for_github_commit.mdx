@@ -1,0 +1,194 @@
+---
+title: Setup GPG Key for Github Commits
+description: In todays digital world, ensuring the security and integrity of our data is of utmost importance. One way to achieve this is by using encryption and digital signatures. GnuPG (GPG) is a widely used open-source encryption software that provides cryptographic privacy and authentication for data communication. This article will guide you through the process of setting up GPG on both macOS and Linux systems.
+author: Ganapathi Chidambaram
+date: 2023-03-22
+keywords:
+  - gpgkey
+  - GPG
+  - github
+---
+
+In today's digital world, ensuring the security and integrity of our data is of utmost importance. One way to achieve this is by using encryption and digital signatures. GnuPG (GPG) is a widely used open-source encryption software that provides cryptographic privacy and authentication for data communication. This article will guide you through the process of setting up GPG on both macOS and Linux systems.
+
+
+## Installation
+
+Install GnuPG based on Operating System
+
+<CodeGroup tag="BASH" label="Install GnuPG">
+
+      ```bash {{ title: 'Linux' }}
+      # Install GnuPG: Most Linux distributions come with GnuPG preinstalled.
+      # If it's not already installed, use your package manager to install GnuPG.
+      # For example, on Ubuntu or Debian-based systems, run the following command:
+      sudo apt-get install gnupg pinentry
+      # In-case of Redhat-based system, run the following command:
+      sudo dnf install gnupg pinentry
+      ```
+
+      ```bash {{ title: 'MacOS' }}
+      # Install Homebrew: Homebrew is a popular package manager for macOS.
+      # Open Terminal and run the following command to install Homebrew:
+      /bin/bash -c \
+      "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+      # Install GnuPG and pinentry-mac: Once Homebrew is installed,
+      # run the following command to install GnuPG and pinentry-mac:
+      brew install gnupg pinentry-mac
+      ```
+</CodeGroup>
+
+## Configure GPG:
+
+Create or modify the following configuration files to set up GPG:
+
+- `**~/.gnupg/gpg.conf**`: Open the file and add the following lines:
+
+```bash
+use-agent
+# This silences the "you need a passphrase" message once the passphrase handling is all set.
+# Use at your own discretion - may prevent the successful interactive use of some operations.
+# It is working fine for my use cases though.
+batch
+```
+
+- `**~/.gnupg/gpg-agent.conf**`: Open the file and add the following lines:
+
+<CodeGroup tag="BASH" label="GPG Agent Configuration">
+
+      ```bash {{ title: 'Linux' }}
+      # Enables GPG to find gpg-agent
+      use-standard-socket
+      ```
+
+      ```bash {{ title: 'MacOS' }}
+      # Enables GPG to find gpg-agent
+      use-standard-socket
+
+      # Connects gpg-agent to the OSX keychain via the brew-installed
+      # pinentry program from GPGtools. This is the OSX 'magic sauce',
+      # allowing the gpg key's passphrase to be stored in the login
+      # keychain, enabling automatic key signing.
+      pinentry-program /opt/homebrew/bin/pinentry-mac
+      ```
+</CodeGroup>
+
+- User Profile configuration for GPG
+
+
+<CodeGroup tag="BASH" label="User Profile Configuration">
+
+      ```bash {{ title: 'Linux' }}
+      # Add below content in the file: ~/.bashrc or `~/.bash_profile
+      GPG_TTY=$(tty)
+      export GPG_TTY
+      ```
+
+      ```bash {{ title: 'MacOS' }}
+      # Add below content in the file: ~/.zprofile
+      # Add the following to your shell init to set up gpg-agent automatically for every shell
+      if [ -f ~/.gnupg/.gpg-agent-info ] && [ -n "$(pgrep gpg-agent)" ]; then
+          source ~/.gnupg/.gpg-agent-info
+          export GPG_AGENT_INFO
+      else
+          eval $(gpg-agent --daemon --write-env-file ~/.gnupg/.gpg-agent-info)
+      fi
+      ```
+</CodeGroup>
+
+### Generate GPG Keys
+
+- Generate a key pair: Use the following command to generate your GPG key pair:
+
+```bash
+gpg --full-generate-key
+```
+Follow the prompts to select the key type, key size, and expiration date. Enter a strong passphrase to protect your private key.
+
+- Export the public key: Once the key pair is generated, you can export the public key using the key ID. Run the following command, replacing XXXXXX with your key ID:
+
+```bash
+# get the public key using key ID
+gpg --armor --export XXXXXX
+```
+
+The output will be your public key in ASCII-armored format, which can be shared with others.
+
+### Import existing GPG
+
+1. Obtain the GPG key file: If you have the GPG key file (with a .asc or .gpg extension) from another source, make sure you have it available on your system.
+
+2. Import the GPG key: Open your terminal and run the following command, replacing `<KEY-FILE>` with the path to your GPG key file:
+
+```bash
+gpg --import <KEY_FILE>.pgp
+
+# or
+
+# Import Public key from Keybase or other server and import private key separately.
+curl https://keybase.io/<username>/pgp_keys.asc | gpg --import
+```
+
+The GPG key will be imported, and you will see the key details displayed in the terminal.
+
+3. Trust the imported key (optional): By default, imported keys are not trusted. If the key belongs to someone you trust, you can manually trust it. Run the following command, replacing `<KEY-ID>` with the ID of the imported key (can be found in the output of the previous command):
+
+```bash
+gpg --edit-key <KEY-ID>
+```
+This will open the GPG command-line interface. Enter the command trust to set the trust level for the key. Follow the prompts to select the appropriate level of trust.
+
+4. Verify the imported key: You can verify that the key has been successfully imported by running the command:
+
+```bash
+gpg --list-keys
+```
+The imported key should be listed along with its details.
+
+
+### Configure Git to use GPG
+
+To enable Git commit signing with your GPG key, run the following command, replacing `<YOUR-SIGNING-KEY-PUB-ID>` with your key ID:
+
+```bash
+gpg --list-keys --keyid-format SHORT
+
+git config --global user.signingkey <YOUR-SIGNING-KEY-PUB-ID>
+git config --global commit.gpgsign true
+```
+
+!!! note
+
+    SHORT keyid format will show the key-id into short format just next to rsa algorithm.
+
+    ex:
+
+    pub   rsa4096/**`4BF70A73`** 2021-09-08 [SC] [expires: 2037-09-04]
+
+
+Restart the terminal: After making these configurations, it's recommended to restart the terminal for the changes to take effect.
+
+```bash
+## Kill gpg agent once configured
+pkill -TERM gpg-agent
+```
+
+- If you use Visual Studio Code, you can turn on signing by changing a setting.
+
+Open VSCode, go to *Preferences > Settings*, and search for **git.enableCommitSigning**. Turn this setting on, and you’re good to go.
+
+
+
+## Test GPG Setup
+
+To test your GPG setup, you can encrypt and decrypt a message. Run the following command, replacing `<PUT THE KEY ID HERE>` with the key ID you used:
+
+
+```bash
+echo test | gpg -e -r <PUT THE KEY ID HERE> | gpg -d
+```
+
+If everything is set up correctly, you should see the decrypted message "test" printed in the terminal.
+
+Congratulations! You have successfully set up GPG on your macOS or Linux system. You can now use GPG for encryption, decryption, and signing of sensitive data, providing an extra layer of security to your digital communication. Remember to keep your private key secure and never share it with anyone.

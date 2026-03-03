@@ -1,0 +1,188 @@
+---
+title: MySQL High Availability with Keepalived and HAProxy
+description: Ensuring high availability and load balancing for MySQL is essential for maintaining a reliable and scalable database infrastructure. In this article, we will explore how to achieve high availability and load balancing for MySQL using Keepalived and HAProxy. Keepalived is a high availability monitor, while HAProxy acts as a load balancer. Together, they provide a robust solution for creating a high availability cluster for MySQL or any other application service.
+author: Ganapathi Chidambaram
+date: 2023-03-22
+keywords:
+  - Cluster
+  - HAProxy
+  - Keepalived
+  - MySQL
+  - High Availability
+---
+
+## Introduction
+
+Ensuring high availability and load balancing for MySQL is essential for maintaining a reliable and scalable database infrastructure. In this article, we will explore how to achieve high availability and load balancing for MySQL using Keepalived and HAProxy. Keepalived is a high availability monitor, while HAProxy acts as a load balancer. Together, they provide a robust solution for creating a high availability cluster for MySQL or any other application service.
+
+We will assume the following configuration details for our setup:
+
+* Virtual IP: 192.168.0.100
+* Load Balancer Server 1 (loadb1): 192.168.0.25
+* Load Balancer Server 2 (loadb2): 192.168.0.26 (for failover)
+* App Server 1 (appserver1): 192.168.0.1
+* App Server 2 (appserver2): 192.168.0.2
+
+## Keepalived
+
+Keepalived is a Linux Virtual Server that balances IP load across a set of real servers. It operates on a pair of equally configured computers: an active LVS router and a backup LVS router. Additionally, Keepalived uses Virtual Router Redundancy Protocol (VRRP) to ensure network connectivity even if the default router fails.
+
+### Keepalived Configuration
+
+1. Install the Keepalived package on the load balancing server (loadb1), where HAProxy will run:
+
+    ```bash
+    yum install keepalived
+    ```
+2. Backup the existing Keepalived configuration:
+
+    ```bash
+    mv /etc/keepalived/keepalived.conf{,.back}
+    vim /etc/keepalived/keepalived.conf
+    ```
+
+3. Configure the Keepalived using the following example configuration, based on your server's IP configuration:
+
+    ```bash
+    global_defs {
+        notification_email {
+            user@mydomain.com
+        }
+        notification_email_from noreply@mydomain.com
+        smtp_server 127.0.0.1
+        smtp_connect_timeout 30
+    }
+    vrrp_instance VRRP1 {
+        state MASTER
+        interface eth0
+        virtual_router_id 71
+        priority 200
+        advert_int 1
+        authentication {
+            auth_type PASS
+            auth_pass 1234
+        }
+        virtual_ipaddress {
+            192.168.0.100
+        }
+    }
+    ```
+4. Edit the /etc/sysctl.conf file to enable the non-local IP binding:
+
+    ```bash
+    vi /etc/sysctl.conf
+    ```
+  Add the following line:
+
+    ```bash
+    net.ipv4.ip_nonlocal_bind=1
+    ```
+
+5. Restart the Keepalived daemon and enable it to start on boot:
+
+    ```bash
+    systemctl restart keepalived
+    systemctl enable keepalived
+    ```
+  Now, the load balancer server (loadb1) will have the virtual IP address assigned to its physical network interface.
+
+
+## Backup Load Balancer (Failover)
+
+To configure a backup load balancer server (loadb2) for failover, follow the same steps as above but use the following configuration
+
+  ```bash
+  global_defs {
+      notification_email {
+          user@mydomain.com
+      }
+      notification_email_from noreply@mydomain.com
+      smtp_server 127.0.0.1
+      smtp_connect_timeout 30
+  }
+  vrrp_instance VRRP1 {
+      state BACKUP
+      interface eth0
+      virtual_router_id 71
+      priority 100
+      advert_int 1
+      authentication {
+          auth_type PASS
+          auth_pass 1234
+      }
+      virtual_ipaddress {
+          192.168.0.100
+      }
+  }
+  ```
+
+The backup load balancer server (loadb2) will assign the virtual IP address to its network interface only when the master load balancer becomes unreachable.
+
+## HAProxy
+HAProxy is a high availability load balancer that ensures efficient distribution of traffic among multiple servers. It is installed on the load balancing servers (loadb1 and loadb2).
+
+### HAProxy Configuration
+
+1. Install the HAProxy package:
+
+    ```bash
+    yum install haproxy
+    ```
+
+2. Backup the default HAProxy configuration:
+
+    ```bash
+    mv /etc/haproxy/haproxy.cfg{,.back}
+    ```
+
+3. Create a new HAProxy configuration file with the following content:
+
+    ```bash
+    global
+        user haproxy
+        group haproxy
+
+    defaults
+        mode http
+        log global
+        retries 2
+        timeout connect 3000ms
+        timeout server 5000ms
+        timeout client 5000ms
+
+    listen stats
+        bind 192.168.0.100:9999
+        stats enable
+        stats hide-version
+        stats uri /stats
+        stats auth statadmin:statadminpass
+
+    listen mysql-cluster
+        bind 192.168.0.100:3306
+        mode tcp
+        option mysql-check user haproxy_check
+        balance roundrobin
+        server mysql-1 192.168.0.1:3306 check
+        server mysql-2 192.168.0.2:3306 check
+    ```
+
+4. Before starting HAProxy, create a user on each MySQL server for health checks. This user should be created without a password
+
+    ```bash
+    mysql -u root -p
+    MariaDB> CREATE USER 'haproxy_check'@'%';
+    MariaDB> FLUSH PRIVILEGES;
+    ```
+
+5. Restart the HAProxy service and enable it to start on boot:
+
+    ```bash
+    systemctl restart haproxy
+    systemctl enable haproxy
+    ```
+
+Now, HAProxy is configured to balance the traffic across the MySQL servers (appserver1 and appserver2) using the virtual IP address.
+
+## Conclusion
+
+In this article, we have explored how to achieve high availability and load balancing for MySQL using Keepalived and HAProxy. By configuring Keepalived to monitor and manage the virtual IP address, and setting up HAProxy as a load balancer, we can ensure a reliable and scalable MySQL cluster. This setup provides failover capabilities and efficient distribution of traffic, resulting in improved availability and performance for your MySQL-based applications.

@@ -1,0 +1,105 @@
+---
+title: Understanding the Booting Process of a Computer System
+description: Booting a computer system involves a sequence of processes performed by both the hardware and software components. This article will guide you through the step-by-step process of booting, starting from the power-on stage to when the operating system is fully loaded and ready for use. Lets explore each stage in detail.
+author: Ganapathi Chidambaram
+date: 2024-10-24
+keywords:
+  - booting
+  - booting process
+  - linux
+  - Disambiguation
+  - Linux
+---
+
+Booting a computer system involves a sequence of processes performed by both the hardware and software components. This article will guide you through the step-by-step process of booting, starting from the power-on stage to when the operating system is fully loaded and ready for use. Let's explore each stage in detail.
+
+- Power Supply
+- Basic Input Output System -BIOS
+- Booting Record/Partition Table
+- Bootloader - GRUB
+- Kernel
+- Init
+- RunLevel Programs
+
+
+## Power Supply
+
+When you turn on your computer, the power supply unit (PSU) undergoes a self-test and sends a power signal to the CPU motherboard and other related components if the self-test is successful. If the self-test fails, there will be no output.
+
+
+## Basic Input Output System - BIOS
+
+The BIOS, an interface programmed into an integrated circuit chip, plays a crucial role in obtaining hardware information from your computer. It also includes CMOS (Complementary Metal Oxide Semiconductor), a type of storage that holds essential hardware settings required by the operating system, such as drive locations, configurations, memory speed, CPU frequency multiplier, and more. Additionally, BIOS performs a power-on self-test during system startup. Here's a checklist of what BIOS verifies to continue the booting process:
+
+- Checks if all available hard drives and devices are responding.
+- Ensures that the mouse and keyboard are connected.
+- Checks the availability and functionality of the video card.
+- Initializes the RAID controller if installed.
+
+BIOS also stores the booting sequence information, which specifies the order in which the system searches for the booting device.
+
+## Booting Record/Partition Table
+
+Once BIOS identifies the boot partition, it searches for the booting records, which consist of the partition table and boot loader information.
+
+#### Boot Loader Information
+
+  - The boot loader information block contains the first program that the computer can run.
+
+#### Disk partition Table
+
+  - The partition table stores information about how the disk drive is logically organized.
+    There are two types of Booting Record are available.
+
+    1. Master Boot Record (MBR): This is the older method of partition table storage, typically located in the first sector of the drive. It occupies only the first 512 bytes of space, with the first 448 bytes allocated for boot loader information and the remaining 64 bytes for the disk partition table. Each partition occupies 16 bytes within these 64 bytes, and the remaining 2 bytes serve as a magic number for bootloader validation.
+
+    2. GUID Partition Table (GPT): GPT is the newer method of partition table storage and is usually present in both the first and last sectors of the drive. If the first sector is corrupted, the system can boot from the backup located in the last sector. GPT uses globally unique IDs (GUIDs) to identify partitions instead of partition numbers used in MBR. Unlike MBR, GPT has no limitation on the number of partitions and supports partitions larger than 2TB.
+
+
+## Boot Loader
+
+The boot loader's role is to load the kernel and its supporting modules into memory. One commonly used boot loader is GRUB (Grand Unified Bootloader), which is widely adopted across various Linux distributions. Another boot loader, Linux Loader (LILO), is an older alternative.
+
+GRUB has knowledge of different filesystems and can understand the partition filesystem type, while LILO does not have this capability.
+
+By defining a configuration file, GRUB waits for the user to select the desired kernel image from the list of installed kernels. If no selection is made, it loads the default kernel image.
+
+## Kernel
+
+The kernel mounts the filesystem specified in the boot loader's configuration file (grub.conf) and executes the init program. The init program, with a ProcessID (PID) of 1, is the first program launched during system startup.
+
+During kernel boot, the initrd (initial RAM disk) is loaded into memory, serving as a temporary root file system. This allows the kernel to fully boot without mounting any physical disks.
+
+The kernel itself can be relatively small while still supporting a wide range of hardware configurations. Once the kernel is booted, the root file system is pivoted (via pivot_root), unmounting the initrd root file system and mounting the real root file system.
+
+## Init
+
+The init program determines the default init level from the inittab file and uses it to load all the appropriate programs.
+
+The default init levels are defined by the initdefault setting in the /etc/inittab file. The following are the boot system init levels and their corresponding functions:
+
+- 0: Halt
+- 1: Single User Mode
+- 2: Local MultiUser without networking/NFS
+- 3: Full MultiUser with Networking
+- 4: Not Used (User-defined)
+- 5: Graphical Mode (with X11 System)
+- 6: Reboot
+
+
+## Run Level Programs
+
+Run level programs are responsible for executing the required programs based on the system's current run level, as determined by the init program.
+
+These programs start or kill services depending on the run level, and their configurations are stored in /etc/rc.d/rcX.d/ directories, where X represents the init level.
+
+For example:
+
+  - S80sendmail - /etc/rc.d/rc3.d/
+  This means that the sendmail service should start (S) during system boot at init level 3, with a sequence number of 80.
+  - K12syslog - /etc/rc.d/rc5.d/
+  This means that the syslog service should be stopped (K) during system boot at init level 5, with a sequence number of 12.
+
+## Conclusion:
+
+Understanding the booting process is essential for troubleshooting and configuring computer systems. By following the step-by-step sequence described in this article, you can gain a better understanding of how a computer boots and loads the operating system.

@@ -1,0 +1,78 @@
+---
+title: Building Docker Images - A Step-by-Step Guide with Example
+description: Docker is an open-source platform that enables the creation, deployment, and management of applications within lightweight, isolated containers. It provides a consistent and efficient way to package software and its dependencies, ensuring that applications run reliably across different computing environments.
+author: Ganapathi Chidambaram
+date: 2023-03-22
+keywords:
+  - Docker
+  - Dockerfile
+  - DevOps
+  - docker tutorial
+  - docker build
+---
+
+## What is Docker?
+
+Docker is an open-source platform that enables the creation, deployment, and management of applications within lightweight, isolated containers. It provides a consistent and efficient way to package software and its dependencies, ensuring that applications run reliably across different computing environments.
+
+At its core, Docker utilizes containerization technology, which allows applications to be packaged into self-contained units called Docker containers. Each container contains everything needed to run an application, including the code, runtime, system tools, libraries, and system dependencies. Containers are isolated from one another and share the host system's operating system kernel, making them lightweight and efficient.
+
+Docker offers several key advantages:
+
+1. Portability: Docker containers are portable, meaning they can run consistently across different environments, such as development, testing, and production. This eliminates the "it works on my machine" problem and ensures application consistency.
+
+2. Scalability: Docker enables easy scaling of applications by allowing multiple instances of containers to run concurrently. Containers can be quickly and dynamically deployed, making it straightforward to scale up or down based on demand.
+
+3. Resource Efficiency: Docker containers are lightweight and share the host system's resources, making efficient use of hardware resources. Multiple containers can run on the same physical or virtual machine without conflicts.
+
+4. Isolation: Docker containers provide isolation, ensuring that each application runs independently of others. This isolation enhances security and prevents conflicts between applications or their dependencies.
+5. Version Control: Docker images, which are the building blocks of containers, can be version-controlled. This allows for easy management of different versions and facilitates rollbacks if needed.
+
+6. Rapid Deployment: Docker simplifies the deployment process by providing a standardized environment for applications. With Docker, applications can be deployed quickly and consistently, reducing deployment time and effort.
+
+Docker has gained widespread adoption and is widely used in various scenarios, including microservices architecture, continuous integration and deployment (CI/CD), and cloud-based environments. It has a vast ecosystem of tools and services that support container orchestration, networking, storage, and management, making it a popular choice for modern application development and deployment.
+
+## Installation & Configuration of Docker
+
+To install Docker Engine on a new host machine, it is important to first set up the Docker repository. Once the repository is configured, you can proceed with installing and updating Docker using the repository.
+
+### Set up the repository
+
+It provide instructions to set up the necessary repository and prerequisites for installing the Docker engine based on the operating system (OS) in use.
+
+<CodeGroup tag="BASH" label="setup repository">
+
+```bash {{ title: 'Ubuntu/Debian' }}
+sudo apt-get update
+sudo apt-get install \
+    ca-certificates \
+    curl \
+    gnupg \
+    lsb-release
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+echo \
+    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
+    $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+```
+
+```bash {{ title: 'CentOS/RHEL' }}
+sudo yum install -y yum-utils
+sudo yum-config-manager \
+          --add-repo \
+          https://download.docker.com/linux/centos/docker-ce.repo
+```
+</CodeGroup>
+
+<CodeGroup tag="BASH" label="Install Docker Engine">
+
+```bash {{ title: 'Ubuntu/Debian' }}
+  $ sudo apt-get update
+  $ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+```
+
+```bash {{ title: 'CentOS/RHEL' }}
+  yum install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+```
+
+</CodeGroup>

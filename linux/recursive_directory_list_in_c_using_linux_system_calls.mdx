@@ -1,0 +1,183 @@
+---
+title: Recursive Directory Listing in C using Linux System Calls
+description: we will explore a C code that utilizes Linux system calls to recursively list directories and their contents. The code provides the flexibility to filter the listing based on file types and specify the depth of recursion. Lets dive into the details of the code.
+author: Ganapathi Chidambaram
+date: 2023-03-22
+keywords:
+  - linux
+  - c
+  - directory listing
+---
+
+## Introduction
+
+In this article, we will explore a C code that utilizes Linux system calls to recursively list directories and their contents. The code provides the flexibility to filter the listing based on file types and specify the depth of recursion. Let's dive into the details of the code.
+
+```c
+#define _GNU_SOURCE
+#include <dirent.h>     /* Defines DT_* constants */
+#include <fcntl.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/syscall.h>
+
+#define handle_error(msg) \
+        do { perror(msg); exit(EXIT_FAILURE); } while (0)
+
+struct linux_dirent {
+    long           d_ino;
+    off_t          d_off;
+    unsigned short d_reclen;
+    char           d_name[];
+};
+
+#define BUF_SIZE 1024*1024*5
+
+void listdir(char *dname, char *otype, int inward) {
+    int fd, nread;
+    char *buf = malloc(BUF_SIZE);
+    struct linux_dirent *d;
+    int bpos;
+    char d_type;
+
+    fd = open(dname != NULL ? dname : ".", O_RDONLY | O_DIRECTORY);
+
+    if (fd == -1)
+        handle_error("open");
+
+    for (;;) {
+        nread = syscall(SYS_getdents, fd, buf, BUF_SIZE);
+        if (nread == -1)
+            handle_error("getdents");
+        if (nread == 0)
+            break;
+
+        for (bpos = 0; bpos < nread;) {
+            d = (struct linux_dirent *)(buf + bpos);
+            d_type = *(buf + bpos + d->d_reclen - 1);
+            bpos += d->d_reclen;
+
+            if (d->d_ino && d->d_ino > 0 && strcmp(".", d->d_name) != 0 && strcmp("..", d->d_name) != 0) {
+                if ((d_type == DT_DIR || d_type == DT_LNK) && (strcmp("dirs", otype) == 0 || strcmp("dirfiles", otype) == 0))
+                    printf("%s/%s\n", dname, (char *)d->d_name);
+                else if (d_type == DT_REG && (strcmp("files", otype) == 0 || strcmp("dirfiles", otype) == 0))
+                    printf("%s/%s\n", dname, (char *)d->d_name);
+
+                if ((d_type == DT_DIR || d_type == DT_LNK) && inward == 1) {
+                    int dirname_len = strlen(dname);
+                    char *subdir = calloc(1, PATH_MAX + 1);
+                    strcat(subdir, dname);
+                    strcat(subdir + dirname_len, "/");
+                    strcat(subdir + dirname_len + 1, d->d_name);
+                    listdir(subdir, otype, inward);
+                    free(subdir);
+                }
+            }
+        }
+    }
+
+    close(fd);
+    free(buf);
+}
+
+int main(int argc, char *argv[]) {
+    int opt = 0;
+    char *dname = NULL;
+    char *otype = NULL;
+    int inward = 0;
+
+    while ((opt = getopt(argc, argv, "d:t:i:")) != -1) {
+        switch (opt) {
+            case 'd':
+                dname = optarg;
+                break;
+            case 't':
+                otype = optarg;
+                break;
+            case 'i':
+                inward = atoi(optarg) == 1 ? atoi(optarg) : 0;
+                break;
+            case '?':
+                if (optopt == 'd')
+                    dname = ".";
+                else if (optopt == 't')
+                    otype = "files";
+                else {
+                    printf("\nInvalid option received\n");
+                    return 1;
+                }
+                break;
+        }
+    }
+
+    listdir(dname, otype, inward);
+    exit(EXIT_SUCCESS);
+    return 0;
+}
+```
+
+## Benefits of this Code
+The provided C code provides comparable functionality to the find and ls commands in Linux. However, this C program is specifically designed to efficiently handle large directories with a substantial number of files, ensuring it doesn't exhaust CPU and memory resources. Unlike find and ls, which may struggle on lower-end systems or when dealing with millions of files, this C program is capable of successfully executing and delivering results in such scenarios.
+
+1. Memory Utilization:
+
+    * Efficient Memory Management: The C code utilizes dynamic memory allocation (malloc and free) to manage the buffer size (**`buf`**). This allows for more efficient memory utilization, especially when dealing with large directory structures, as the code can allocate memory as needed.
+
+    * Fixed Buffer Size: The buffer size (**`BUF_SIZE`**) in the C code is set to 5 megabytes (**`1024*1024*5`**). This fixed buffer size ensures that a reasonable amount of memory is allocated upfront, preventing excessive memory consumption.
+
+2. CPU Utilization:
+
+    * System Calls: The C code directly uses system calls like **`open`**, **`getdents`**, and **`close`** to interact with the file system. By utilizing low-level system calls, the code avoids the overhead associated with executing external commands (**`find`** or **`ls`**), resulting in potentially lower CPU utilization.
+
+    * Tailored Logic: The C code contains custom logic for filtering and processing directory entries. It only performs the necessary checks and actions as specified by the options (**-t** and **-i**). This targeted approach can lead to improved CPU utilization compared to the more generic behavior of **`find`** and **`ls`** commands, which perform a broader set of operations by default.
+
+
+## Understanding the Code
+
+The code provided is a C program that allows recursive directory listing in a Linux environment. Let's go through the important parts of the code to understand its functionality.
+
+### Header Files and Macros
+
+The code starts by including necessary header files such as **`dirent.h`**, **`fcntl.h`**, **`stdio.h`**, **`unistd.h`**, **`stdlib.h`**, **`string.h`**, **`sys/stat.h`**, and **`sys/syscall.h`**. Additionally, the **`_GNU_SOURCE`** macro is defined.
+
+### Error Handling Macro
+
+The code defines a macro **`handle_error(msg)`** that is used for error handling. It prints the error message passed as an argument and exits the program if an error occurs.
+
+### Linux_dirent Structure
+
+The code declares a structure **`struct linux_dirent`** to represent a directory entry. It contains fields for inode number, offset, record length, and the name of the entry.
+
+### Constant and Buffer Size
+
+The code defines a constant **`BUF_SIZE`** to determine the size of the buffer used for reading directory entries. In this case, it is set to **`1024*1024*5`**, indicating a buffer size of 5 MB.
+
+### Recursive Directory Listing Function
+
+The **`listdir`** function is the core of the program and handles the recursive directory listing. It takes three parameters: **`dname`** (directory name), **`otype`** (output type), and **`inward`** (recursive flag).
+
+Inside the function, it opens the directory specified by **`dname`** using the **`open`** system call with appropriate flags. If the open operation fails, it calls the **`handle_error`** macro to handle the error.
+
+The function then enters a loop to read directory entries using the **`getdents`** system call. It iterates over each entry and checks its type using the **`d_type`** field of the struct **`linux_dirent`**. Based on the type and specified output type (**`otype`**), it prints the directory or file path.
+
+If the entry is a directory and the inward flag is set to 1, it recursively calls the **`listdir`** function with the subdirectory path.
+
+Finally, the function closes the directory and frees the allocated memory.
+
+### Main Function
+
+The **`main`** function handles the command-line arguments and calls the **`listdir`** function.
+
+It uses the **`getopt`** function to parse the command-line options. The supported options are:
+
+- **`-d`**: Specifies the directory to start the listing from. If not provided, the current directory is used.
+- **`-t`**: Specifies the output type. The available options are "files" (only regular files), "dirs" (only directories), and "dirfiles" (both directories and files). If not provided, "files" is used by default.
+- **`-i`**: Specifies the inward recursion flag. If set to 1, the program will recursively list directories within directories. By default, it is set to 0 (no inward recursion).
+After parsing the command-line options, the **`listdir`** function is called with the provided arguments. The program then exits gracefully.
+
+## Conclusion
+
+In this article, we explored a C code that enables recursive directory listing using Linux system calls. The code provides options to filter the output based on file types and control the depth of recursion. Understanding and utilizing such code can be beneficial when working with directory structures in a Linux environment.

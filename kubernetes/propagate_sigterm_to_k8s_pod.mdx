@@ -1,0 +1,58 @@
+---
+title: Propagating a SIGTERM Signal to the Main Process in a Kubernetes Pod
+description: As a Kubernetes user, you may find that when you restart a pod in Kubernetes, the process running inside the container does not receive the SIGTERM signal. Instead, the signal is only sent to the PID of the entrypoint shell script.
+author: Ganapathi Chidambaram
+date: 2023-03-22
+keywords:
+  - SIGTERM handling
+  - Pod Termination
+  - Termination Grace Period
+  - Kubernetes
+---
+
+## Introduction
+
+As a Kubernetes user, you may find that when you restart a pod in Kubernetes, the process running inside the container does not receive the SIGTERM signal. Instead, the signal is only sent to the PID of the entrypoint shell script.
+
+To understand why this is happening, it’s important to know that Kubernetes sends a SIGTERM signal to a container’s main process when the container is terminated or restarted. However, if the entrypoint shell script is not properly propagating the SIGTERM signal to the process it launches, then only the entrypoint shell script will receive the signal.
+
+So how can you ensure that the SIGTERM signal is properly propagated to the main process in a Kubernetes pod? In this article, we’ll walk through an example entrypoint script that demonstrates how to propagate the SIGTERM signal to the main process.
+
+## Understanding the SIGTERM Signal
+
+Before we dive into the entrypoint script, let’s first take a closer look at the SIGTERM signal. SIGTERM is a signal that is sent to a process to request that it gracefully terminate. By gracefully terminating, the process has the opportunity to perform any necessary cleanup tasks before exiting.
+
+In Kubernetes, when a pod is terminated or restarted, Kubernetes sends a SIGTERM signal to the main process of each container in the pod. By default, the main process will receive the signal and have the opportunity to perform any necessary cleanup tasks before exiting.
+
+However, if the main process launches additional child processes, it’s important to ensure that the SIGTERM signal is propagated to those child processes as well. Otherwise, those child processes may be abruptly terminated and leave behind unclean state.
+
+## Propagating the SIGTERM Signal
+
+To properly propagate the SIGTERM signal to the main process in a Kubernetes pod, you need to modify the entrypoint script to ensure that the signal is forwarded to the main process.
+
+One way to do this is to use the exec command to replace the shell script process with the main process when launching it. This way, when the SIGTERM signal is sent to the shell script process, it will be forwarded to the main process.
+
+Here’s an example entrypoint script that demonstrates how to propagate the SIGTERM signal to the main process:
+
+```bash
+#!/bin/bash
+
+# Start the main process and save its PID
+# Use exec to replace the shell script process with the main process
+exec my_main_process &
+pid=$!
+
+# Trap the SIGTERM signal and forward it to the main process
+trap 'kill -SIGTERM $pid; wait $pid' SIGTERM
+
+# Wait for the main process to complete
+wait $pid
+```
+
+In the above example, the **`exec`** command is used to launch **`my_main_process`** and replace the shell script process with it. The **`pid`** variable is used to store the PID of the main process. The **`trap`** command is used to catch the SIGTERM signal and forward it to the main process using the **`kill`** command. Finally, the **`wait`** command is used to wait for the main process to complete.
+
+By using this technique, you can ensure that the SIGTERM signal is properly propagated to the main process when restarting the pod.
+
+## Conclusion
+
+In summary, when you restart a pod in Kubernetes, it’s important to ensure that the SIGTERM signal is properly propagated to the main process. By modifying your entrypoint script to use the exec command and trap the SIGTERM signal, you can ensure that the signal is forwarded to the main process and that it has the opportunity to gracefully terminate.

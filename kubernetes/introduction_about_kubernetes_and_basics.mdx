@@ -1,0 +1,576 @@
+---
+title: Introduction About Kubernetes
+description: Kubernetes is also known as k8s. Kubernetes is an extensible, portable, and open-source container management platform designed by Google. Kubernetes helps to manage containerised applications in various types of physical, virtual, and cloud environments.
+author: Ganapathi Chidambaram
+date: 2021-10-20
+keywords:
+  - Kubernetes
+  - DevOps
+  - Kubernetes Basics
+  - Kubernetes Tutorial
+---
+
+## Introduction
+
+Kubernetes is also known as 'k8s'. Kubernetes is an extensible,
+portable, and open-source container management platform designed by
+Google. Kubernetes helps to manage containerised applications in various
+types of physical, virtual, and cloud environments.
+
+Kubernetes helps you to control the resource allocation and traffic
+management for cloud applications and microservices. It also helps to
+simplify various aspects of service-oriented infrastructures. Kubernetes
+allows you to assure where and when containerized applications run and
+helps you to find resources and tools you want to work with.
+
+## Kubernetes Features
+
+
+-   Automated Scheduling
+-   Self-Healing Capabilities
+-   Automated rollouts & rollback
+-   Horizontal Scaling & Load Balancing
+-   Offers environment consistency for development, testing, and
+    production
+-   Infrastructure is loosely coupled to each component can act as a
+    separate unit
+-   Provides a higher density of resource utilization
+-   Offers enterprise-ready features
+-   Application-centric management
+-   Auto-scalable infrastructure
+-   You can create predictable infrastructure
+
+Kubernetes Architecture
+=========================
+
+![](/kubernetes/general/introduction_about_kubernetes_and_basics/kubernetes-architecture.png)
+
+Master Node
+-----------
+
+The master node is the first and most vital component which is
+responsible for the management of Kubernetes cluster. It is the entry
+point for all kind of administrative tasks. There might be more than one
+master node in the cluster to check for fault tolerance.
+
+The master node has various components like API Server, Controller
+Manager, Scheduler, and ETCD. Let see all of them.
+
+### API Server:
+
+It provides all the operation on cluster using the API. API server
+implements an interface, which means different tools and libraries can
+readily communicate with it. **Kubeconfig** is a package along with the
+server side tools that can be used for communication.
+
+### Controller Manager
+
+This component is responsible for most of the collectors that regulates
+the state of cluster and performs a task. In general, it can be
+considered as a daemon which runs in nonterminating loop and is
+responsible for collecting and sending information to API server. It
+works toward getting the shared state of cluster and then make changes
+to bring the current status of the server to the desired state. The key
+controllers are replication controller, endpoint controller, namespace
+controller, and service account controller. The controller manager runs
+different kind of controllers to handle nodes, endpoints, etc.
+
+### Scheduler
+
+This is one of the key components of Kubernetes master. It is a service
+in master responsible for distributing the workload. It is responsible
+for tracking utilization of working load on cluster nodes and then
+placing the workload on which resources are available and accept the
+workload. In other words, this is the mechanism responsible for
+allocating pods to available nodes. The scheduler is responsible for
+workload utilization and allocating pod to new node.
+
+### Etcd
+
+It stores the configuration information which can be used by each of the
+nodes in the cluster. It is a high availability key value store that can
+be distributed among multiple nodes. It is accessible only by Kubernetes
+API server as it may have some sensitive information. It is a
+distributed key value Store which is accessible to all.
+
+Worker/Slave nodes
+------------------
+
+Worker nodes are another essential component which contains all the
+required services to manage the networking between the containers,
+communicate with the master node, which allows you to assign resources
+to the scheduled containers.
+
+### Docker
+
+The first requirement of each node is Docker which helps in running the
+encapsulated application containers in a relatively isolated but
+lightweight operating environment.
+
+### Kubelet Service
+
+This is a small service in each node responsible for relaying
+information to and from control plane service. It interacts with etcd
+store to read configuration details and wright values. This communicates
+with the master component to receive commands and work. The kubelet
+process then assumes responsibility for maintaining the state of work
+and the node server. It manages network rules, port forwarding, etc.
+
+### Kubernetes Proxy Service
+
+This is a proxy service which runs on each node and helps in making
+services available to the external host. It helps in forwarding the
+request to correct containers and is capable of performing primitive
+load balancing. It makes sure that the networking environment is
+predictable and accessible and at the same time it is isolated as well.
+It manages pods on node, volumes, secrets, creating new containers'
+health checkup, etc.
+
+Kubernetes Key Terminologies
+============================
+
+Cluster:
+--------
+
+It is a collection of hosts(servers) that helps you to aggregate their
+available resources. That includes ram, CPU, ram, disk, and their
+devices into a usable pool.
+
+Master:
+-------
+
+The master is a collection of components which make up the control panel
+of Kubernetes. These components are used for all cluster decisions. It
+includes both scheduling and responding to cluster events.
+
+Node:
+-----
+
+A node is a working machine in Kubernetes cluster . They are working
+units which can be physical, VM, or a cloud instance.Each node has all
+the required configuration required to run a pod on it such as the proxy
+service and kubelet service along with the Docker, which is used to run
+the Docker containers on the pod created on the node.
+
+Namespace:
+----------
+
+It is a logical cluster or environment. It is a widely used method which
+is used for scoping access or dividing a cluster. It provides an
+additional qualification to a resource name. This is helpful when
+multiple teams are using the same cluster and there is a potential of
+name collision. It can be as a virtual wall between multiple clusters.
+
+Following are some of the important functionalities of a Namespace in
+Kubernetes
+
+-   Namespaces help pod-to-pod communication using the same namespace.
+-   Namespaces are virtual clusters that can sit on top of the same
+    physical cluster.
+-   They provide logical separation between the teams and their
+    environments.
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch
+  namespace: elk
+  labels:
+      component: elasticsearch
+spec:
+  type: LoadBalancer
+  selector:
+      component: elasticsearch
+  ports:
+  - name: http
+      port: 9200
+      protocol: TCP
+  - name: transport
+      port: 9300
+      protocol: TCP
+```
+
+Labels and Selectors:
+---------------------
+
+Labels are key-value pairs which are attached to pods, replication
+controller and services. They are used as identifying attributes for
+objects such as pods and replication controller. They can be added to an
+object at creation time and can be added or modified at the run time.
+
+Unlike names and UIDs, labels do not provide uniqueness. In general, we
+expect many objects to carry the same label(s).
+
+A label selector is just a fancy name of the mechanism that enables the
+client/user to target (select) a set of objects by their labels.
+
+It can be confusing because different resource types support different
+selector types - 'selector' vs 'matchExpressions' vs
+'matchLabels':
+
+![](/kubernetes/general/introduction_about_kubernetes_and_basics/kubernetes_label_selector.png)
+
+Newer resource types like Deployment, Job, DaemonSet, and ReplicaSet
+support both 'matchExpressions' and 'matchLabels', but only one of
+them can be nested under the 'selector' section, while the other
+resources (like "Service" in the example above) support only
+'matchLabels', so there is no need to define which option is used,
+because only one option is available for those resource types.
+
+Service
+-------
+
+A service can be defined as a logical set of pods. It can be defined as
+an abstraction on the top of the pod which provides a single IP address
+and DNS name by which pods can be accessed. With Service, it is very
+easy to manage load balancing configuration. It helps pods to scale very
+easily.
+
+A service is a REST object in Kubernetes whose definition can be posted
+to Kubernetes apiServer on the Kubernetes master to create a new
+instance.
+
+```yaml
+kind: Service
+apiVersion: v1
+metadata:
+  name: nginx-service
+spec:
+  selector:
+    app: nginx
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 9376
+```
+
+Types of Services are:
+
+-   **ClusterIP**
+-   **NodePort**
+-   **LoadBalancer**
+-   **ExternalName**
+
+### ClusterIP
+
+An internal fixed IP known as a ClusterIP can be created in front of a
+pod or a replica as necessary.
+
+The ClusterIP provides a load-balanced IP address. One or more pods that
+match a label selector can forward traffic to the IP address. The
+ClusterIP service must define one or more ports to listen on with target
+ports to forward TCP/UDP traffic to containers. The IP address that is
+used for the ClusterIP is not routable outside of the cluster, like the
+pod IP address is.
+
+![](/kubernetes/general/introduction_about_kubernetes_and_basics/kubernetes_clusterip.png)
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-clusterip-service
+spec:
+  selector:
+    app: nginx
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 80
+```
+
+### NodePort
+
+Services of type NodePort build on top of ClusterIP type services by
+exposing the ClusterIP service outside of the cluster on high ports
+(default 30000-32767). If no port number is specified then Kubernetes
+automatically selects a free port. The local kube-proxy is responsible
+for listening to the port on the node and forwarding client traffic on
+the NodePort to the ClusterIP.
+
+![](/kubernetes/general/introduction_about_kubernetes_and_basics/kubernetes_nodeport.png)
+
+Users can communicate with the service from the outside by requesting
+\<NodeIP\>:\<NodePort\>
+
+By default, every node in the cluster listens on this port, including
+nodes where the pod that matches the label selector does not run.
+Traffic on such nodes is internally NATed and forwarded to the target
+pod (Cluster external traffic policy).
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-nodeport-service
+spec:
+  selector:
+    app: nginx
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 80
+```
+
+### Load Balancer
+
+The LoadBalancer service type is built on top of NodePort service types
+by provisioning and configuring external load balancers from public and
+private cloud providers. It exposes services that are running in the
+cluster by forwarding layer 4 traffic to worker nodes. This is a dynamic
+way of implementing a case that involves external load balancers and
+NodePort type services. However, it usually requires an integration that
+runs inside the Kubernetes cluster that performs a watch on the API for
+services of type LoadBalancer.
+
+![](/kubernetes/general/introduction_about_kubernetes_and_basics/kubernetes_loadbalancer.png)
+
+It will also automatically create ClusterIP and NodePort services and
+route traffic accordingly.
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-loadbalancer-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: nginx
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 31999
+```
+
+### ExternalName
+
+This type of service maps the service to the contents of the
+externalName field (Ex: app.test.com). It does this by returning a value
+for the CNAME record.
+
+Pod
+---
+
+A pod is a collection of containers and its storage inside a node of a
+Kubernetes cluster. It is possible to create a pod with multiple
+containers inside it. For example, keeping a database container and data
+container in the same pod.
+
+There are two types of Pods
+
+-   Single container pod
+-   Multi container pod
+
+### Single Container Pod
+
+If you defined single image on Pod Specification then it would created
+with single container.
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - name: Nginx
+    image: nginx
+    ports:
+containerPort: 7500
+  imagePullPolicy: Always
+```
+
+### Multi Container Pod
+
+If you defined multiple image on Pod Specification then it would created
+with multi container with each image specified.
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - name: Nginx
+    image: nginx
+    ports:
+      containerPort: 7500
+    imagePullPolicy: Always
+  - name: Database
+    Image: mongoDB
+    Ports:
+      containerPort: 7501
+    imagePullPolicy: Always
+```
+
+Deployments
+-----------
+
+Deployments are upgraded and higher version of replication controller
+and additional feature from ReplicaSet. They manage the deployment of
+replica sets which is also an upgraded version of the replication
+controller. They have the capability to update the replica set and are
+also capable of rolling back to the previous version.
+
+They provide many updated features of matchLabels and selectors. We have
+got a new controller in the Kubernetes master called the deployment
+controller which makes it happen. It has the capability to change the
+deployment midway.
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+          - name: http
+            containerPort: 80
+```
+
+Secrets
+-------
+
+A Secret is an object that contains a small amount of sensitive data
+such as a password, a token, or a key. Such information might otherwise
+be put in a Pod specification or in a container image. Using a Secret
+means that you don't need to include confidential data in your
+application code.
+
+Because Secrets can be created independently of the Pods that use them,
+there is less risk of the Secret (and its data) being exposed during the
+workflow of creating, viewing, and editing Pods. Kubernetes, and
+applications that run in your cluster, can also take additional
+precautions with Secrets, such as avoiding writing secret data to
+nonvolatile storage.
+
+Secrets are similar to ConfigMaps but are specifically intended to hold
+confidential data.
+
+There are three main ways of uses for Secrets:
+
+-   As files in a volume mounted on one or more of its containers.
+-   As container environment variable.
+-   By the kubelet when pulling images for the Pod.
+
+```yaml
+apiVersion: v1
+data:
+  username: admin
+  password: Passw0rd0
+kind: Secret
+metadata:
+  name: mysecret
+type: Opaque
+```
+
+To use a Secret in an environment variable in a Pod:
+
+-   Create a Secret (or use an existing one). Multiple Pods can
+    reference the same Secret.
+-   Modify your Pod definition in each container that you wish to
+    consume the value of a secret key to add an environment variable for
+    each secret key you wish to consume. The environment variable that
+    consumes the secret key should populate the secret's name and key
+    in env\[\].valueFrom.secretKeyRef.
+-   Modify your image and/or command line so that the program looks for
+    values in the specified environment variables.
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: secret-env-pod
+spec:
+  containers:
+  - name: mycontainer
+    image: redis
+    env:
+      - name: SECRET_USERNAME
+        valueFrom:
+          secretKeyRef:
+            name: mysecret
+            key: username
+            optional: false # same as default; "mysecret" must exist
+                            # and include a key named "username"
+      - name: SECRET_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: mysecret
+            key: password
+            optional: false # same as default; "mysecret" must exist
+                            # and include a key named "password"
+  restartPolicy: Never
+```
+
+Create a Secret from File , run the below command to do the same.
+However the adjust the file location according to your file location
+available.
+
+```bash
+kubectl create secret mysecret-from-file db-user-pass --from-file=./username.txt --from-file=./password.txt
+```
+
+To use a Secret as a File in a Pod:
+
+If you want to access data from a Secret in a Pod, one way to do that is
+to have Kubernetes make the value of that Secret be available as a file
+inside the filesystem of one or more of the Pod's containers.
+
+-   Create a secret or use an existing one. Multiple Pods can reference
+    the same secret.
+-   Modify your Pod definition to add a volume under .spec.volumes\[\].
+    Name the volume anything, and have a
+    .spec.volumes\[\].secret.secretName field equal to the name of the
+    Secret object.
+-   Add a .spec.containers\[\].volumeMounts\[\] to each container that
+    needs the secret. Specify
+    .spec.containers\[\].volumeMounts\[\].readOnly = true and
+    .spec.containers\[\].volumeMounts\[\].mountPath to an unused
+    directory name where you would like the secrets to appear.
+-   Modify your image or command line so that the program looks for
+    files in that directory. Each key in the secret data map becomes the
+    filename under mountPath.
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mypod
+spec:
+  containers:
+  - name: mypod
+    image: redis
+    volumeMounts:
+    - name: username.txt
+      mountPath: "/etc/username.txt"
+      readOnly: true
+    - name: password
+      mountPath: "/etc/password.txt"
+      readOnly: true
+  volumes:
+  - name: username.txt
+    secret:
+      secretName: mysecret-from-file
+      optional: false # default setting; "mysecret" must exist
+  - name: password.txt
+    secret:
+      secretName: mysecret-from-file
+      optional: false # default setting; "mysecret" must exist
+```

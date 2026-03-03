@@ -1,0 +1,110 @@
+---
+title: Useful Commands Using the Find Utility in Linux
+description: The find utility is a powerful command-line tool in Linux that allows users to search for files and directories based on various criteria. In this article, we will explore some useful commands using the find utility. These commands will help you locate specific files with alphanumeric names and special extensions, exclude certain folders or files from the search, and perform actions such as deleting or modifying files. Lets dive into the commands.
+author: Ganapathi Chidambaram
+date: 2023-03-22
+keywords:
+  - linux
+  - find
+  - commands
+---
+
+## Introduction
+
+The find utility is a powerful command-line tool in Linux that allows users to search for files and directories based on various criteria. In this article, we will explore some useful commands using the find utility. These commands will help you locate specific files with alphanumeric names and special extensions, exclude certain folders or files from the search, and perform actions such as deleting or modifying files. Let's dive into the commands.
+
+## Find Alphanumeric Files with Special Extension
+To find files with alphanumeric names and specific extensions, use the following command:
+
+```bash
+find . -type f -regex ".*[0-9].*\.\(xls\|csv\|php\)"
+```
+
+This command searches for files in the current directory and its subdirectories (.) that have names containing alphanumeric characters and end with .xls, .csv, or .php extensions.
+
+## Find Alphanumeric Files Excluding Certain Folders
+
+If you want to exclude specific folders from the search, use the following command:
+
+```bash
+find . -type f -regex ".*[0-9].*\.\(xls\|csv\|php\)" -not -path "./database/*"
+```
+
+This command excludes the ./database folder from the search. You can modify the path to exclude any other folders as needed.
+
+## Find Alphanumeric Files Excluding Multiple Folders
+
+To skip multiple folders from the search, use the following command:
+
+```bash
+find . -type f -regex ".*[0-9].*\.\(xls\|csv\|php\)" -not -path "./database/*" -not -path "./public/DB/*"
+```
+
+This command excludes both the ./database and ./public/DB folders from the search.
+
+## Find Alphanumeric Files Excluding Folders and Files with a Pattern
+
+If you want to skip specific folders and files with a certain pattern, use the following command:
+
+```bash
+find . -type f -regex ".*[0-9].*\.\(xls\|csv\|php\)" -not -path "./database/*" -not -path "./app/Console/Commands/bulkServerUpload_[0-9].php"
+```
+
+This command excludes the ./database folder and files matching the pattern bulkServerUpload_[0-9].php from the search.
+
+
+## Find and Delete Dump Files
+
+To find dump files and delete them, use the following command:
+
+```bash
+find . -type f -regex ".*\.\(zip\|tar\.gz\|sql\)" -not -path "./public/DB/*" -delete
+```
+
+This command searches for files with extensions .zip, .tar.gz, or .sql and deletes them. It excludes the ./public/DB folder from the search.
+
+## Find and Empty Log Files
+
+If you want to find log files and empty their contents, use the following command:
+
+```bash
+find . -type f -name "*.\(txt\|log\)" -exec tee {} \; </dev/null
+```
+
+This command finds files with extensions .txt or .log and empties their contents using the tee command.
+
+## Find PHP Files Ending with Whitespace
+
+The first command, **`find -name '*.php' | xargs grep -Pz '\?>[\s]+$' -l`**, allows you to search for PHP files that end with whitespace. Let's break down the command and understand its components.
+
+```bash
+find -name '*.php' | xargs grep -Pz '\?>[\s]+$' -l
+```
+
+- **`find -name '*.php'`** - This part of the command uses the find utility to locate files with the extension .php. The **`-name`** option specifies the pattern to match the filenames.
+- **`|`** - The pipe symbol (**`|`**) is used to redirect the output of the find command as input to the **`xargs`** command.
+- **`xargs`** - The **`xargs`** command reads data from standard input (in this case, the list of PHP files) and executes another command (grep) using the input as arguments.
+- **`grep -Pz '\?>[\s]+$' -l`** - This part of the command uses grep to search for a specific pattern in the PHP files. The **`-P`** option enables Perl-compatible regular expressions. The **`-z`** option treats the input files as null-separated, allowing us to match across multiple lines. The pattern **`\?>[\s]+$`** matches the closing PHP tag (**`?>`**) followed by one or more whitespace characters at the end of the file. The **`-l`** option instructs **`grep`** to print only the filenames that match the pattern.
+
+When you execute this command, it will search for PHP files in the current directory and its subdirectories, filtering out those that end with whitespace.
+
+
+## Find PHP Files Starting with Whitespace
+
+The second command, **`find -name '*.php' | xargs grep -Pz '^[\s]+<\?' -l`**, helps you find PHP files that start with whitespace. Let's break down this command as well.
+
+```bash
+find -name '*.php' | xargs grep -Pz '^[\s]+<\?' -l
+```
+
+- **`find -name '*.php'`** - This part of the command is the same as in the previous command. It locates files with the extension .php.
+- **`|`** - The pipe symbol (**`|`**) redirects the output of the find command to the xargs command.
+- **`xargs`** - Again, xargs reads the list of PHP files and passes them as arguments to the next command (**`grep`**).
+- **`grep -Pz '^[\s]+<\?' -l`** - This part of the command uses grep to search for PHP files that start with whitespace. The pattern **`^[\s]+<\?`** matches one or more whitespace characters at the beginning of the file followed by the opening PHP tag (**`<?`**). The **`-l`** option prints only the filenames that match the pattern.
+
+When you execute this command, it will search for PHP files in the current directory and its subdirectories, filtering out those that start with whitespace.
+
+
+## Conclusion
+
+The find utility is a versatile tool that allows you to locate files based on various criteria. By using the commands mentioned in this article, you can easily find and perform actions on files with specific characteristics, such as alphanumeric names and special extensions. Experiment with these commands and adapt them to your specific needs to efficiently manage your files in Linux.

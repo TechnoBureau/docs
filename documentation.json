@@ -56,12 +56,7 @@
       },
       {
         "tab": "Career",
-        "pages": [
-          {
-            "title": "Career",
-            "path": "career/README"
-          }
-        ]
+        "pages": []
       }
     ]
   },

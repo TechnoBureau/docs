@@ -33,20 +33,19 @@
           {
             "title": "DevOps",
             "path": "devops",
-            "pages": [
-              {
-                "title": "Bruno the next evolution of git friendly api testing tool",
-                "path": "devops/bruno-the-next-evolution-of-git-friendly-api-testing-tool"
-              },
-              {
-                "title": "Introduction about terraform",
-                "path": "devops/introduction_about_terraform"
-              },
-              {
-                "title": "Step by step guide about docker image build",
-                "path": "devops/step_by_step_guide_about_docker_image_build"
-              }
-            ]
+            "show-sidebar": true
+          },
+          {
+            "title": "Bruno the next evolution of git friendly api testing tool",
+            "path": "devops/bruno-the-next-evolution-of-git-friendly-api-testing-tool"
+          },
+          {
+            "title": "Introduction about terraform",
+            "path": "devops/introduction_about_terraform"
+          },
+          {
+            "title": "Step by step guide about docker image build",
+            "path": "devops/step_by_step_guide_about_docker_image_build"
           }
         ]
       },
@@ -56,24 +55,23 @@
           {
             "title": "Kubernetes",
             "path": "kubernetes",
-            "pages": [
-              {
-                "title": "Introduction about kubernetes and basics",
-                "path": "kubernetes/introduction_about_kubernetes_and_basics"
-              },
-              {
-                "title": "Propagate sigterm to k8s pod",
-                "path": "kubernetes/propagate_sigterm_to_k8s_pod"
-              },
-              {
-                "title": "Redis-cluster deployment on kubernetes",
-                "path": "kubernetes/redis-cluster_deployment_on_kubernetes"
-              },
-              {
-                "title": "Snooze ultra minimal webserver which does nothing",
-                "path": "kubernetes/snooze_ultra_minimal_webserver_which_does_nothing"
-              }
-            ]
+            "show-sidebar": true
+          },
+          {
+            "title": "Introduction about kubernetes and basics",
+            "path": "kubernetes/introduction_about_kubernetes_and_basics"
+          },
+          {
+            "title": "Propagate sigterm to k8s pod",
+            "path": "kubernetes/propagate_sigterm_to_k8s_pod"
+          },
+          {
+            "title": "Redis-cluster deployment on kubernetes",
+            "path": "kubernetes/redis-cluster_deployment_on_kubernetes"
+          },
+          {
+            "title": "Snooze ultra minimal webserver which does nothing",
+            "path": "kubernetes/snooze_ultra_minimal_webserver_which_does_nothing"
           }
         ]
       },
@@ -83,72 +81,71 @@
           {
             "title": "Linux",
             "path": "linux",
-            "pages": [
-              {
-                "title": "Booting process of computer system",
-                "path": "linux/booting_process_of_computer_system"
-              },
-              {
-                "title": "Configure mysql cluster master master synchronization",
-                "path": "linux/configure_mysql_cluster_master_master_synchronization"
-              },
-              {
-                "title": "Filesystem overview functionality",
-                "path": "linux/filesystem_overview_functionality"
-              },
-              {
-                "title": "How to disable ipv6 on centos",
-                "path": "linux/how_to_disable_ipv6_on_centos"
-              },
-              {
-                "title": "How to mount qcow2 image in linux",
-                "path": "linux/how_to_mount_qcow2_image_in_linux"
-              },
-              {
-                "title": "Introduction about computer network",
-                "path": "linux/introduction_about_computer_network"
-              },
-              {
-                "title": "Linux users and groups management",
-                "path": "linux/linux_users_and_groups_management"
-              },
-              {
-                "title": "Mysql high availability with keepalived and haproxy",
-                "path": "linux/mysql_high_availability_with_keepalived_and_haproxy"
-              },
-              {
-                "title": "Network file system overview and configuration",
-                "path": "linux/network_file_system_overview_and_configuration"
-              },
-              {
-                "title": "Openssh overview and usage",
-                "path": "linux/openssh_overview_and_usage"
-              },
-              {
-                "title": "Raid overview and functionalities",
-                "path": "linux/raid_overview_and_functionalities"
-              },
-              {
-                "title": "Recursive directory list in c using linux system calls",
-                "path": "linux/recursive_directory_list_in_c_using_linux_system_calls"
-              },
-              {
-                "title": "Setup gpgkey for github commit",
-                "path": "linux/setup_gpgkey_for_github_commit"
-              },
-              {
-                "title": "Tcp keepalive configuration guide",
-                "path": "linux/tcp_keepalive_configuration_guide"
-              },
-              {
-                "title": "Understanding swap in linux",
-                "path": "linux/understanding_swap_in_linux"
-              },
-              {
-                "title": "Useful commands with find utility",
-                "path": "linux/useful_commands_with_find_utility"
-              }
-            ]
+            "show-sidebar": true
+          },
+          {
+            "title": "Booting process of computer system",
+            "path": "linux/booting_process_of_computer_system"
+          },
+          {
+            "title": "Configure mysql cluster master master synchronization",
+            "path": "linux/configure_mysql_cluster_master_master_synchronization"
+          },
+          {
+            "title": "Filesystem overview functionality",
+            "path": "linux/filesystem_overview_functionality"
+          },
+          {
+            "title": "How to disable ipv6 on centos",
+            "path": "linux/how_to_disable_ipv6_on_centos"
+          },
+          {
+            "title": "How to mount qcow2 image in linux",
+            "path": "linux/how_to_mount_qcow2_image_in_linux"
+          },
+          {
+            "title": "Introduction about computer network",
+            "path": "linux/introduction_about_computer_network"
+          },
+          {
+            "title": "Linux users and groups management",
+            "path": "linux/linux_users_and_groups_management"
+          },
+          {
+            "title": "Mysql high availability with keepalived and haproxy",
+            "path": "linux/mysql_high_availability_with_keepalived_and_haproxy"
+          },
+          {
+            "title": "Network file system overview and configuration",
+            "path": "linux/network_file_system_overview_and_configuration"
+          },
+          {
+            "title": "Openssh overview and usage",
+            "path": "linux/openssh_overview_and_usage"
+          },
+          {
+            "title": "Raid overview and functionalities",
+            "path": "linux/raid_overview_and_functionalities"
+          },
+          {
+            "title": "Recursive directory list in c using linux system calls",
+            "path": "linux/recursive_directory_list_in_c_using_linux_system_calls"
+          },
+          {
+            "title": "Setup gpgkey for github commit",
+            "path": "linux/setup_gpgkey_for_github_commit"
+          },
+          {
+            "title": "Tcp keepalive configuration guide",
+            "path": "linux/tcp_keepalive_configuration_guide"
+          },
+          {
+            "title": "Understanding swap in linux",
+            "path": "linux/understanding_swap_in_linux"
+          },
+          {
+            "title": "Useful commands with find utility",
+            "path": "linux/useful_commands_with_find_utility"
           }
         ]
       },
@@ -158,12 +155,11 @@
           {
             "title": "Career",
             "path": "career",
-            "pages": [
-              {
-                "title": "Tell me about yourself",
-                "path": "career/tell_me_about_yourself"
-              }
-            ]
+            "show-sidebar": true
+          },
+          {
+            "title": "Tell me about yourself",
+            "path": "career/tell_me_about_yourself"
           }
         ]
       }

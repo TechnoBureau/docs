@@ -63,7 +63,12 @@
       },
       {
         "tab": "DevOps",
-        "pages": []
+        "pages": [
+          {
+            "title": "DevOps/ipv6",
+            "path": "DevOps/ipv6"
+          }
+        ]
       }
     ]
   },

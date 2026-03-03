@@ -35,8 +35,6 @@ keywords:
   - devops-tools
 ---
 
-# Snooze - Ultra-Minimal Webserver for Kubernetes
-
 ## Overview
 
 **Snooze** is an ultra-lightweight HTTP server designed for testing with static response, placeholder deployments, and reverse proxy scenarios in Kubernetes environments. With minimal resource requirements and maximum flexibility, Snooze provides a simple yet powerful solution for various use cases.
@@ -70,6 +68,7 @@ Before deploying Snooze to your Kubernetes cluster, ensure you have:
 - (Optional) Ingress controller for ingress examples
 
 ---
+
 
 ## Quick Start
 
@@ -942,7 +941,7 @@ Scale based on CPU usage:
 
 ```yaml
 apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
+kind: HorizontalPod Autoscaler
 metadata:
   name: snooze-hpa
 spec:

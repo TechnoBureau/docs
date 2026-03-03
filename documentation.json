@@ -9,68 +9,59 @@
     }
   },
   "navigation": {
-    "products": [
+    "tabs": [
       {
-        "product": "Product1",
-        "tabs": [
+        "tab": "Home",
+        "icon": "book",
+        "pages": [
           {
-            "tab": "Home",
-            "icon": "book",
-            "pages": [
-              {
-                "title": "Home",
-                "path": "README",
-                "icon": "home",
-                "show-sidebar": false,
-                "show-toc": false,
-                "show-parent-label": false,
-                "show-page-navigation": false,
-                "ask-feedback": false,
-                "content-width": "wide"
-              }
-            ]
-          },
-          {
-            "tab": "DevOps",
-            "pages": [
-              {
-                "title": "DevOps",
-                "path": "devops"
-              }
-            ]
-          },
-          {
-            "tab": "Kubernetes",
-            "pages": [
-              {
-                "title": "Kubernets",
-                "path": "kubernetes"
-              }
-            ]
-          },
-          {
-            "tab": "Linux",
-            "pages": [
-              {
-                "title": "Linux",
-                "path": "linux"
-              }
-            ]
-          },
-          {
-            "tab": "Career",
-            "pages": [
-              {
-                "title": "Career",
-                "path": "career"
-              }
-            ]
+            "title": "Home",
+            "path": "README",
+            "icon": "home",
+            "show-sidebar": false,
+            "show-toc": false,
+            "show-parent-label": false,
+            "show-page-navigation": false,
+            "ask-feedback": false,
+            "content-width": "wide"
           }
         ]
       },
       {
-        "product": "Product2",
-        "pages": []
+        "tab": "DevOps",
+        "pages": [
+          {
+            "title": "DevOps",
+            "path": "devops"
+          }
+        ]
+      },
+      {
+        "tab": "Kubernetes",
+        "pages": [
+          {
+            "title": "Kubernets",
+            "path": "kubernetes"
+          }
+        ]
+      },
+      {
+        "tab": "Linux",
+        "pages": [
+          {
+            "title": "Linux",
+            "path": "linux"
+          }
+        ]
+      },
+      {
+        "tab": "Career",
+        "pages": [
+          {
+            "title": "Career",
+            "path": "career"
+          }
+        ]
       }
     ]
   },

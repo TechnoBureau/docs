@@ -18,7 +18,6 @@
       },
       {
         "tab": "DevOps",
-        "hidden": true,
         "pages": [
           "devops",
           "devops/introduction_about_terraform",

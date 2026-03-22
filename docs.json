@@ -18,26 +18,51 @@
       },
       {
         "tab": "DevOps",
+        "hidden": true,
         "pages": [
-          "devops"
+          "devops",
+          "devops/introduction_about_terraform",
+          "devops/step_by_step_guide_about_docker_image_build",
+          "devops/bruno-the-next-evolution-of-git-friendly-api-testing-tool"
         ]
       },
       {
         "tab": "Kubernetes",
         "pages": [
-          "kubernetes"
+          "kubernetes",
+          "kubernetes/introduction_about_kubernetes_and_basics",
+          "kubernetes/propagate_sigterm_to_k8s_pod",
+          "kubernetes/redis-cluster_deployment_on_kubernetes",
+          "kubernetes/snooze_ultra_minimal_webserver_which_does_nothing"
         ]
       },
       {
         "tab": "Linux",
         "pages": [
-          "linux"
+          "linux",
+          "linux/booting_process_of_computer_system",
+          "linux/configure_mysql_cluster_master_master_synchronization",
+          "linux/filesystem_overview_functionality",
+          "linux/how_to_disable_ipv6_on_centos",
+          "linux/how_to_mount_qcow2_image_in_linux",
+          "linux/introduction_about_computer_network",
+          "linux/linux_users_and_groups_management",
+          "linux/mysql_high_availability_with_keepalived_and_haproxy",
+          "linux/network_file_system_overview_and_configuration",
+          "linux/openssh_overview_and_usage",
+          "linux/raid_overview_and_functionalities",
+          "linux/recursive_directory_list_in_c_using_linux_system_calls",
+          "linux/setup_gpgkey_for_github_commit",
+          "linux/tcp_keepalive_configuration_guide",
+          "linux/understanding_swap_in_linux",
+          "linux/useful_commands_with_find_utility"
         ]
       },
       {
         "tab": "Career",
         "pages": [
-          "career"
+          "career",
+          "career/tell_me_about_yourself"
         ]
       }
     ]

@@ -85,14 +85,6 @@
         "tab": "Linux",
         "pages": [
           {
-            "title": "Linux",
-            "path": "linux",
-            "show-page-navigation": false,
-            "show-toc": false,
-            "show-parent-label": false,
-            "ask-feedback": false
-          },
-          {
             "title": "Booting process of computer system",
             "path": "linux/booting_process_of_computer_system"
           },
@@ -160,7 +152,12 @@
             "title": "Understanding so_keepalive - The Definitive Guide",
             "path": "linux/understanding_so_keepalive_the_definitive_guide"
           }
-        ]
+        ],
+        "path": "linux",
+        "show-toc": false,
+        "show-parent-label": false,
+        "show-page-navigation": false,
+        "ask-feedback": false
       },
       {
         "tab": "Career",

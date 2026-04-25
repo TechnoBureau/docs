@@ -54,7 +54,8 @@
           "linux/setup_gpgkey_for_github_commit",
           "linux/tcp_keepalive_configuration_guide",
           "linux/understanding_swap_in_linux",
-          "linux/useful_commands_with_find_utility"
+          "linux/useful_commands_with_find_utility",
+          "linux/understanding_so_keepalive_the_definitive_guide"
         ]
       },
       {

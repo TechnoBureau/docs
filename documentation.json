@@ -36,8 +36,7 @@
             "show-page-navigation": false,
             "show-toc": false,
             "show-parent-label": false,
-            "ask-feedback": false,
-            "content-width": "wide"
+            "ask-feedback": false
           },
           {
             "title": "Bruno the next evolution of git friendly api testing tool",
@@ -172,8 +171,7 @@
             "show-page-navigation": false,
             "show-toc": false,
             "show-parent-label": false,
-            "ask-feedback": false,
-            "content-width": "wide"
+            "ask-feedback": false
           },
           {
             "title": "Tell me about yourself",

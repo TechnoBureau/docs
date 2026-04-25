@@ -146,6 +146,10 @@
           {
             "title": "Useful commands with find utility",
             "path": "linux/useful_commands_with_find_utility"
+          },
+          {
+            "title": "Understanding so_keepalive - The Definitive Guide",
+            "path": "linux/understanding_so_keepalive_the_definitive_guide"
           }
         ]
       },

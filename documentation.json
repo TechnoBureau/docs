@@ -13,31 +13,18 @@
       {
         "tab": "Home",
         "icon": "book",
-        "pages": [
-          {
-            "title": "About",
-            "path": "README",
-            "icon": "home",
-            "show-sidebar": false,
-            "show-toc": false,
-            "show-parent-label": false,
-            "show-page-navigation": false,
-            "ask-feedback": false,
-            "content-width": "wide"
-          }
-        ]
+        "pages": [],
+        "path": "README",
+        "show-sidebar": false,
+        "show-toc": false,
+        "show-parent-label": false,
+        "show-page-navigation": false,
+        "ask-feedback": false,
+        "content-width": "wide"
       },
       {
         "tab": "DevOps",
         "pages": [
-          {
-            "title": "DevOps",
-            "path": "devops",
-            "show-page-navigation": false,
-            "show-toc": false,
-            "show-parent-label": false,
-            "ask-feedback": false
-          },
           {
             "title": "Bruno the next evolution of git friendly api testing tool",
             "path": "devops/bruno-the-next-evolution-of-git-friendly-api-testing-tool"
@@ -50,19 +37,16 @@
             "title": "Step by step guide about docker image build",
             "path": "devops/step_by_step_guide_about_docker_image_build"
           }
-        ]
+        ],
+        "path": "Devops",
+        "show-toc": false,
+        "show-parent-label": false,
+        "show-page-navigation": false,
+        "ask-feedback": false
       },
       {
         "tab": "Kubernetes",
         "pages": [
-          {
-            "title": "Kubernetes",
-            "path": "kubernetes",
-            "show-page-navigation": false,
-            "show-toc": false,
-            "show-parent-label": false,
-            "ask-feedback": false
-          },
           {
             "title": "Introduction about kubernetes and basics",
             "path": "kubernetes/introduction_about_kubernetes_and_basics"
@@ -79,7 +63,12 @@
             "title": "Snooze ultra minimal webserver which does nothing",
             "path": "kubernetes/snooze_ultra_minimal_webserver_which_does_nothing"
           }
-        ]
+        ],
+        "path": "kubernetes",
+        "show-toc": false,
+        "show-parent-label": false,
+        "show-page-navigation": false,
+        "ask-feedback": false
       },
       {
         "tab": "Linux",
@@ -163,18 +152,15 @@
         "tab": "Career",
         "pages": [
           {
-            "title": "Career",
-            "path": "career",
-            "show-page-navigation": false,
-            "show-toc": false,
-            "show-parent-label": false,
-            "ask-feedback": false
-          },
-          {
             "title": "Tell me about yourself",
             "path": "career/tell_me_about_yourself"
           }
-        ]
+        ],
+        "path": "career",
+        "show-toc": false,
+        "show-parent-label": false,
+        "show-page-navigation": false,
+        "ask-feedback": false
       }
     ]
   },

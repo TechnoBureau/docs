@@ -33,8 +33,11 @@
           {
             "title": "DevOps",
             "path": "devops",
-            "show-sidebar": true,
-            "show-page-navigation": false
+            "show-page-navigation": false,
+            "show-toc": false,
+            "show-parent-label": false,
+            "ask-feedback": false,
+            "content-width": "wide"
           },
           {
             "title": "Bruno the next evolution of git friendly api testing tool",
@@ -56,8 +59,10 @@
           {
             "title": "Kubernetes",
             "path": "kubernetes",
-            "show-sidebar": true,
-            "show-page-navigation": false
+            "show-page-navigation": false,
+            "show-toc": false,
+            "show-parent-label": false,
+            "ask-feedback": false
           },
           {
             "title": "Introduction about kubernetes and basics",
@@ -83,8 +88,10 @@
           {
             "title": "Linux",
             "path": "linux",
-            "show-sidebar": true,
-            "show-page-navigation": false
+            "show-page-navigation": false,
+            "show-toc": false,
+            "show-parent-label": false,
+            "ask-feedback": false
           },
           {
             "title": "Booting process of computer system",
@@ -162,8 +169,11 @@
           {
             "title": "Career",
             "path": "career",
-            "show-sidebar": true,
-            "show-page-navigation": false
+            "show-page-navigation": false,
+            "show-toc": false,
+            "show-parent-label": false,
+            "ask-feedback": false,
+            "content-width": "wide"
           },
           {
             "title": "Tell me about yourself",

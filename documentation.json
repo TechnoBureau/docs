@@ -18,7 +18,7 @@
             "title": "About",
             "path": "README",
             "icon": "home",
-            "show-sidebar": true,
+            "show-sidebar": false,
             "show-toc": false,
             "show-parent-label": false,
             "show-page-navigation": false,

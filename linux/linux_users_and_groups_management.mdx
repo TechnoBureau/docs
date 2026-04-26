@@ -29,16 +29,16 @@ graph TB
         A --> E[Home Directory]
         A --> F[Shell]
     end
-    
+
     subgraph "Group"
         G[Group Name] --> H[GID]
         G --> I[Group Members]
         G --> J[Permissions]
     end
-    
+
     C --> G
     D --> G
-    
+
 ```
 
 ### Permission Model
@@ -69,8 +69,7 @@ graph LR
     E[/etc/group] --> F[Group Definitions]
     G[/etc/gshadow] --> H[Group Passwords]
     I[/etc/login.defs] --> J[Login Policies]
-    
-    style I fill:#a78bfa
+
 ```
 
 ### /etc/passwd - User Account Information

@@ -44,18 +44,16 @@ Below are some of the benefits of using Terraform.
   Infrastructure as Code (IaC) is a widespread terminology among DevOps professionals. It is the process of managing and provisioning the complete IT infrastructure (comprises both physical and virtual machines) using machine-readable definition files. It is a software engineering approach toward operations. It helps in automating the complete data center by using programming scripts.
 </Callout>
 
-
-
 ## Installation of Terraform
 
-<CodeGroup default-tab="0" show-lines="true" tabs={["Debian/Ubuntu","Linux"]}>
+<CodeGroup show-lines="true" tabs={["Debian/Ubuntu","CentOS"]}>
   ```bash Debian/Ubuntu
   $ curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
   $ sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
   $ sudo apt-get update && sudo apt-get install terraform
   ```
 
-  ```bash Linux
+  ```bash CentOS
   $ sudo yum install -y yum-utils
   $ sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
   $ sudo yum -y install terraform
@@ -78,8 +76,6 @@ result. It figures out what needs to be done to get to that desired
 state in the configuration file. It figures what needs to be created,
 what needs to be updated, what needs to be deleted to create and
 provision the infrastructure.
-
-
 
 The second component of the architecture are providers for specific
 technologies. This could be cloud providers like AWS, Azure, GCP, or
@@ -484,8 +480,6 @@ it as any other in expressions.
 ## Terraform Lifecycle
 
 Terraform lifecycle consists of - init, plan, apply, and destroy.
-
-
 
 - **terraform init** initializes the working directory which consists
   of all the configuration files

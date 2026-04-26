@@ -1,6 +1,14 @@
 ---
-title: "Network File System - A Comprehensive Guide to Sharing and Accessing Files over a Network"
-description: "Network File System is a distributed file system,lets a computer user to access the files on a remote computer as though they were on the users own computer.Depending upon the configuration files are accessible over the network and allow mounting the distributed file system on remote hosts.The users system needs to have an NFS client and the other computer needs the NFS server."
+title: >-
+  Network File System - A Comprehensive Guide to Sharing and Accessing Files
+  over a Network
+description: >-
+  Network File System is a distributed file system,lets a computer user to
+  access the files on a remote computer as though they were on the users own
+  computer.Depending upon the configuration files are accessible over the
+  network and allow mounting the distributed file system on remote hosts.The
+  users system needs to have an NFS client and the other computer needs the NFS
+  server.
 author: Ganapathi Chidambaram
 keywords:
   - NFS
@@ -8,7 +16,6 @@ keywords:
   - Network File System
   - Network File Share
 ---
-
 ## What is NFS ?
 
 Network File System (NFS) is a distributed file system,lets a computer user to access the files
@@ -48,13 +55,13 @@ And following RPC Services facilities the NFS Services.
 In Server side we need to install **nfs-kernel-server** and **nfs-common** packages need to install for further configuration and using the NFS service.
 
 <CodeGroup show-lines="true" tabs={["Ubuntu","CentOS"]}>
-  ```bash "Ubuntu"
+  ```bash Ubuntu
   apt-get install nfs-kernel-server
 
   apt-get install nfs-common
   ```
 
-  ```bash "CentOS"
+  ```bash CentOS
   yum install nfs-utils nfs-utils-lib
   ```
 </CodeGroup>
@@ -64,11 +71,11 @@ In Server side we need to install **nfs-kernel-server** and **nfs-common** packa
 In client side we need an **nfs-common** package required to using the NFS Service.
 
 <CodeGroup show-lines="true" tabs={["Ubuntu","CentOS"]}>
-  ```bash "Ubuntu"
+  ```bash Ubuntu
   apt-get install nfs-common
   ```
 
-  ```bash "CentOS"
+  ```bash CentOS
   yum install nfs-utils nfs-utils-lib
   ```
 </CodeGroup>
@@ -103,11 +110,11 @@ And also please find the below various other options to share the network file s
 Once export configuration file are edited and then need to restart the nfs service to reflect the changes.
 
 <CodeGroup show-lines="true" tabs={["Ubuntu","CentOS"]}>
-  ```bash "Ubuntu"
+  ```bash Ubuntu
   service nfs-kernel-server restart
   ```
 
-  ```bash "CentOS"
+  ```bash CentOS
   service nfs restart
   ```
 </CodeGroup>
@@ -140,9 +147,13 @@ We can pass the nfs version to mount when server version is different from clien
 mount -t nfs -o nfsvers=3 192.168.1.50:/home/nfs /home/nfslocal
 ```
 
-!!! warning
 
-Kindly note that this mounted network file system will not be accesible once client rebooted and need to mount again to get access the same.
+
+<Callout kind="alert" collapsed="false">
+  Kindly note that this mounted network file system will not be accesible once client rebooted and need to mount again to get access the same.
+</Callout>
+
+
 
 #### Common NFS Mount Options
 

@@ -179,11 +179,13 @@ mount -t nfs -o nfsvers=3 192.168.1.50:/home/nfs /home/nfslocal
 
 - **udp** - By Specifying for NFS mount to use UDP protocol.
 
-- `**sec=<mode>**` - To specify the security protocol for NFS mount connection.And modes are
-  \#. *sys* - default UNIX UID/GID for authentication.And it is used by default where nothing specified when mounting NFS.
-  \#. *krb5* - To Use Kerberos V5 authentication.
-  \#. *krb5i* - To Use Kerberos V5 authentication and performs integrity.
+- `**sec=<mode>**` - To specify the security protocol for NFS mount connection.And modes are\
+  \#. *sys* - default UNIX UID/GID for authentication.And it is used by default where nothing specified when mounting NFS.\
+  \#. *krb5* - To Use Kerberos V5 authentication.\
+  \#. *krb5i* - To Use Kerberos V5 authentication and performs integrity.\
   \#. *krb5p* - To Use Kerberos V5 authentication and prevents traffic sniffing.and also performs integrity to prevent data tampering.
+
+
 
 #### For Automount of NFS
 

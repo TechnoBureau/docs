@@ -55,13 +55,13 @@ And following RPC Services facilities the NFS Services.
 In Server side we need to install **nfs-kernel-server** and **nfs-common** packages need to install for further configuration and using the NFS service.
 
 <CodeGroup show-lines="true" tabs={["Ubuntu/Debian","CentOS/RHEL"]}>
-  ```bash Ubuntu/Debian
+  ```bash "Ubuntu-Debian"
   apt-get install nfs-kernel-server
 
   apt-get install nfs-common
   ```
 
-  ```bash CentOS/RHEL
+  ```bash "CentOS/RHEL"
   yum install nfs-utils nfs-utils-lib
   ```
 </CodeGroup>
@@ -71,11 +71,11 @@ In Server side we need to install **nfs-kernel-server** and **nfs-common** packa
 In client side we need an **nfs-common** package required to using the NFS Service.
 
 <CodeGroup show-lines="true" tabs={["Ubuntu/Debian","CentOS/RHEL"]}>
-  ```bash Ubuntu/Debian
+  ```bash "Ubuntu/Debian"
   apt-get install nfs-common
   ```
 
-  ```bash CentOS/RHEL
+  ```bash "CentOS/RHEL"
   yum install nfs-utils nfs-utils-lib
   ```
 </CodeGroup>
@@ -110,11 +110,11 @@ And also please find the below various other options to share the network file s
 Once export configuration file are edited and then need to restart the nfs service to reflect the changes.
 
 <CodeGroup show-lines="true" tabs={["Ubuntu/Debian","CentOS/RHEL"]}>
-  ```bash Ubuntu/Debian
+  ```bash "Ubuntu/Debian"
   service nfs-kernel-server restart
   ```
 
-  ```bash CentOS/RHEL
+  ```bash "CentOS/RHEL"
   service nfs restart
   ```
 </CodeGroup>

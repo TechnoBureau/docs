@@ -1,14 +1,6 @@
 ---
-title: >-
-  Network File System - A Comprehensive Guide to Sharing and Accessing Files
-  over a Network
-description: >-
-  Network File System is a distributed file system,lets a computer user to
-  access the files on a remote computer as though they were on the users own
-  computer.Depending upon the configuration files are accessible over the
-  network and allow mounting the distributed file system on remote hosts.The
-  users system needs to have an NFS client and the other computer needs the NFS
-  server.
+title: "Network File System - A Comprehensive Guide to Sharing and Accessing Files over a Network"
+description: " Network File System is a distributed file system,lets a computer user to access the files on a remote computer as though they were on the users own computer.Depending upon the configuration files are accessible over the network and allow mounting the distributed file system on remote hosts.The users system needs to have an NFS client and the other computer needs the NFS server."
 author: Ganapathi Chidambaram
 keywords:
   - NFS
@@ -54,14 +46,14 @@ And following RPC Services facilities the NFS Services.
 
 In Server side we need to install **nfs-kernel-server** and **nfs-common** packages need to install for further configuration and using the NFS service.
 
-<CodeGroup show-lines="true" tabs={["Ubuntu","CentOS/Redhat"]}>
+<CodeGroup show-lines="true" tabs={["Ubuntu","CentOS"]}>
   ```bash Ubuntu
   apt-get install nfs-kernel-server
 
   apt-get install nfs-common
   ```
 
-  ```bash CentOS/Redhat
+  ```bash CentOS
   yum install nfs-utils nfs-utils-lib
   ```
 </CodeGroup>
@@ -70,12 +62,12 @@ In Server side we need to install **nfs-kernel-server** and **nfs-common** packa
 
 In client side we need an **nfs-common** package required to using the NFS Service.
 
-<CodeGroup show-lines="true" tabs={["Ubuntu","CentOS/Redhat"]}>
+<CodeGroup show-lines="true" tabs={["Ubuntu","CentOS"]}>
   ```bash Ubuntu
   apt-get install nfs-common
   ```
 
-  ```bash CentOS/Redhat
+  ```bash CentOS
   yum install nfs-utils nfs-utils-lib
   ```
 </CodeGroup>
@@ -189,7 +181,7 @@ mount -t nfs -o nfsvers=3 192.168.1.50:/home/nfs /home/nfslocal
 
 #### For Automount of NFS
 
-To autmatic mount the network file system ,need to add entry on fstab to get access once after every restart. And kindly make sure NFS Server should accessible once before booting into the client system.Else it may fail to access the same.&#x20;
+To autmatic mount the network file system ,need to add entry on fstab to get access once after every restart. And kindly make sure NFS Server should accessible once before booting into the client system.Else it may fail to access the same.
 
 ```bash
 echo "10.1.1.50:/home/nfs /home/nfs_local/ nfs defaults 0 0" >> /etc/fstab

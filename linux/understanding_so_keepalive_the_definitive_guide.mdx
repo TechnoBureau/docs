@@ -1,10 +1,6 @@
 ---
 title: 'Understanding so_keepalive in Nginx: The Definitive Guide'
-description: >-
-  so_keepalive is a TCP-level keepalive mechanism that operates at the socket
-  layer, while HTTP Keep-Alive operates at the application layer. Understanding
-  this distinction is critical for building resilient, observable, and efficient
-  systems.
+description: " so_keepalive is a TCP-level keepalive mechanism that operates at the socket layer, while HTTP Keep-Alive operates at the application layer. Understanding this distinction is critical for building resilient, observable, and efficient systems."
 author: Ganapathi Chidambaram
 keywords:
   - nginx keepalive
@@ -118,7 +114,7 @@ sequenceDiagram
     participant C as Client
     participant K as Linux Kernel
     participant N as Nginx
-    
+
     Note over C,K: Connection is ESTABLISHED and idle for 300s
     K->>C: TCP Keepalive Probe
     C->>K: ACK
@@ -176,9 +172,9 @@ sequenceDiagram
     participant C as Client (Crashed)
     participant K as Linux Kernel
     participant N as Nginx
-    
+
     Note over C,K: Client crashes at t=100s
-    K->>C: Probe 1 (t=300s) 
+    K->>C: Probe 1 (t=300s)
     Note over C: No response
     K->>C: Probe 2 (t=360s)
     K->>C: Probe 3 (t=420s)
@@ -234,7 +230,7 @@ sequenceDiagram
     participant C as Client
     participant K as Linux Kernel
     participant N as Nginx
-    
+
     Note over C,K: Network blip starts
     K->>C: Probe 1 (t=180s) - No response
     K->>C: Probe 2 (t=210s) - No response

@@ -112,19 +112,19 @@ The output will be your public key in ASCII-armored format, which can be shared 
 
 ### Import existing GPG
 
-1. Obtain the GPG key file: If you have the GPG key file (with a .asc or .gpg extension) from another source, make sure you have it available on your system.
-
-2. Import the GPG key: Open your terminal and run the following command, replacing `<KEY-FILE>` with the path to your GPG key file:
+<Steps>
+  <Step title="Obtain GPG key file" icon="file" titleType="p">If you have the GPG key file (with a .asc or .gpg extension) from another source, make sure you have it available on your system.</Step>
+  <Step title="Import GPG key" icon="download" titleType="p">Open your terminal and run the following command, replacing `<KEY-FILE>` with the path to your GPG key file:
 
 ```bash
 gpg --import <KEY_FILE>.pgp
 
 # or
-
 # Import Public key from Keybase or other server and import private key separately.
 curl https://keybase.io/<username>/pgp_keys.asc | gpg --import
 ```
-
+</Step>
+</Steps>
 The GPG key will be imported, and you will see the key details displayed in the terminal.
 
 1. Trust the imported key (optional): By default, imported keys are not trusted. If the key belongs to someone you trust, you can manually trust it. Run the following command, replacing `<KEY-ID>` with the ID of the imported key (can be found in the output of the previous command):

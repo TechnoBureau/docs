@@ -57,11 +57,11 @@ listen 80 so_keepalive=300:60:5;
 
 When a connection is idle:
 
-1. Kernel waits `keepidle` seconds.
-
-2. Sends a TCP probe (packet with sequence number already acknowledged).
-
-3. Expects an ACK from the client.
+<Steps>
+  <Step title="Kernel waits keepidle" icon="clock" titleType="p">Kernel waits `keepidle` seconds before sending any probes.</Step>
+  <Step title="Send TCP probe" icon="send" titleType="p">Sends a TCP probe (packet with sequence number already acknowledged).</Step>
+  <Step title="Await ACK" icon="check" titleType="p">Expects an ACK from the client; if received, the idle timer resets.</Step>
+</Steps>
 
 4. If ACK received → idle timer resets.
 
@@ -271,17 +271,14 @@ so_keepalive=120:30:5   # Aggressive for cloud environments
 
 ## Best Practices
 
-1. Always set `so_keepalive` on public-facing listeners
-
-2. Use more aggressive values in Kubernetes than bare metal
-
-3. Monitor with:
-
-   - `ss -o state established | grep -E 'keepalive'`
-
-   - Prometheus metrics for `node_netstat_Tcp_ActiveOpens`
-
-4. Combine with `keepalive_timeout 75s;` and `keepalive_requests 1000;`
+<Steps>
+  <Step title="Set keepalive on public listeners" icon="settings" titleType="p">Always set `so_keepalive` on public-facing listeners.</Step>
+  <Step title="Aggressive values for Kubernetes" icon="zap" titleType="p">Use more aggressive values in Kubernetes than bare metal.</Step>
+  <Step title="Monitoring" icon="monitor" titleType="p">Monitor with:
+    - `ss -o state established | grep -E 'keepalive'`
+    - Prometheus metrics for `node_netstat_Tcp_ActiveOpens`.</Step>
+  <Step title="Combine with timeout settings" icon="clock" titleType="p">Combine with `keepalive_timeout 75s;` and `keepalive_requests 1000;`.</Step>
+</Steps>
 
 ---
 

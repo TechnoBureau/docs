@@ -113,8 +113,14 @@ graph TB
 
 Terraform core uses two input sources to do its job:
 
-1. **Terraform Configuration** - You define what needs to be created or provisioned in `.tf` files
-2. **State File** - Terraform keeps an up-to-date state of the current infrastructure
+<Steps>
+  <Step title="Terraform Configuration" icon="code" titleType="p">
+    You define what needs to be created or provisioned in `.tf` files.
+  </Step>
+  <Step title="State File" icon="database" titleType="p">
+    Terraform keeps an up‑to‑date state of the current infrastructure.
+  </Step>
+</Steps>
 
 The core compares the current state with the desired configuration and figures out what needs to be created, updated, or deleted to reach the desired state.
 

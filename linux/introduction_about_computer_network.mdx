@@ -56,7 +56,7 @@ graph LR
     H --> I
     I --> J[Reassembly]
     J --> K[Original Data]
-    
+
     style F fill:#60a5fa
     style G fill:#60a5fa
     style H fill:#60a5fa
@@ -83,63 +83,65 @@ graph LR
 
 ### Common Network Topologies
 
-```mermaid
-graph TB
-    subgraph "Bus Topology"
-        A1[Node1] --- A2[Node2] --- A3[Node3] --- A4[Node4]
-    end
-    
-    subgraph "Star Topology"
-        B1[Central Hub] --- B2[Node1]
-        B1 --- B3[Node2]
-        B1 --- B4[Node3]
-        B1 --- B5[Node4]
-    end
-    
-    subgraph "Ring Topology"
-        C1[Node1] --- C2[Node2]
-        C2 --- C3[Node3]
-        C3 --- C4[Node4]
-        C4 --- C1
-    end
-    
-    subgraph "Mesh Topology"
-        D1[Node1] --- D2[Node2]
-        D1 --- D3[Node3]
-        D1 --- D4[Node4]
-        D2 --- D3
-        D2 --- D4
-        D3 --- D4
-    end
-    
-    subgraph "Tree Topology"
-        E1[Root] --- E2[Branch1]
-        E1 --- E3[Branch2]
-        E2 --- E4[Leaf1]
-        E2 --- E5[Leaf2]
-        E3 --- E6[Leaf3]
-    end
-```
-
 <Tabs>
   <Tab title="Bus" icon="minus">
     All nodes connected to a common backbone cable. Used in early Ethernet (10BASE5, 10BASE2). Simple but single point of failure.
+
+    Here are each of the topologies split into standalone Mermaid diagrams (one per graph):
+
+```mermaid
+graph TB
+    A1[Node1] --- A2[Node2] --- A3[Node3] --- A4[Node4]
+```
   </Tab>
 
   <Tab title="Star" icon="star">
     All nodes connected to a central hub/switch. Common in Wireless LANs and modern Ethernet. Easy to manage, hub is single point of failure.
+```mermaid
+graph TB
+    B1[Central Hub] --- B2[Node1]
+    B1 --- B3[Node2]
+    B1 --- B4[Node3]
+    B1 --- B5[Node4]
+```
   </Tab>
 
   <Tab title="Ring" icon="circle">
     Each node connected to left and right neighbors. Used in FDDI. Data travels in one direction.
+
+```mermaid
+graph TB
+    C1[Node1] --- C2[Node2]
+    C2 --- C3[Node3]
+    C3 --- C4[Node4]
+    C4 --- C1
+```
   </Tab>
 
   <Tab title="Mesh" icon="grid">
     Nodes connected to multiple neighbors. Provides redundancy and fault tolerance. Expensive due to many connections.
+```mermaid
+graph TB
+    D1[Node1] --- D2[Node2]
+    D1 --- D3[Node3]
+    D1 --- D4[Node4]
+    D2 --- D3
+    D2 --- D4
+    D3 --- D4
+```
   </Tab>
 
   <Tab title="Tree" icon="git-branch">
     Hierarchical arrangement of nodes. Scalable and easy to expand. Root node failure affects entire network.
+
+```mermaid
+graph TB
+    E1[Root] --- E2[Branch1]
+    E1 --- E3[Branch2]
+    E2 --- E4[Leaf1]
+    E2 --- E5[Leaf2]
+    E3 --- E6[Leaf3]
+```
   </Tab>
 </Tabs>
 
@@ -155,22 +157,22 @@ graph LR
         A[Repeaters]
         B[Hubs]
     end
-    
+
     subgraph "Layer 2 - Data Link"
         C[Bridges]
         D[Switches]
     end
-    
+
     subgraph "Layer 3 - Network"
         E[Routers]
     end
-    
+
     subgraph "Other Devices"
         F[Modems]
         G[Firewalls]
         H[NIC Cards]
     end
-    
+
     A --> C
     C --> E
     D --> E
@@ -220,24 +222,24 @@ graph TB
         A6[Layer 6 - Presentation]
         A5[Layer 5 - Session]
     end
-    
+
     subgraph "Transport Layers"
         A4[Layer 4 - Transport]
     end
-    
+
     subgraph "Network Layers"
         A3[Layer 3 - Network<br/>Routers]
         A2[Layer 2 - Data Link<br/>Switches, Bridges]
         A1[Layer 1 - Physical<br/>Hubs, Repeaters, Cables]
     end
-    
+
     A7 --> A6
     A6 --> A5
     A5 --> A4
     A4 --> A3
     A3 --> A2
     A2 --> A1
-    
+
     style A1 fill:#4ade80
     style A2 fill:#4ade80
     style A3 fill:#60a5fa

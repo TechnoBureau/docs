@@ -1,14 +1,15 @@
 ---
-title: "Introduction About Terraform"
-description: "Terraform is an open-source Infrastructure as Code(IaC) tool developed by HashiCorp. It is used to define and provision the complete infrastructure using an easy-to-learn declarative language."
+title: Introduction About Terraform
+description: >-
+  Terraform is an open-source Infrastructure as Code(IaC) tool developed by
+  HashiCorp. It is used to define and provision the complete infrastructure
+  using an easy-to-learn declarative language.
 author: Ganapathi Chidambaram
-date: 2023-03-22
 keywords:
   - Terraform
   - Terraform Basics
   - Terraform Tutorial
 ---
-
 ## Introduction
 
 Terraform is an open-source Infrastructure as Code(IaC) tool developed
@@ -23,45 +24,43 @@ other cloud platforms as well.
 
 Below are some of the benefits of using Terraform.
 
--   Does orchestration, not just configuration management
--   Supports multiple providers such as AWS, Azure, GCP, DigitalOcean
-    and many more
--   Provide immutable infrastructure where configuration changes
-    smoothly
--   Uses easy to understand language, HCL (HashiCorp configuration
-    language)
--   Easily portable to any other provider
--   Supports Client only architecture, so no need for additional
-    configuration management on a server
+- Does orchestration, not just configuration management
 
-!!! note
+- Supports multiple providers such as AWS, Azure, GCP, DigitalOcean
+  and many more
 
-      Infrastructure as Code (IaC) is a widespread terminology among DevOps
-      professionals. It is the process of managing and provisioning the
-      complete IT infrastructure (comprises both physical and virtual
-      machines) using machine-readable definition files. It is a software
-      engineering approach toward operations. It helps in automating the
-      complete data center by using programming scripts.
+- Provide immutable infrastructure where configuration changes
+  smoothly
+
+- Uses easy to understand language, HCL (HashiCorp configuration
+  language)
+
+- Easily portable to any other provider
+
+- Supports Client only architecture, so no need for additional
+  configuration management on a server
+
+<Callout kind="tip" collapsed="false">
+  Infrastructure as Code (IaC) is a widespread terminology among DevOps professionals. It is the process of managing and provisioning the complete IT infrastructure (comprises both physical and virtual machines) using machine-readable definition files. It is a software engineering approach toward operations. It helps in automating the complete data center by using programming scripts.
+</Callout>
+
 
 
 ## Installation of Terraform
 
-<CodeGroup tag="BASH" label="Install of Terraform">
+<CodeGroup default-tab="0" show-lines="true" tabs={["Debian/Ubuntu","Linux"]}>
+  ```bash Debian/Ubuntu
+  $ curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+  $ sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+  $ sudo apt-get update && sudo apt-get install terraform
+  ```
 
-      ```bash {{ title: 'Debian/Ubuntu' }}
-      $ curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
-      $ sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
-      $ sudo apt-get update && sudo apt-get install terraform
-      ```
-
-      ```bash {{ title: 'Linux' }}
-      $ sudo yum install -y yum-utils
-      $ sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
-      $ sudo yum -y install terraform
-      ```
-
+  ```bash Linux
+  $ sudo yum install -y yum-utils
+  $ sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+  $ sudo yum -y install terraform
+  ```
 </CodeGroup>
-
 
 ## Terraform Core concepts
 
@@ -80,7 +79,7 @@ state in the configuration file. It figures what needs to be created,
 what needs to be updated, what needs to be deleted to create and
 provision the infrastructure.
 
-![](/devops/terraform/introduction_about_terraform/terraform-architecture.png)
+
 
 The second component of the architecture are providers for specific
 technologies. This could be cloud providers like AWS, Azure, GCP, or
@@ -104,33 +103,33 @@ deployments and namespaces, etc.
 
 Below are the core concepts/terminologies used in Terraform:
 
--   **Provider:** It is a plugin to interact with APIs of service and
-    access its related resources.
+- **Provider:** It is a plugin to interact with APIs of service and
+  access its related resources.
 
--   **Resources:** It refers to a block of one or more infrastructure
-    objects (compute instances, virtual networks, etc.), which are used
-    in configuring and managing the infrastructure.
+- **Resources:** It refers to a block of one or more infrastructure
+  objects (compute instances, virtual networks, etc.), which are used
+  in configuring and managing the infrastructure.
 
--   **count and for_each Meta Arguments:** - It allow us to create
-    multiple instances of any resource.
+- **count and for\_each Meta Arguments:** - It allow us to create
+  multiple instances of any resource.
 
--   **Data Source:** It is implemented by providers to return
-    information on external objects to terraform.
+- **Data Source:** It is implemented by providers to return
+  information on external objects to terraform.
 
--   **State:** It consists of cached information about the
-    infrastructure managed by Terraform and the related configurations.
+- **State:** It consists of cached information about the
+  infrastructure managed by Terraform and the related configurations.
 
--   **Module:** It is a folder with Terraform templates where all the
-    configurations are defined
+- **Module:** It is a folder with Terraform templates where all the
+  configurations are defined
 
--   **Input Variables:** It is key-value pair used by Terraform modules
-    to allow customization.
+- **Input Variables:** It is key-value pair used by Terraform modules
+  to allow customization.
 
--   **Local Variables:** It work like standard variables,but their scope is
-    limited to the module where they're declared.
+- **Local Variables:** It work like standard variables,but their scope is
+  limited to the module where they're declared.
 
--   **Output Values:** These are return values of a terraform module
-    that can be used by other configurations.
+- **Output Values:** These are return values of a terraform module
+  that can be used by other configurations.
 
 ### Provider
 
@@ -175,10 +174,10 @@ resource "aws_instance" "web" {
 
 First, we always have the resource keyword that starts a definition.
 Next, we have the resource type, which usually follows the
-provider_type convention. In the above example, aws_instance is a
+provider\_type convention. In the above example, aws\_instance is a
 resource type defined by the AWS provider, used to define an EC2
 instance. After that, there's the user-defined resource name, **which
-must be unique for this resource type in the same module** \-- more on
+must be unique for this resource type in the same module** -- more on
 modules later.
 
 Finally, we have a block containing a series of arguments used as a
@@ -207,7 +206,7 @@ resource "aws_instance" "web" {
 ```
 
 Here, we use the id attribute from our VPC resource as the value for the
-frontend's vpc_id argument. Next, its id parameter becomes the
+frontend's vpc\_id argument. Next, its id parameter becomes the
 argument to the EC2 instance. **Please note that this particular syntax
 requires Terraform version 0.12 or later**. Previous versions used a
 more cumbersome `${expression}` syntax, which is still available but
@@ -218,11 +217,11 @@ order in which we declare resources in our project, it will figure out
 the correct order in which it must create or update them based on a
 dependency graph it builds when parsing them.
 
-### count and for_each Meta Arguments
+### count and for\_each Meta Arguments
 
 It allow us to create multiple instances of any resource. The main
 difference between them is that count expects a non-negative number,
-whereas for_each accepts a list or map of values.
+whereas for\_each accepts a list or map of values.
 
 For instance, let's use count to create some EC2 instances on AWS:
 
@@ -241,7 +240,7 @@ resource "aws_instance" "server" {
 expressions**. This object has only one property: index, which holds the
 index (zero-based) of each instance.
 
-Likewise, we can use the for_each meta argument to create those
+Likewise, we can use the for\_each meta argument to create those
 instances based on a map:
 
 ```hcl
@@ -263,20 +262,19 @@ names to create our servers. Within our resource, we can use the each
 object, which gives us access to the current key and value for a
 particular instance.
 
-**A key point about count and for_each is that, although we can assign
+**A key point about count and for\_each is that, although we can assign
 expressions to them, Terraform must be able to resolve their values
 before performing any resource action**. As a result, we cannot use an
 expression that depends on output attributes from other resources.
 
 ### Data Sources
 
-
 **Data sources work pretty much as "read-only" resources**, in the
 sense that we can get information about existing ones but can't create
 or change them. They are usually used to fetch parameters needed to
 create other resources.
 
-A typical example is the aws_ami data source available in the AWS
+A typical example is the aws\_ami data source available in the AWS
 provider, which we use to recover attributes from an existing AMI:
 
 ```hcl
@@ -310,10 +308,9 @@ resource "aws_instance" "web" {
 
 ### State
 
-
 The state of a Terraform project is a file that stores all details about
 resources that were created in the context of a given project. For
-instance, if we declare an azure_resourcegroup resource in our project
+instance, if we declare an azure\_resourcegroup resource in our project
 and run Terraform, the state file will store its identifier.
 
 The primary purpose of the state file is to provide information about
@@ -342,7 +339,6 @@ backend "s3" {
 
 ### Modules
 
-
 **Terraform modules are the main feature that allows us to reuse
 resource definitions across multiple projects or simply have a better
 organization in a single project**. This is much like what we do in
@@ -368,11 +364,10 @@ sub-directory and passing a single parameter to it - a boolean value in
 this case.
 
 It's important to note that in its current version, Terraform does not
-allow the use of count and for_each to create multiple instances of a
+allow the use of count and for\_each to create multiple instances of a
 module.
 
 ### Input Variables
-
 
 Any module, including the top, or main one, can define several input
 variables using variable block definitions:
@@ -390,11 +385,14 @@ It also may have a default value and description. For variables defined
 at the top-level module, Terraform will assign actual values to a
 variable using several sources:
 
--   -var command-line option
--   .tfvar files, using command-line options or scanning for well-known
-    files/locations
--   Environment variables starting with **TF_VAR_**
--   The variable's default value, if present
+- -var command-line option
+
+- .tfvar files, using command-line options or scanning for well-known
+  files/locations
+
+- Environment variables starting with **TF\_VAR\_**
+
+- The variable's default value, if present
 
 As for variables defined in nested or external modules, any variable
 that has no default value must be supplied using arguments in a module
@@ -424,14 +422,13 @@ output "web_addr" {
 }
 ```
 
-Here we're defining an output value named "web_addr" containing the
+Here we're defining an output value named "web\_addr" containing the
 IP address of an EC2 instance that our module created. Now any module
 that references our module can use this value in expressions as
-module.module_name.web_addr, where module_name is the name we've
+module.module\_name.web\_addr, where module\_name is the name we've
 used in the corresponding module declaration.
 
 ### Local Variables
-
 
 **Local variables work like standard variables, but their scope is
 limited to the module where they're declared**. The use of local
@@ -455,7 +452,7 @@ module "service2" {
 }
 ```
 
-Here, the local variable vpc_id receives the value of an output
+Here, the local variable vpc\_id receives the value of an output
 variable from the *network* module. Later, we pass this value as an
 argument to both *service1* and *service2* modules.
 
@@ -486,24 +483,25 @@ it as any other in expressions.
 
 ## Terraform Lifecycle
 
-
 Terraform lifecycle consists of - init, plan, apply, and destroy.
 
-![Terraform LifeCycle](/devops/terraform/introduction_about_terraform/terraform-lifecycle.png)
 
--   **terraform init** initializes the working directory which consists
-    of all the configuration files
--   **terraform plan** is used to create an execution plan to reach a
-    desired state of the infrastructure. Changes in the configuration
-    files are done in order to achieve the desired state.
--   **terraform apply** then makes the changes in the infrastructure as
-    defined in the plan, and the infrastructure comes to the desired
-    state.
--   **terraform destroy** is used to delete all the old infrastructure
-    resources, which are marked tainted after the apply phase.
+
+- **terraform init** initializes the working directory which consists
+  of all the configuration files
+
+- **terraform plan** is used to create an execution plan to reach a
+  desired state of the infrastructure. Changes in the configuration
+  files are done in order to achieve the desired state.
+
+- **terraform apply** then makes the changes in the infrastructure as
+  defined in the plan, and the infrastructure comes to the desired
+  state.
+
+- **terraform destroy** is used to delete all the old infrastructure
+  resources, which are marked tainted after the apply phase.
 
 ### terraform init
-
 
 Let us look into small terraform code to execute and understand the
 basics.
@@ -541,7 +539,6 @@ required provider the local provider, in our case.
 
 ### terraform plan
 
-
 we use the *plan* command to verify what actions Terraform will perform
 to create our resources. This step works pretty much as the "dry run"
 feature available in other build systems, such as GNU's make tool:
@@ -571,7 +568,6 @@ supplied those in our resource definition, the provider will assume
 default values.
 
 ### terraform apply
-
 
 We can now proceed to actual resource creation using the *apply*
 command:
@@ -666,7 +662,7 @@ Plan: 1 to add, 0 to change, 0 to destroy.
 **Terraform has detected the change in the hello.txt file's content and
 generated a plan to restore it**. Since the local provider lacks
 supports for in-place modification, we see that the plan consists of a
-single step \-- recreating the file.
+single step -- recreating the file.
 
 We now can run apply again and, as a result, it will restore the
 contents of the file to its intended content:
@@ -681,7 +677,6 @@ Hello, Terraform
 ```
 
 ### terraform destroy
-
 
 It would destroy the resources which we created from current directory
 and according to the state file.
@@ -703,3 +698,4 @@ Terraform will perform the following actions:
 Plan: 0 to add, 0 to change, 1 to destroy.
 
 ```
+

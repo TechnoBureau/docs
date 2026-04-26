@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "documentation-ai": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sse",
+        "https://documentation.ai/docs/_mcp"
+      ]
+    }
+  }
+}

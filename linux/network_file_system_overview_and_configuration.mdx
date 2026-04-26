@@ -1,6 +1,14 @@
 ---
-title: "Network File System - A Comprehensive Guide to Sharing and Accessing Files over a Network"
-description: "Network File System is a distributed file system,lets a computer user to access the files on a remote computer as though they were on the users own computer.Depending upon the configuration files are accessible over the network and allow mounting the distributed file system on remote hosts.The users system needs to have an NFS client and the other computer needs the NFS server."
+title: >-
+  Network File System - A Comprehensive Guide to Sharing and Accessing Files
+  over a Network
+description: >-
+  Network File System is a distributed file system,lets a computer user to
+  access the files on a remote computer as though they were on the users own
+  computer.Depending upon the configuration files are accessible over the
+  network and allow mounting the distributed file system on remote hosts.The
+  users system needs to have an NFS client and the other computer needs the NFS
+  server.
 author: Ganapathi Chidambaram
 keywords:
   - NFS
@@ -179,7 +187,7 @@ mount -t nfs -o nfsvers=3 192.168.1.50:/home/nfs /home/nfslocal
 
 #### For Automount of NFS
 
-To autmatic mount the network file system ,need to add entry on fstab to get access once after every restart. And kindly make sure NFS Server should accessible once before booting into the client system.Else it may fail to access the same. ::
+To autmatic mount the network file system ,need to add entry on fstab to get access once after every restart. And kindly make sure NFS Server should accessible once before booting into the client system.Else it may fail to access the same.&#x20;
 
 ```bash
 echo "10.1.1.50:/home/nfs /home/nfs_local/ nfs defaults 0 0" >> /etc/fstab

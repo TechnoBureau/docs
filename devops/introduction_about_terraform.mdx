@@ -1,15 +1,13 @@
 ---
-title: Introduction About Terraform
-description: >-
-  Terraform is an open-source Infrastructure as Code(IaC) tool developed by
-  HashiCorp. It is used to define and provision the complete infrastructure
-  using an easy-to-learn declarative language.
+title: "Introduction About Terraform"
+description: "Terraform is an open-source Infrastructure as Code(IaC) tool developed by HashiCorp. It is used to define and provision the complete infrastructure using an easy-to-learn declarative language."
 author: Ganapathi Chidambaram
 keywords:
   - Terraform
   - Terraform Basics
   - Terraform Tutorial
 ---
+
 ## Introduction
 
 Terraform is an open-source Infrastructure as Code(IaC) tool developed
@@ -46,8 +44,8 @@ Below are some of the benefits of using Terraform.
 
 ## Installation of Terraform
 
-<CodeGroup show-lines="true" tabs={["Debian/Ubuntu","CentOS"]}>
-  ```bash Debian/Ubuntu
+<CodeGroup show-lines="true" tabs={["Debian","CentOS"]}>
+  ```bash Debian
   $ curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
   $ sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
   $ sudo apt-get update && sudo apt-get install terraform

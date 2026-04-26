@@ -466,30 +466,21 @@ graph TD;
 
 ### Recommended Values by Cloud Provider
 
-```
-┌─────────────┬─────────────┬──────────────┬─────────────┬──────────────┐
-│  Provider   │  LB Type    │  LB Timeout  │ keepalive_  │ keepalive_   │
-│             │             │              │   time      │   intvl      │
-├─────────────┼─────────────┼──────────────┼─────────────┼──────────────┤
-│ AWS         │ ALB         │ 60s (def)    │ 30s         │ 10s          │
-│             │             │ (1-4000s)    │             │              │
-├─────────────┼─────────────┼──────────────┼─────────────┼──────────────┤
-│ AWS         │ ALB         │ 120s (cust)  │ 60s         │ 10s          │
-│             │             │              │             │              │
-├─────────────┼─────────────┼──────────────┼─────────────┼──────────────┤
-│ AWS         │ NLB         │ 350s (fixed) │ 180s        │ 15s          │
-├─────────────┼─────────────┼──────────────┼─────────────┼──────────────┤
-│ Azure       │ Standard    │ 240s (def)   │ 120s        │ 15s          │
-├─────────────┼─────────────┼──────────────┼─────────────┼──────────────┤
-│ Azure       │ Standard    │ 600s (10m)   │ 300s        │ 20s          │
-├─────────────┼─────────────┼──────────────┼─────────────┼──────────────┤
-│ Azure       │ Standard    │ 1800s (30m)  │ 900s        │ 30s          │
-└─────────────┴─────────────┴──────────────┴─────────────┴──────────────┘
 
-Formula: tcp_keepalive_time = LB_timeout × 0.5 (50% safety margin)
-         tcp_keepalive_intvl = 10-30s (based on network latency)
-         tcp_keepalive_probes = 6-9 (balance detection vs tolerance)
-```
+| Provider | LB Type  | LB Timeout       | keepalive_time | keepalive_intvl | Notes                    |
+|----------|----------|------------------|----------------|-----------------|--------------------------|
+| AWS      | ALB      | 60s (default)    | 30s            | 10s             | Configurable: 1-4000s    |
+| AWS      | ALB      | 120s (custom)    | 60s            | 10s             | Custom configuration     |
+| AWS      | NLB      | 350s (fixed)     | 180s           | 15s             | Fixed, cannot change     |
+| Azure    | Standard | 240s (default)   | 120s           | 15s             | Default idle timeout     |
+| Azure    | Standard | 600s (10m)       | 300s           | 20s             | Medium idle timeout      |
+| Azure    | Standard | 1800s (30m)      | 900s           | 30s             | Maximum idle timeout     |
+
+**Formula:**
+- `tcp_keepalive_time = LB_timeout × 0.5` (50% safety margin)
+- `tcp_keepalive_intvl = 10-30s` (based on network latency)
+- `tcp_keepalive_probes = 6-9` (balance detection vs tolerance)
+
 
 ---
 

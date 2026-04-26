@@ -14,112 +14,199 @@ keywords:
 
 Linux/Unix operating systems have the ability to multitask in a manner similar to other operating systems. However, Linux’s major difference from other operating systems is its ability to have multiple users. Linux was designed to allow more than one user to have access to the system at the same time.
 
-The *user* of the system is either a human being or an account used by specific applications identified by a unique numerical
-identification number called user ID (UID). Users within a group can have read permissions, write permissions, execute
-permissions or any combination of read/write/execute permissions for files owned by that group.
+<Callout kind="info" collapsed="false">
+  A **user** can be either a human being or an application account, identified by a unique numerical User ID (UID).
+</Callout>
 
-A *group* is an organization unit tying users together for a common purpose, which can be reading permissions, writing permission, or executing permission for files owned by that group. Similar to UID, each group is associated with a group ID (GID).
+A **group** is an organizational unit tying users together for a common purpose, such as shared file permissions. Each group is associated with a Group ID (GID).
 
+```mermaid
+graph TB
+    subgraph "User Account"
+        A[Username] --> B[UID]
+        A --> C[Primary Group]
+        A --> D[Supplementary Groups]
+        A --> E[Home Directory]
+        A --> F[Shell]
+    end
+    
+    subgraph "Group"
+        G[Group Name] --> H[GID]
+        G --> I[Group Members]
+        G --> J[Permissions]
+    end
+    
+    C --> G
+    D --> G
+    
+    style A fill:#60a5fa
+    style G fill:#4ade80
+```
 
-## /etc/passwd
+### Permission Model
 
-It stores user account information, which is required during login.It contains a list of the system's accounts, giving for each account some useful information like user ID, group ID, home directory, shell, etc. It should readable by many utilities, but write access only for the root user's.
+<Columns cols="3">
+  <Card title="Read (r)" href="#" icon="eye" horizontal="false">
+    View file contents or list directory contents.
+  </Card>
 
-Each entry on this file should be mentioned below ::
+  <Card title="Write (w)" href="#" icon="edit" horizontal="false">
+    Modify file contents or create/delete files in directory.
+  </Card>
 
-!!! note
-
-    ganapathi:x:501:501:Ganapathi Chidambaram:/home/ganapathi:/bin/bash
-
-1. **Username**: It is username which is used to logs into the system. It should be between 1 and 32 characters in length.
-
-1. **Password**: An x character indicates that password is encrypted and saved password would be available in /etc/shadow file.
-
-1. **User ID (UID)**: The numerical equivalent of the username which is referenced by the system and applications when determining access privileges.Each user must be assigned a user ID (UID). UID 0 (zero) is reserved for root and UIDs 1-99 are reserved for other predefined accounts. Further UID 100-999 are reserved by system for administrative and system accounts/groups.And UID reservation range can be able to modify through /etc/login.defs.
-
-1. **Group ID (GID)**: The numerical equivalent of the primary group name which is referenced by the system and applications when determining access privileges.The primary group ID for the user.
-
-1. **User ID Info**: The comment field. It allow you to add extra information about the users such as user's full name, phone number etc. This field use by finger command.
-
-1. **Home directory**: The absolute path to the directory the user will be in when they log in. If this directory does not exists then users directory becomes /
-
-1. **Command/shell**: The program automatically launched whenever a user logs in. This is usually a command interpreter (often called a shell). Under Red Hat Enterprise Linux, the default value is /bin/bash. If this field is left blank, /bin/sh is used. If it is set to a non-existent file, then the user will be unable to log into the system.
-
-## /etc/shadow
-
-Individual users on the system are provided with shadow passwords. Encrypted password hashes are stored in here, which is readable only by the root user, and store information about password aging as well.
-
-Each entry on this file should be mentioned below
-
-!!! note
-    ```
-    ganapathi:$1$.QKDPc5E$SWlkjRWexrXYgc98F.:12825:0:90:5:30:13096:
-    ```
-
-      This line shows the following information for user ganapathi:
-
-      *  The password was last changed February 11, 2005
-      * There is no minimum amount of time required before the password can be changed
-      * The password must be changed every 90 days
-      * The user will get a warning five days before the password must be changed
-      * The account will be disabled 30 days after the password expires if no login attempt is made
-      * The account will expire on November 9,2005.
+  <Card title="Execute (x)" href="#" icon="play" horizontal="false">
+    Execute file as program or access/traverse directory.
+  </Card>
+</Columns>
 
 
-1. **Username**: Username to login into the system.
+## System Configuration Files
 
-2. **Password**: The 13 to 24 character password. The password is encrypted using either the *crypt* library function  or the md5 hash algorithm. In this field, values other than a validly-formatted encrypted or hashed password are used to control user logins and to show the password status. For example, if the value is `!` or `*`, the account is locked and the user is not allowed to log in. If the value is !! a password has never been set before (and the user, not having set a password, will not be able to log in).
+Linux stores user and group information in several key configuration files:
 
-1. **Last password change (lastchanged)** : The number of days since January 1, 1970 (also called the epoch) that the password was last changed. This information is used in conjunction with the password aging fields that follow.
+```mermaid
+graph LR
+    A[/etc/passwd] --> B[User Account Info]
+    C[/etc/shadow] --> D[Encrypted Passwords]
+    E[/etc/group] --> F[Group Definitions]
+    G[/etc/gshadow] --> H[Group Passwords]
+    I[/etc/login.defs] --> J[Login Policies]
+    
+    style A fill:#60a5fa
+    style C fill:#f87171
+    style E fill:#4ade80
+    style G fill:#fbbf24
+    style I fill:#a78bfa
+```
 
-1. **Minimum** : The minimum number of days that must pass before the password can be changed.
+### /etc/passwd - User Account Information
 
-1. **Maximum** : The number of days that must pass before the password must be changed.
+Stores user account information required during login. Readable by all utilities but writable only by root.
 
-1. **Warn** : The number of days before password expiration during which the user is warned of the impending expiration.
+**Format:** `username:password:UID:GID:GECOS:home_directory:shell`
 
-1. **Inactive** : The number of days after a password expires before the account will be disabled.
+<Callout kind="info" collapsed="false">
+  Example: `ganapathi:x:501:501:Ganapathi Chidambaram:/home/ganapathi:/bin/bash`
+</Callout>
 
-1. **Expire** :  The date (stored as the number of days since the epoch) since the user account has been disabled.
+<ParamField path="username" param-type="string" required="true" deprecated="false">
+  Login username (1-32 characters). Used for authentication and identification.
+</ParamField>
+
+<ParamField path="password" param-type="string" required="true" deprecated="false">
+  `x` indicates encrypted password stored in /etc/shadow. `*` means locked account, `!!` means no password set.
+</ParamField>
+
+<ParamField path="uid" param-type="integer" required="true" deprecated="false">
+  User ID number. UID 0 = root, 1-99 = system accounts, 100-999 = admin accounts, 1000+ = regular users.
+</ParamField>
+
+<ParamField path="gid" param-type="integer" required="true" deprecated="false">
+  Primary Group ID number for the user.
+</ParamField>
+
+<ParamField path="gecos" param-type="string" required="false" deprecated="false">
+  Comment field for user info (full name, phone, etc.). Used by finger command.
+</ParamField>
+
+<ParamField path="home_directory" param-type="path" required="true" deprecated="false">
+  Absolute path to user's home directory. Defaults to `/` if non-existent.
+</ParamField>
+
+<ParamField path="shell" param-type="path" required="true" deprecated="false">
+  Login shell executed on user login. Default: `/bin/bash`. Empty = `/bin/sh`. Non-existent = login disabled.
+</ParamField>
+
+### /etc/shadow - Encrypted Passwords
+
+Stores encrypted password hashes and password aging information. Readable only by root.
+
+**Format:** `username:password:last_changed:min:max:warn:inactive:expire`
+
+<Callout kind="alert" collapsed="false">
+  This file contains sensitive password data. Protect it carefully and never share its contents.
+</Callout>
+
+<ParamField path="username" param-type="string" required="true" deprecated="false">
+  Login username matching /etc/passwd entry.
+</ParamField>
+
+<ParamField path="password" param-type="string" required="true" deprecated="false">
+  13-24 character encrypted password hash. `!` = locked, `*` = disabled, `!!` = never set.
+</ParamField>
+
+<ParamField path="last_changed" param-type="integer" required="true" deprecated="false">
+  Days since epoch (Jan 1, 1970) when password was last changed.
+</ParamField>
+
+<ParamField path="min" param-type="integer" required="false" deprecated="false">
+  Minimum days before password can be changed. 0 = anytime.
+</ParamField>
+
+<ParamField path="max" param-type="integer" required="false" deprecated="false">
+  Maximum days password is valid. -1 = no expiration.
+</ParamField>
+
+<ParamField path="warn" param-type="integer" required="false" deprecated="false">
+  Days before expiration to warn user.
+</ParamField>
+
+<ParamField path="inactive" param-type="integer" required="false" deprecated="false">
+  Days after expiration before account is disabled.
+</ParamField>
+
+<ParamField path="expire" param-type="integer" required="false" deprecated="false">
+  Absolute expiration date (days since epoch). Account disabled after this date.
+</ParamField>
 
 
-## /etc/group
+### /etc/group - Group Definitions
 
-It defines the groups to which users belong under Linux and UNIX operating system. Under Unix / Linux multiple users
-can be categorized into groups.The use of groups allows additional abilities to be delegated in an organized fashion,
-such as access to disks, printers, and other peripherals. This method, amongst others, also enables the Superuser to
-delegate some administrative tasks to normal users.
+Defines groups to which users belong. Groups allow delegated access to resources like disks, printers, and peripherals.
 
-Each entry on this file should be mentioned below
+**Format:** `group_name:password:GID:member_list`
 
-!!! note
-    ganapathi:x:24:ganapathi,raja
+<Callout kind="info" collapsed="false">
+  Example: `ganapathi:x:24:ganapathi,raja`
+</Callout>
 
+<ParamField path="group_name" param-type="string" required="true" deprecated="false">
+  Group name displayed by commands like `ls -l`.
+</ParamField>
 
-1. **group_name**: It is the name of group. If you run ls -l command, you will see this name printed in the group field.
+<ParamField path="password" param-type="string" required="false" deprecated="false">
+  Usually empty (`x`). Encrypted group password for privileged groups.
+</ParamField>
 
-1. **Password**: Generally password is not used, hence it is empty/blank. It can store encrypted password. This is useful to implement privileged groups.
+<ParamField path="gid" param-type="integer" required="true" deprecated="false">
+  Group ID number used by OS for access control.
+</ParamField>
 
-1. **Group ID (GID)**: The numerical equivalent of the group name. It is used by the operating system and applications when determining access privileges.
+<ParamField path="members" param-type="list" required="false" deprecated="false">
+  Comma-separated list of group member usernames.
+</ParamField>
 
-1. **Group List** : It is a list of user names of users who are members of the group. The user names, must be separated by commas.
+### /etc/gshadow - Group Shadow Passwords
 
-## /etc/gshadow
+Stores encrypted group passwords and group administrator information. Readable only by root.
 
-Each Group on the system are provided with shadow passwords. Encrypted password hashes are stored in here, which is readable only by the root user group, and store information about password aging as well.
+**Format:** `group_name:password:admins:members`
 
-Each entry on this file should be mentioned below ::
+<ParamField path="group_name" param-type="string" required="true" deprecated="false">
+  Group name identifier.
+</ParamField>
 
-!!! note
-    ganapathi:x:ganapathi:ganapathi,raja
+<ParamField path="password" param-type="string" required="false" deprecated="false">
+  Encrypted group password. `!` = no access via newgrp, `!!` = never set, null = members only.
+</ParamField>
 
-1. **Group name** — The name of the group. Used by various utility programs as a human-readable identifier for the group.
+<ParamField path="admins" param-type="list" required="false" deprecated="false">
+  Comma-separated list of group administrators who can add/remove members via gpasswd.
+</ParamField>
 
-1. **Encrypted password** — The encrypted password for the group. If set, non-members of the group can join the group by typing the password for that group using the newgrp command. If the value of this field is !, then no user is allowed to access the group using the newgrp command. A value of !! is treated the same as a value of ! — however, it also indicates that a password has never been set before. If the value is null, only group members can log into the group.
-
-1. **Group administrators** — Group members listed here (in a comma delimited list) can add or remove group members using the gpasswd command.
-
-1. **Group members** — Group members listed here (in a comma delimited list) are regular, non-administrative members of the group
+<ParamField path="members" param-type="list" required="false" deprecated="false">
+  Comma-separated list of regular group members.
+</ParamField>
 
 ## /etc/login.defs
 
@@ -181,149 +268,169 @@ The following cross reference shows which programs in the shadow password suite 
 
 ## Adding a New User
 
-To create a new standard user, we should use the `useradd` command and for the syntax is as follows:
+### User Creation Flow
 
-  ```bash
-  useradd <name>
-  adduser <name>
-  ```
+```mermaid
+sequenceDiagram
+    participant Admin
+    participant useradd as useradd/adduser
+    participant passwd as /etc/passwd
+    participant shadow as /etc/shadow
+    participant group as /etc/group
+    participant home as Home Directory
+    participant mail as Mail Spool
 
-These mentioned Process would happen for Every newly created user.
+    Admin->>useradd: useradd username
+    useradd->>passwd: Add user entry
+    useradd->>shadow: Create shadow entry
+    useradd->>group: Create user group
+    useradd->>home: Create home dir
+    useradd->>home: Copy skeleton files
+    useradd->>mail: Create mail spool
+    useradd-->>Admin: User created
+```
 
-  - Would create the Home Directory for the user.
-  - Copy the Below mentioned Files on their Home Directory.
-      ```bash
-      .bash_logout
-      .bash_profile
-      .bashrc
-      ```
-  - Would create the Mail Spool directory for the user.
-  - A group would create automatically in the same name of user.
-
-adduser command is an interactive mode of user creation.Along with user creation would ask for password to set,and gecos
-information for the user(Full Name,Room Number,Work Phone,Home Phone) to store into /etc/passwd file.
-
-
-### Useradd Options
-
-- **-d --home `<home_dir>`**
-
-    home\_dir will be used as the value for the user’s login directory
+<Steps>
+  <Step title="Create user with useradd" icon="user-plus" titleType="h3">
+    Basic user creation with default settings.
 
     ```bash
-      useradd <name> -d /home/<user's home>
+    useradd username
     ```
 
-- **-e --expiredate `<date>`**
+    <Callout kind="info" collapsed="false">
+      Creates user with default home directory, shell, and a group with the same name.
+    </Callout>
+  </Step>
 
-    the date when the account will expire
+  <Step title="Create user with adduser (interactive)" icon="message-circle" titleType="h3">
+    Interactive user creation with prompts for additional information.
 
     ```bash
-    useradd <name>** -e <YYYY-MM-DD>
+    adduser username
     ```
 
-- **-f --inactive `<inactive>`**
+    This will prompt for:
+    - Password
+    - Full name
+    - Room number
+    - Work phone
+    - Home phone
+  </Step>
 
-    the number of days before the account expires
+  <Step title="Verify user creation" icon="check" titleType="h3">
+    Confirm the user was created successfully.
 
     ```bash
-    useradd <name> -f <0 or -1>
+    id username
+    grep username /etc/passwd
+    ls -ld /home/username
     ```
+  </Step>
+</Steps>
 
-- **-k, --skel `<SKEL_DIR>`**
+### What Happens During User Creation
 
-    The skeleton directory, which contains files and directories to be copied in the user's home directory, when the home
-    directory is created by useradd.
+<Columns cols="2">
+  <Card title="Home Directory" href="#" icon="folder" horizontal="false">
+    Creates `/home/username` with skeleton files: `.bashrc`, `.bash_profile`, `.bash_logout`
+  </Card>
 
-    This option is only valid if the -m (or --create-home) option is specified.
+  <Card title="Mail Spool" href="#" icon="mail" horizontal="false">
+    Creates `/var/spool/mail/username` for user's system mail.
+  </Card>
 
-    If this option is not set, the skeleton directory is defined by the SKEL variable in /etc/default/useradd or, by
-    default, /etc/skel.
+  <Card title="User Group" href="#" icon="users" horizontal="false">
+    Creates a group with the same name as the user (User Group Scheme).
+  </Card>
 
-    If possible, the ACLs and extended attributes are copied.
+  <Card title="Configuration Files" href="#" icon="file-text" horizontal="false">
+    Updates /etc/passwd, /etc/shadow, /etc/group, /etc/gshadow.
+  </Card>
+</Columns>
 
-- **-K, --key KEY=VALUE**
 
-    Overrides /etc/login.defs defaults (UID_MIN, UID_MAX, UMASK, PASS_MAX_DAYS and others).
+### Common useradd Options
 
-    Example:
+<ExpandableGroup>
+  <Expandable title="Home Directory Options" default-open="false">
+    <ParamField path="-d, --home" param-type="path" required="false" deprecated="false">
+      Specify custom home directory path. Example: `useradd -d /custom/home username`
+    </ParamField>
 
-    -K PASS_MAX_DAYS=-1 can be used when creating system account to turn off password ageing, even though system           account has no password at all. Multiple -K options can be specified, e.g.: -K UID_MIN=100-K UID_MAX=499
+    <ParamField path="-m, --create-home" param-type="flag" required="false" deprecated="false">
+      Create home directory if it doesn’t exist. Copies skeleton files.
+    </ParamField>
 
-- **-k, --skel SKEL_DIR**
+    <ParamField path="-M" param-type="flag" required="false" deprecated="false">
+      Do NOT create home directory (overrides CREATE_HOME in /etc/login.defs).
+    </ParamField>
 
-    The skeleton directory, which contains files and directories to be copied in the user's home directory, when the home directory is created by useradd.
+    <ParamField path="-k, --skel" param-type="path" required="false" deprecated="false">
+      Specify skeleton directory for template files. Default: `/etc/skel`
+    </ParamField>
+  </Expandable>
 
-    This option is only valid if the -m (or --create-home) option is specified.
+  <Expandable title="Account Expiration" default-open="false">
+    <ParamField path="-e, --expiredate" param-type="date" required="false" deprecated="false">
+      Set account expiration date (YYYY-MM-DD). Example: `useradd -e 2025-12-31 username`
+    </ParamField>
 
-    If this option is not set, the skeleton directory is defined by the SKEL variable in /etc/default/useradd or, by default, /etc/skel.
+    <ParamField path="-f, --inactive" param-type="integer" required="false" deprecated="false">
+      Days of inactivity before account expires. 0 = immediate, -1 = disable feature.
+    </ParamField>
+  </Expandable>
 
-    If possible, the ACLs and extended attributes are copied.
+  <Expandable title="UID and Group Options" default-open="false">
+    <ParamField path="-u, --uid" param-type="integer" required="false" deprecated="false">
+      Specify specific UID. Must be unique unless combined with `-o`.
+    </ParamField>
 
-- **-m, --create-home**
+    <ParamField path="-g, --gid" param-type="integer" required="false" deprecated="false">
+      Specify primary group (name or GID). Group must exist.
+    </ParamField>
 
-    Create the user's home directory if it does not exist. The files and directories contained in the skeleton directory (which can be defined with the -k option) will be copied to the home directory.
+    <ParamField path="-G, --groups" param-type="list" required="false" deprecated="false">
+      Supplementary groups (comma-separated). Example: `-G wheel,docker,adm`
+    </ParamField>
 
-    By default, if this option is not specified and CREATE_HOME is not enabled, no home directories are created.
+    <ParamField path="-U, --user-group" param-type="flag" required="false" deprecated="false">
+      Create group with same name as user (default behavior).
+    </ParamField>
 
-- **-M**
+    <ParamField path="-N, --no-user-group" param-type="flag" required="false" deprecated="false">
+      Do NOT create user group. Use GROUP variable default.
+    </ParamField>
 
-   Do no create the user's home directory, even if the system wide setting from /etc/login.defs (CREATE_HOME) is set to yes.
+    <ParamField path="-o, --non-unique" param-type="flag" required="false" deprecated="false">
+      Allow duplicate UID. Only valid with `-u`.
+    </ParamField>
+  </Expandable>
 
-- **-N, --no-user-group**
+  <Expandable title="Shell and Password" default-open="false">
+    <ParamField path="-s, --shell" param-type="path" required="false" deprecated="false">
+      Specify login shell. Example: `useradd -s /bin/zsh username`
+    </ParamField>
 
-    Do not create a group with the same name as the user, but add the user to the group specified by the -g option or by the GROUP variable in /etc/default/useradd.
+    <ParamField path="-p, --password" param-type="string" required="false" deprecated="false">
+      Encrypted password (from crypt(3)). <Callout kind="alert" inline="true">Not recommended - visible in process list.</Callout>
+    </ParamField>
 
-    The default behavior (if the -g, -N, and -U options are not specified) is defined by the USERGROUPS_ENAB variable in
-    /etc/login.defs.
+    <ParamField path="-L, --lock" param-type="flag" required="false" deprecated="false">
+      Lock account by prepending `!` to password.
+    </ParamField>
+  </Expandable>
 
-- **-o, --non-unique**
+  <Expandable title="System Accounts" default-open="false">
+    <ParamField path="-r, --system" param-type="flag" required="false" deprecated="false">
+      Create system account. Uses SYS_UID_MIN-SYS_UID_MAX range. No aging info, no home dir by default.
+    </ParamField>
 
-    Allow the creation of a user account with a duplicate (non-unique) UID.
-
-    This option is only valid in combination with the -u option.
-
-- **-p, --password PASSWORD**
-
-    The encrypted password, as returned by crypt(3). The default is to disable the password.
-
-    Note: This option is not recommended because the password (or encrypted password) will be visible by users listing the processes.
-
-    You should make sure the password respects the system's password policy.
-
-- **-r, --system**
-
-    Create a system account.
-
-    System users will be created with no aging information in /etc/shadow, and their numeric identifiers are chosen in the
-    SYS_UID_MIN-SYS_UID_MAX range, defined in /etc/login.defs, instead of UID_MIN-UID_MAX (and their GID counterparts for the creation of groups).
-
-    Note that useradd will not create a home directory for such an user, regardless of the default setting in /etc/login.defs (CREATE_HOME). You have to specify the -m options if you want a home directory for a system account to be created.
-
-- **-R, --root CHROOT_DIR**
-
-    Apply changes in the CHROOT_DIR directory and use the configuration files from the CHROOT_DIR directory.
-
-- **-s, --shell SHELL**
-
-    The name of the user's login shell. The default is to leave this field blank, which causes the system to select the default login shell specified by the SHELL variable in /etc/default/useradd, or an empty string by default.
-
-      ```bash
-      useradd <name> -s /bin/<shell>
-      ```
-
-- **-u, --uid UID**
-
-    The numerical value of the user's ID. This value must be unique, unless the -o option is used. The value must be non-negative. The default is to use the smallest ID value greater than or equal to UID_MIN and greater than every other user.
-
-    See also the -r option and the UID_MAX description.
-
-- **-U, --user-group**
-
-    Create a group with the same name as the user, and add the user to this group.
-
-    The default behavior (if the -g, -N, and -U options are not specified) is defined by the USERGROUPS_ENAB variable in
-      /etc/login.defs.
+    <ParamField path="--root CHROOT_DIR" param-type="path" required="false" deprecated="false">
+      Apply changes in chroot directory. Use configuration from CHROOT_DIR.
+    </ParamField>
+  </Expandable>
+</ExpandableGroup>
 
 
 ### adduser Options

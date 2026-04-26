@@ -10,37 +10,88 @@ keywords:
 
 ## Introduction
 
-Terraform is an open-source Infrastructure as Code(IaC) tool developed
-by HashiCorp. It is used to define and provision the complete
-infrastructure using an easy-to-learn declarative language.
+Terraform is an open-source Infrastructure as Code (IaC) tool developed by HashiCorp. It is used to define and provision the complete infrastructure using an easy-to-learn declarative language.
 
-It is an infrastructure provisioning tool where you can store your cloud
-infrastructure setup as codes. It's very similar to tools such as
-CloudFormation, which you would use to automate your AWS infrastructure,
-but you can only use that on AWS. With Terraform, you can use it on
-other cloud platforms as well.
-
-Below are some of the benefits of using Terraform.
-
-- Does orchestration, not just configuration management
-
-- Supports multiple providers such as AWS, Azure, GCP, DigitalOcean
-  and many more
-
-- Provide immutable infrastructure where configuration changes
-  smoothly
-
-- Uses easy to understand language, HCL (HashiCorp configuration
-  language)
-
-- Easily portable to any other provider
-
-- Supports Client only architecture, so no need for additional
-  configuration management on a server
+It is an infrastructure provisioning tool where you can store your cloud infrastructure setup as code. It's very similar to tools such as CloudFormation, which you would use to automate your AWS infrastructure, but you can only use that on AWS. With Terraform, you can use it on other cloud platforms as well.
 
 <Callout kind="tip" collapsed="false">
-  Infrastructure as Code (IaC) is a widespread terminology among DevOps professionals. It is the process of managing and provisioning the complete IT infrastructure (comprises both physical and virtual machines) using machine-readable definition files. It is a software engineering approach toward operations. It helps in automating the complete data center by using programming scripts.
+  **Infrastructure as Code (IaC)** is a widespread terminology among DevOps professionals. It is the process of managing and provisioning the complete IT infrastructure (comprises both physical and virtual machines) using machine-readable definition files. It is a software engineering approach toward operations. It helps in automating the complete data center by using programming scripts.
 </Callout>
+
+### Benefits of Terraform
+
+<Columns cols="2">
+  <Card title="Multi-Cloud Support" href="#" icon="cloud" horizontal="false">
+    Supports AWS, Azure, GCP, DigitalOcean, and 100+ other providers.
+  </Card>
+
+  <Card title="Orchestration" href="#" icon="layers" horizontal="false">
+    Handles full infrastructure orchestration, not just configuration management.
+  </Card>
+
+  <Card title="Immutable Infrastructure" href="#" icon="refresh-cw" horizontal="false">
+    Configuration changes are applied smoothly with version-controlled state.
+  </Card>
+
+  <Card title="HCL Language" href="#" icon="code" horizontal="false">
+    Uses HashiCorp Configuration Language - easy to read and write.
+  </Card>
+
+  <Card title="Portable" href="#" icon="move" horizontal="false">
+    Easily portable configurations across different cloud providers.
+  </Card>
+
+  <Card title="Client-Only" href="#" icon="monitor" horizontal="false">
+    No server-side agents required - runs from your local machine or CI/CD.
+  </Card>
+</Columns>
+
+### Terraform Architecture
+
+```mermaid
+graph TB
+    subgraph "User Layer"
+        A[Terraform CLI]
+        B[Configuration Files<br/>.tf files]
+        C[State File<br/>terraform.tfstate]
+    end
+
+    subgraph "Terraform Core"
+        D[Init]
+        E[Plan]
+        F[Apply]
+        G[Destroy]
+    end
+
+    subgraph "Providers"
+        H[AWS Provider]
+        I[Azure Provider]
+        J[GCP Provider]
+        K[Kubernetes Provider]
+    end
+
+    subgraph "Infrastructure"
+        L[EC2 Instances]
+        M[VPC Networks]
+        N[Storage Buckets]
+        O[K8s Clusters]
+    end
+
+    A --> B
+    B --> C
+    C --> D
+    D --> E
+    E --> F
+    F --> G
+    D --> H
+    D --> I
+    D --> J
+    D --> K
+    H --> L
+    H --> M
+    I --> N
+    K --> O
+```
 
 ## Installation of Terraform
 
@@ -58,72 +109,64 @@ Below are some of the benefits of using Terraform.
   ```
 </CodeGroup>
 
-## Terraform Core concepts
+## Terraform Core Concepts
 
-Terraform core uses two input sources to do its job.
+Terraform core uses two input sources to do its job:
 
-The first input source is a Terraform configuration that you, as a user,
-configure. Here, you define what needs to be created or provisioned. And
-the second input source is a state where terraform keeps the up-to-date
-state of how the current set up of the infrastructure looks like.
+1. **Terraform Configuration** - You define what needs to be created or provisioned in `.tf` files
+2. **State File** - Terraform keeps an up-to-date state of the current infrastructure
 
-So, what terraform core does is it takes the input, and it figures out
-the plan of what needs to be done. It compares the state, what is the
-current state, and what is the configuration that you desire in the end
-result. It figures out what needs to be done to get to that desired
-state in the configuration file. It figures what needs to be created,
-what needs to be updated, what needs to be deleted to create and
-provision the infrastructure.
+The core compares the current state with the desired configuration and figures out what needs to be created, updated, or deleted to reach the desired state.
 
-The second component of the architecture are providers for specific
-technologies. This could be cloud providers like AWS, Azure, GCP, or
-other infrastructure as a service platform. It is also a provider for
-more high-level components like Kubernetes or other
-platform-as-a-service tools, even some software as a self-service tool.
+```mermaid
+sequenceDiagram
+    participant User
+    participant Config as Configuration Files
+    participant Core as Terraform Core
+    participant State as State File
+    participant Provider as Cloud Provider API
+    participant Infra as Infrastructure
 
-It gives you the possibility to create infrastructure on different
-levels.
+    User->>Config: Write/Modify .tf files
+    User->>Core: terraform init
+    Core->>Provider: Download required providers
+    User->>Core: terraform plan
+    Core->>State: Read current state
+    Core->>Config: Read desired state
+    Core-->>User: Show execution plan
+    User->>Core: terraform apply
+    Core->>Provider: Create/Update/Delete resources
+    Provider->>Infra: Provision resources
+    Provider-->>Core: Resource details
+    Core->>State: Update state file
+    Core-->>User: Apply complete
+```
 
-For example - create an AWS infrastructure, then deploy Kubernetes on
-top of it and then create services/components inside that Kubernetes
-cluster.
+### Core Concepts Overview
 
-Terraform has over a hundred providers for different technologies, and
-each provider then gives terraform user access to its resources. So
-through AWS provider, for example, you have access to hundreds of AWS
-resources like EC2 instances, the AWS users, etc. With Kubernetes
-provider, you access to commodities, resources like services and
-deployments and namespaces, etc.
+<ParamField path="provider" param-type="string" required="true" deprecated="false">
+  Plugin that interacts with cloud provider APIs (AWS, Azure, GCP, etc.) to manage resources.
+</ParamField>
 
-Below are the core concepts/terminologies used in Terraform:
+<ParamField path="resource" param-type="string" required="true" deprecated="false">
+  Block defining one or more infrastructure objects (EC2 instances, VPCs, storage buckets).
+</ParamField>
 
-- **Provider:** It is a plugin to interact with APIs of service and
-  access its related resources.
+<ParamField path="data_source" param-type="string" required="false" deprecated="false">
+  Read-only reference to existing infrastructure objects managed outside Terraform.
+</ParamField>
 
-- **Resources:** It refers to a block of one or more infrastructure
-  objects (compute instances, virtual networks, etc.), which are used
-  in configuring and managing the infrastructure.
+<ParamField path="state" param-type="file" required="true" deprecated="false">
+  JSON file (terraform.tfstate) storing cached information about managed infrastructure.
+</ParamField>
 
-- **count and for\_each Meta Arguments:** - It allow us to create
-  multiple instances of any resource.
+<ParamField path="module" param-type="string" required="false" deprecated="false">
+  Directory containing reusable Terraform templates and configurations.
+</ParamField>
 
-- **Data Source:** It is implemented by providers to return
-  information on external objects to terraform.
-
-- **State:** It consists of cached information about the
-  infrastructure managed by Terraform and the related configurations.
-
-- **Module:** It is a folder with Terraform templates where all the
-  configurations are defined
-
-- **Input Variables:** It is key-value pair used by Terraform modules
-  to allow customization.
-
-- **Local Variables:** It work like standard variables,but their scope is
-  limited to the module where they're declared.
-
-- **Output Values:** These are return values of a terraform module
-  that can be used by other configurations.
+<ParamField path="variable" param-type="string" required="false" deprecated="false">
+  Input parameter for customizing module behavior ( Input, Local, Output types).
+</ParamField>
 
 ### Provider
 
@@ -477,21 +520,119 @@ it as any other in expressions.
 
 ## Terraform Lifecycle
 
-Terraform lifecycle consists of - init, plan, apply, and destroy.
+Terraform follows a four-stage lifecycle for infrastructure management:
 
-- **terraform init** initializes the working directory which consists
-  of all the configuration files
+```mermaid
+graph LR
+    A[init] --> B[plan]
+    B --> C[apply]
+    C --> D[destroy]
+    C -.->|drift detected | B
+    
+    style A fill:#4ade80
+    style B fill:#fbbf24
+    style C fill:#60a5fa
+    style D fill:#f87171
+```
 
-- **terraform plan** is used to create an execution plan to reach a
-  desired state of the infrastructure. Changes in the configuration
-  files are done in order to achieve the desired state.
+<Steps>
+  <Step title="terraform init" icon="download" titleType="h3">
+    Initializes the working directory containing Terraform configuration files.
 
-- **terraform apply** then makes the changes in the infrastructure as
-  defined in the plan, and the infrastructure comes to the desired
-  state.
+    ```bash
+    $ terraform init
 
-- **terraform destroy** is used to delete all the old infrastructure
-  resources, which are marked tainted after the apply phase.
+    Initializing the backend...
+
+    Initializing provider plugins...
+    - Checking for available provider plugins...
+    - Downloading plugin for provider `local` (hashicorp/local) 2.2.3...
+
+    Terraform has been successfully initialized!
+    ```
+
+    <Callout kind="info" collapsed="false">
+      This step scans project files and downloads required providers.
+    </Callout>
+  </Step>
+
+  <Step title="terraform plan" icon="file-text" titleType="h3">
+    Creates an execution plan showing what actions Terraform will perform.
+
+    ```bash
+    $ terraform plan
+    ...
+    Terraform will perform the following actions:
+
+    # local_file.hello will be created
+    + resource "local_file" "hello" {
+          + content              = "Hello, Terraform"
+          + directory_permission = "0777"
+          + file_permission      = "0777"
+          + filename             = "hello.txt"
+          + id                   = (known after apply)
+       }
+
+    Plan: 1 to add, 0 to change, 0 to destroy.
+    ```
+
+    <Callout kind="tip" collapsed="false">
+      Think of this as a "dry run" - it shows changes without applying them.
+    </Callout>
+  </Step>
+
+  <Step title="terraform apply" icon="check" titleType="h3">
+    Executes the planned changes to create, update, or delete infrastructure resources.
+
+    ```bash
+    $ terraform apply
+
+    An execution plan has been generated and is shown below.
+    Resource actions are indicated with the following symbols:
+    + create
+
+    Do you want to perform these actions?
+    Terraform will perform the actions described above.
+    Only 'yes' will be accepted to approve.
+
+    Enter a value: yes
+
+    local_file.hello: Creating...
+    local_file.hello: Creation complete after 0s [id=392b5481eae4ab2178340f62b752297f72695d57]
+
+    Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
+    ```
+
+    <Callout kind="alert" collapsed="false">
+      Always review the plan output before confirming apply in production environments.
+    </Callout>
+  </Step>
+
+  <Step title="terraform destroy" icon="trash" titleType="h3">
+    Removes all infrastructure resources managed by the current state file.
+
+    ```bash
+    $ terraform destroy --auto-approve
+
+    Terraform will perform the following actions:
+
+    # local_file.hello will be destroyed
+    - resource "local_file" "hello" {
+          - content              = "Hello, Terraform" -> null
+          - directory_permission = "0777" -> null
+          - file_permission      = "0777" -> null
+          - filename             = "hello.txt" -> null
+          - id                   = "392b5481eae4ab2178340f62b752297f72695d57" -> null
+       }
+
+    Plan: 0 to add, 0 to change, 1 to destroy.
+    ```
+
+    <Callout kind="danger" collapsed="false">
+      This action is irreversible - all managed resources will be permanently deleted.
+    </Callout>
+  </Step>
+</Steps>
 
 ### terraform init
 

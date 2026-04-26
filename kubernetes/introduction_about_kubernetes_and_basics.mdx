@@ -12,119 +12,158 @@ keywords:
 
 ## Introduction
 
-Kubernetes is also known as 'k8s'. Kubernetes is an extensible,
-portable, and open-source container management platform designed by
-Google. Kubernetes helps to manage containerised applications in various
-types of physical, virtual, and cloud environments.
+Kubernetes (also known as **k8s**) is an extensible, portable, and open-source container orchestration platform designed by Google. Kubernetes helps to manage containerized applications in various types of physical, virtual, and cloud environments.
 
-Kubernetes helps you to control the resource allocation and traffic
-management for cloud applications and microservices. It also helps to
-simplify various aspects of service-oriented infrastructures. Kubernetes
-allows you to assure where and when containerized applications run and
-helps you to find resources and tools you want to work with.
+Kubernetes helps you to control the resource allocation and traffic management for cloud applications and microservices. It also helps to simplify various aspects of service-oriented infrastructures. Kubernetes allows you to assure where and when containerized applications run and helps you to find resources and tools you want to work with.
+
+<Callout kind="info" collapsed="false">
+  The term "k8s" comes from abbreviating the 8 letters between "K" and "s" in "Kubernetes".
+</Callout>
 
 ## Kubernetes Features
 
+<Columns cols="2">
+  <Card title="Automated Scheduling" href="#" icon="cpu" horizontal="false">
+    Automatically places workloads on nodes based on resource requirements and constraints.
+  </Card>
 
--   Automated Scheduling
--   Self-Healing Capabilities
--   Automated rollouts & rollback
--   Horizontal Scaling & Load Balancing
--   Offers environment consistency for development, testing, and
-    production
--   Infrastructure is loosely coupled to each component can act as a
-    separate unit
--   Provides a higher density of resource utilization
--   Offers enterprise-ready features
--   Application-centric management
--   Auto-scalable infrastructure
--   You can create predictable infrastructure
+  <Card title="Self-Healing" href="#" icon="activity" horizontal="false">
+    Restarts failed containers, replaces and reschedules pods when nodes die.
+  </Card>
 
-Kubernetes Architecture
-=========================
+  <Card title="Rollouts & Rollback" href="#" icon="git-commit" horizontal="false">
+    Automated deployment rollouts with automatic rollback on failure.
+  </Card>
 
-![](/kubernetes/general/introduction_about_kubernetes_and_basics/kubernetes-architecture.png)
+  <Card title="Scaling & Load Balancing" href="#" icon="trending-up" horizontal="false">
+    Horizontal pod scaling and automatic load distribution across pods.
+  </Card>
 
-Master Node
------------
+  <Card title="Environment Consistency" href="#" icon="box" horizontal="false">
+    Same environment across development, testing, and production.
+  </Card>
 
-The master node is the first and most vital component which is
-responsible for the management of Kubernetes cluster. It is the entry
-point for all kind of administrative tasks. There might be more than one
-master node in the cluster to check for fault tolerance.
+  <Card title="Resource Efficiency" href="#" icon="zap" horizontal="false">
+    Higher density of resource utilization through intelligent bin-packing.
+  </Card>
 
-The master node has various components like API Server, Controller
-Manager, Scheduler, and ETCD. Let see all of them.
+  <Card title="Loose Coupling" href="#" icon="layers" horizontal="false">
+    Components act as separate units, enabling microservices architecture.
+  </Card>
 
-### API Server:
+  <Card title="Enterprise Ready" href="#" icon="shield" horizontal="false">
+    Built-in security, RBAC, secrets management, and production-grade features.
+  </Card>
+</Columns>
 
-It provides all the operation on cluster using the API. API server
-implements an interface, which means different tools and libraries can
-readily communicate with it. **Kubeconfig** is a package along with the
-server side tools that can be used for communication.
+## Kubernetes Architecture
 
-### Controller Manager
+```mermaid
+graph TB
+    subgraph "Control Plane (Master Node)"
+        A[API Server]
+        B[Controller Manager]
+        C[Scheduler]
+        D[etcd]
+    end
 
-This component is responsible for most of the collectors that regulates
-the state of cluster and performs a task. In general, it can be
-considered as a daemon which runs in nonterminating loop and is
-responsible for collecting and sending information to API server. It
-works toward getting the shared state of cluster and then make changes
-to bring the current status of the server to the desired state. The key
-controllers are replication controller, endpoint controller, namespace
-controller, and service account controller. The controller manager runs
-different kind of controllers to handle nodes, endpoints, etc.
+    subgraph "Worker Node 1"
+        E[kubelet]
+        F[kube-proxy]
+        G[Docker/Container Runtime]
+        H[Pod 1]
+        I[Pod 2]
+    end
 
-### Scheduler
+    subgraph "Worker Node 2"
+        J[kubelet]
+        K[kube-proxy]
+        L[Docker/Container Runtime]
+        M[Pod 3]
+        N[Pod 4]
+    end
 
-This is one of the key components of Kubernetes master. It is a service
-in master responsible for distributing the workload. It is responsible
-for tracking utilization of working load on cluster nodes and then
-placing the workload on which resources are available and accept the
-workload. In other words, this is the mechanism responsible for
-allocating pods to available nodes. The scheduler is responsible for
-workload utilization and allocating pod to new node.
+    subgraph "Users/Tools"
+        O[kubectl]
+        P[Dashboard]
+        Q[CI/CD]
+    end
 
-### Etcd
+    O --> A
+    P --> A
+    Q --> A
+    A --> B
+    A --> C
+    A --> D
+    A --> E
+    A --> J
+    E --> G
+    J --> L
+    G --> H
+    G --> I
+    L --> M
+    L --> N
+    F --> H
+    F --> I
+    K --> M
+    K --> N
+```
 
-It stores the configuration information which can be used by each of the
-nodes in the cluster. It is a high availability key value store that can
-be distributed among multiple nodes. It is accessible only by Kubernetes
-API server as it may have some sensitive information. It is a
-distributed key value Store which is accessible to all.
+### Control Plane (Master Node) Components
 
-Worker/Slave nodes
-------------------
+The control plane is the brain of the Kubernetes cluster, responsible for management and administrative tasks. Multiple master nodes provide fault tolerance.
 
-Worker nodes are another essential component which contains all the
-required services to manage the networking between the containers,
-communicate with the master node, which allows you to assign resources
-to the scheduled containers.
+<ParamField path="api-server" param-type="service" required="true" deprecated="false">
+  Central management hub that exposes Kubernetes API. All cluster operations are performed through the API server. Tools like kubectl and Dashboard communicate with it via REST APIs.
+</ParamField>
 
-### Docker
+<ParamField path="controller-manager" param-type="service" required="true" deprecated="false">
+  Runs controller processes that regulate cluster state. Includes replication controller, endpoint controller, namespace controller, and service account controller. Works to match current state with desired state.
+</ParamField>
 
-The first requirement of each node is Docker which helps in running the
-encapsulated application containers in a relatively isolated but
-lightweight operating environment.
+<ParamField path="scheduler" param-type="service" required="true" deprecated="false">
+  Assigns pods to available nodes based on resource requirements, constraints, and affinity/anti-affinity rules. Tracks node resource utilization for optimal placement.
+</ParamField>
 
-### Kubelet Service
+<ParamField path="etcd" param-type="database" required="true" deprecated="false">
+  High-availability distributed key-value store for cluster configuration data. Stores all cluster state and metadata. Accessible only by API server for security.
+</ParamField>
 
-This is a small service in each node responsible for relaying
-information to and from control plane service. It interacts with etcd
-store to read configuration details and wright values. This communicates
-with the master component to receive commands and work. The kubelet
-process then assumes responsibility for maintaining the state of work
-and the node server. It manages network rules, port forwarding, etc.
+### Worker Node Components
 
-### Kubernetes Proxy Service
+Worker nodes run the actual application workloads. Each node contains services to manage containers, communicate with the control plane, and allocate resources.
 
-This is a proxy service which runs on each node and helps in making
-services available to the external host. It helps in forwarding the
-request to correct containers and is capable of performing primitive
-load balancing. It makes sure that the networking environment is
-predictable and accessible and at the same time it is isolated as well.
-It manages pods on node, volumes, secrets, creating new containers'
-health checkup, etc.
+<ParamField path="kubelet" param-type="agent" required="true" deprecated="false">
+  Primary node agent that communicates with the control plane. Ensures containers are running in pods as specified. Manages pod lifecycle, health checks, and resource allocation.
+</ParamField>
+
+<ParamField path="kube-proxy" param-type="network" required="true" deprecated="false">
+  Network proxy running on each node. Maintains network rules for pod-to-pod and external communication. Handles service IP translation and basic load balancing.
+</ParamField>
+
+<ParamField path="container-runtime" param-type="runtime" required="true" deprecated="false">
+  Software responsible for running containers (Docker, containerd, CRI-O). Pulls images and manages container lifecycle on the node.
+</ParamField>
+
+```mermaid
+graph LR
+    subgraph "Control Plane Communication"
+        A[kubectl] --> B[API Server]
+        B <--> C[etcd]
+        B <--> D[Scheduler]
+        B <--> E[Controller Manager]
+    end
+
+    subgraph "Worker Node"
+        F[kubelet] <--> B
+        F --> G[Container Runtime]
+        H[kube-proxy] --> I[Services]
+        G --> J[Pods]
+    end
+
+    style B fill:#60a5fa
+    style F fill:#4ade80
+```
 
 Kubernetes Key Terminologies
 ============================
@@ -218,18 +257,9 @@ resources (like "Service" in the example above) support only
 'matchLabels', so there is no need to define which option is used,
 because only one option is available for those resource types.
 
-Service
--------
+## Kubernetes Services
 
-A service can be defined as a logical set of pods. It can be defined as
-an abstraction on the top of the pod which provides a single IP address
-and DNS name by which pods can be accessed. With Service, it is very
-easy to manage load balancing configuration. It helps pods to scale very
-easily.
-
-A service is a REST object in Kubernetes whose definition can be posted
-to Kubernetes apiServer on the Kubernetes master to create a new
-instance.
+A Service is an abstraction that defines a logical set of Pods and a policy for accessing them. It provides a single, stable IP address and DNS name for accessing pods, making load balancing and service discovery simple.
 
 ```yaml
 kind: Service
@@ -245,26 +275,46 @@ spec:
       targetPort: 9376
 ```
 
-Types of Services are:
+### Service Types Comparison
 
--   **ClusterIP**
--   **NodePort**
--   **LoadBalancer**
--   **ExternalName**
+<Columns cols="2">
+  <Card title="ClusterIP" href="#" icon="network" horizontal="false">
+    Default type. Exposes service on internal cluster IP only. Use for internal communication between pods.
+  </Card>
 
-### ClusterIP
+  <Card title="NodePort" href="#" icon="server" horizontal="false">
+    Exposes service on static port (30000-32767) on all nodes. Use for development and testing access.
+  </Card>
 
-An internal fixed IP known as a ClusterIP can be created in front of a
-pod or a replica as necessary.
+  <Card title="LoadBalancer" href="#" icon="globe" horizontal="false">
+    Provisions external load balancer from cloud provider. Use for production internet-facing services.
+  </Card>
 
-The ClusterIP provides a load-balanced IP address. One or more pods that
-match a label selector can forward traffic to the IP address. The
-ClusterIP service must define one or more ports to listen on with target
-ports to forward TCP/UDP traffic to containers. The IP address that is
-used for the ClusterIP is not routable outside of the cluster, like the
-pod IP address is.
+  <Card title="ExternalName" href="#" icon="link" horizontal="false">
+    Maps service to external DNS name (CNAME). Use for accessing external services from within cluster.
+  </Card>
+</Columns>
 
-![](/kubernetes/general/introduction_about_kubernetes_and_basics/kubernetes_clusterip.png)
+### ClusterIP - Internal Service Access
+
+```mermaid
+graph TB
+    subgraph "Cluster"
+        A[Client Pod] --> B[ClusterIP Service<br/>10.96.x.x:80]
+        B --> C[Pod 1<br/>10.244.1.2:8080]
+        B --> D[Pod 2<br/>10.244.1.3:8080]
+        B --> E[Pod 3<br/>10.244.2.1:8080]
+    end
+    
+    style B fill:#60a5fa
+    style C fill:#4ade80
+    style D fill:#4ade80
+    style E fill:#4ade80
+```
+
+<Callout kind="info" collapsed="false">
+  ClusterIP is only reachable from within the cluster - not accessible from external clients.
+</Callout>
 
 ```yaml
 apiVersion: v1
@@ -278,26 +328,41 @@ spec:
   ports:
     - protocol: TCP
       port: 80
+      targetPort: 80
 ```
 
-### NodePort
+### NodePort - External Access via Node IP
 
-Services of type NodePort build on top of ClusterIP type services by
-exposing the ClusterIP service outside of the cluster on high ports
-(default 30000-32767). If no port number is specified then Kubernetes
-automatically selects a free port. The local kube-proxy is responsible
-for listening to the port on the node and forwarding client traffic on
-the NodePort to the ClusterIP.
+```mermaid
+graph TB
+    subgraph "External Client"
+        A[Client<br/>Internet]
+    end
+    
+    subgraph "Cluster"
+        B[Node 1<br/>203.0.113.1:30080]
+        C[Node 2<br/>203.0.113.2:30080]
+        D[ClusterIP<br/>10.96.x.x:80]
+        E[Pod 1]
+        F[Pod 2]
+    end
+    
+    A -->|NodeIP:NodePort | B
+    A -->|NodeIP:NodePort | C
+    B --> D
+    C --> D
+    D --> E
+    D --> F
+    
+    style A fill:#fbbf24
+    style B fill:#4ade80
+    style C fill:#4ade80
+    style D fill:#60a5fa
+```
 
-![](/kubernetes/general/introduction_about_kubernetes_and_basics/kubernetes_nodeport.png)
-
-Users can communicate with the service from the outside by requesting
-\<NodeIP\>:\<NodePort\>
-
-By default, every node in the cluster listens on this port, including
-nodes where the pod that matches the label selector does not run.
-Traffic on such nodes is internally NATed and forwarded to the target
-pod (Cluster external traffic policy).
+<Callout kind="tip" collapsed="false">
+  Access the service from outside the cluster using `http://<NodeIP>:<NodePort>` where NodePort is in range 30000-32767.
+</Callout>
 
 ```yaml
 apiVersion: v1
@@ -311,23 +376,48 @@ spec:
   ports:
     - protocol: TCP
       port: 80
+      targetPort: 80
+      nodePort: 30080
 ```
 
-### Load Balancer
+### LoadBalancer - Cloud Provider External Access
 
-The LoadBalancer service type is built on top of NodePort service types
-by provisioning and configuring external load balancers from public and
-private cloud providers. It exposes services that are running in the
-cluster by forwarding layer 4 traffic to worker nodes. This is a dynamic
-way of implementing a case that involves external load balancers and
-NodePort type services. However, it usually requires an integration that
-runs inside the Kubernetes cluster that performs a watch on the API for
-services of type LoadBalancer.
+```mermaid
+graph TB
+    subgraph "External"
+        A[External Load Balancer<br/>Public IP: 203.0.113.100]
+        B[Internet Clients]
+    end
+    
+    subgraph "Cluster"
+        C[Node 1]
+        D[Node 2]
+        E[ClusterIP Service]
+        F[Pod 1]
+        G[Pod 2]
+        H[Pod 3]
+    end
+    
+    B --> A
+    A --> C
+    A --> D
+    C --> E
+    D --> E
+    E --> F
+    E --> G
+    E --> H
+    
+    style A fill:#fbbf24
+    style B fill:#fbbf24
+    style E fill:#60a5fa
+    style F fill:#4ade80
+    style G fill:#4ade80
+    style H fill:#4ade80
+```
 
-![](/kubernetes/general/introduction_about_kubernetes_and_basics/kubernetes_loadbalancer.png)
-
-It will also automatically create ClusterIP and NodePort services and
-route traffic accordingly.
+<Callout kind="info" collapsed="false">
+  LoadBalancer automatically creates ClusterIP and NodePort services underneath. Requires cloud provider integration (AWS ELB, GCP Load Balancer, Azure LB).
+</Callout>
 
 ```yaml
 apiVersion: v1
@@ -342,14 +432,22 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 80
-      nodePort: 31999
+      nodePort: 30080
 ```
 
-### ExternalName
+### ExternalName - External Service Mapping
 
-This type of service maps the service to the contents of the
-externalName field (Ex: app.test.com). It does this by returning a value
-for the CNAME record.
+Maps the service to an external DNS name instead of typical selectors.
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-database
+spec:
+  type: ExternalName
+  externalName: db.example.com
+```
 
 Pod
 ---

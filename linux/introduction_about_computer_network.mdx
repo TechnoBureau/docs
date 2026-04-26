@@ -1,6 +1,6 @@
 ---
-title: "What is Computer Network ?.Introduction About Computer Network"
-description: "A Computer network or data network is a telecommunications network that allows computers to exchange data. In computer networks, networked computing devices pass data to each other along different data connections. Data is transferred in the form of packets by using encoding and decoding standards."
+title: "Introduction to Computer Networks"
+description: "A comprehensive guide to computer networks covering topology, nodes, devices, and data transmission fundamentals."
 author: Ganapathi Chidambaram
 date: 2023-03-22
 keywords:
@@ -10,77 +10,239 @@ keywords:
   - about network
 ---
 
-"A Computer network or data network is a telecommunications network that allows computers to exchange data. In computer networks, networked computing devices pass data to each other along different data connections. Data is transferred in the form of packets by using encoding and decoding standards."
+## What is a Computer Network?
 
-Network computer devices that originate, route and terminate the data are called network nodes. Nodes can include hosts such as personal computers, phones, servers as well as networking hardware. Two such devices are said to be networked together when one device is able to exchange information with the other device, whether or not they have a direct connection to each other.
+A **computer network** (or data network) is a telecommunications network that allows computers to exchange data. In computer networks, networked computing devices pass data to each other along different data connections using encoding and decoding standards.
 
-Computer networks support applications such as access to the World Wide Web, shared use of application and storage servers,printers, and fax machines, and use of email and instant messaging applications. Computer networks differ in the physical media used to transmit their signals, the communications protocols to organize network traffic, the network's size, topology and organizational intent.
+<Callout kind="info" collapsed="false">
+  **Network Nodes** are devices that originate, route, and terminate data. They include hosts (PCs, phones, servers) and networking hardware (routers, switches).
+</Callout>
 
-A computer network facilitates interpersonal communications allowing people to communicate efficiently and easily via email, instant messaging, chat rooms, telephone, video telephone calls, and video conferencing. Providing access to information on shared storage devices is an important feature of many networks. A network allows sharing of files, data, devices and other types of information giving authorized users the ability to access information stored on other computers on the network. A network allows sharing of network and computing resources. Users may access and use resources provided by devices on the network, such as printing a document on a shared network printer.Distributed computing uses computing resources across a network to accomplish tasks. A computer network may be used by computer Crackers to deploy computer viruses or computer worms on devices connected to the network, or to prevent these devices from accessing the network (denial of service). A complex computer network may be difficult to set up. It may be costly to set up an effective computer network in a large organization.
+### Network Applications
 
-Computer Network formed by using network topology that connects network nodes to transmit the network packet effectively in a complex networking.
+<Columns cols="2">
+  <Card title="Web Access" href="#" icon="globe" horizontal="false">
+    Access to World Wide Web and web-based applications.
+  </Card>
 
-## Network packet
+  <Card title="Resource Sharing" href="#" icon="share-2" horizontal="false">
+    Shared use of servers, printers, storage, and applications.
+  </Card>
 
-A network packet is a formatted unit of data (a list of bits or bytes) carried by a packet-switched network. Computer communications links that do not support packets, such as traditional point-to-point telecommunications links, simply transmit data as a bit stream. When data is formatted into packets, the bandwidth of the communication medium can be better shared among users than if the network were circuit switched.
+  <Card title="Communication" href="#" icon="message-square" horizontal="false">
+    Email, instant messaging, video calls, and conferencing.
+  </Card>
 
-A packet consists of two kinds of data: control information and user data (also known as payload). The control information provides data the network needs to deliver the user data, for example: source and destination network addresses, error detection codes, and sequencing information. Typically, control information is found in packet headers and trailers, with payload data in between.
+  <Card title="Distributed Computing" href="#" icon="cpu" horizontal="false">
+    Computing resources across network to accomplish tasks.
+  </Card>
+</Columns>
 
-## Network topology
-Network topology is the arrangement of the various elements (links, nodes, etc.) of a computer network.Essentially, it is the topological structure of a network and may be depicted physically or logically. Physical topology is the placement of the various components of a network, including device location and cable installation, while logical topology illustrates how data flows within a network, regardless of its physical design. Distances between nodes, physical interconnections, transmission rates, or signal types may differ between two networks, yet their topologies may be identical.
+## Network Packets
 
-An example is a local area network (LAN): Any given node in the LAN has one or more physical links to other devices in the network; graphically mapping these links results in a geometric shape that can be used to describe the physical topology of the network. Conversely, mapping the data flow between the components determines the logical topology of the network.
+A **network packet** is a formatted unit of data carried by a packet-switched network. When data is formatted into packets, the bandwidth can be better shared among users compared to circuit-switched networks.
 
-Common Topologies are:
+```mermaid
+graph LR
+    A[Data] --> B[Segmentation]
+    B --> C[Packet 1]
+    B --> D[Packet 2]
+    B --> E[Packet 3]
+    C --> F[Header + Payload]
+    D --> G[Header + Payload]
+    E --> H[Header + Payload]
+    F --> I[Transmission]
+    G --> I
+    H --> I
+    I --> J[Reassembly]
+    J --> K[Original Data]
+    
+    style F fill:#60a5fa
+    style G fill:#60a5fa
+    style H fill:#60a5fa
+```
 
-* A bus topology: all nodes are connected to a common medium along this medium. This was the layout used in the originalEthernet, called 10BASE5 and 10BASE2.
-* A star topology: all nodes are connected to a special central node. This is the typical layout found in a Wireless LAN, where each wireless client connects to the central Wireless access point.
-* A ring topology: each node is connected to its left and right neighbour node, such that all nodes are connected and that each node can reach each other node by traversing nodes left- or rightwards. The Fiber Distributed Data Interface (FDDI) made use of such a topology.
-* A mesh topology: each node is connected to an arbitrary number of neighbours in such a way that there is at least one traversal from any node to any other.
-* A fully connected topology: each node is connected to every other node in the network.
-* A tree topology: nodes are arranged hierarchically.
+<ParamField path="header" param-type="bytes" required="true" deprecated="false">
+  Contains control information: source/destination addresses, error detection codes, sequencing information.
+</ParamField>
 
-## Network nodes
-In communication networks, a **node** is either a connection point, a redistribution point or a communication endpoint (some terminal equipment). The definition of a node depends on the network and protocol layer referred to. A physical network node is an active electronic device that is attached to a network, and is capable of sending, receiving, or forwarding information over a communications channel. A passive distribution point such as a distribution frame or patch panel is consequently not a node.
+<ParamField path="payload" param-type="bytes" required="true" deprecated="false">
+  The actual user data being transmitted between network nodes.
+</ParamField>
 
-### Network interfaces
-An ATM network interface in the form of an accessory card. A lot of network interfaces are built-in.
+<ParamField path="trailer" param-type="bytes" required="false" deprecated="false">
+  Optional footer containing error-checking data (CRC, checksum).
+</ParamField>
 
-A network interface controller (NIC) is computer hardware that provides a computer with the ability to access the transmission media, and has the ability to process low-level network information. For example the NIC may have a connector for accepting a cable, or an aerial for wireless transmission and reception, and the associated circuitry.
+## Network Topology
 
-The NIC responds to traffic addressed to a network address for either the NIC or the computer as a whole.
+**Network topology** is the arrangement of elements (links, nodes, etc.) of a computer network. It can be depicted physically or logically:
 
-In Ethernet networks, each network interface controller has a unique Media Access Control (MAC) address-usually stored in the controller's permanent memory. To avoid address conflicts between network devices, the Institute of Electrical and Electronics Engineers (IEEE) maintains and administers MAC address uniqueness. The size of an Ethernet MAC address is six octets. The three most significant octets are reserved to identify NIC manufacturers. These manufacturers, using only their assigned prefixes, uniquely assign the three least-significant octets of every Ethernet interface they produce.
+- **Physical Topology** - Placement of components, device locations, cable installation
+- **Logical Topology** - How data flows within the network, regardless of physical design
 
-### Repeaters and hubs
-A repeater is an electronic device that receives a network signal, cleans it of unnecessary noise, and regenerates it. The signal is retransmitted at a higher power level, or to the other side of an obstruction, so that the signal can cover longer distances without degradation. In most twisted pair Ethernet configurations, repeaters are required for cable that runs longer than 100 meters. With fiber optics, repeaters can be tens or even hundreds of kilometers apart.
+### Common Network Topologies
 
-A repeater with multiple ports is known as a hub. Repeaters work on the physical layer of the OSI model. Repeaters require a small amount of time to regenerate the signal. This can cause a propagation delay that affects network performance. As a result, many network architectures limit the number of repeaters that can be used in a row, e.g., the Ethernet 5-4-3 rule.
+```mermaid
+graph TB
+    subgraph "Bus Topology"
+        A1[Node1] --- A2[Node2] --- A3[Node3] --- A4[Node4]
+    end
+    
+    subgraph "Star Topology"
+        B1[Central Hub] --- B2[Node1]
+        B1 --- B3[Node2]
+        B1 --- B4[Node3]
+        B1 --- B5[Node4]
+    end
+    
+    subgraph "Ring Topology"
+        C1[Node1] --- C2[Node2]
+        C2 --- C3[Node3]
+        C3 --- C4[Node4]
+        C4 --- C1
+    end
+    
+    subgraph "Mesh Topology"
+        D1[Node1] --- D2[Node2]
+        D1 --- D3[Node3]
+        D1 --- D4[Node4]
+        D2 --- D3
+        D2 --- D4
+        D3 --- D4
+    end
+    
+    subgraph "Tree Topology"
+        E1[Root] --- E2[Branch1]
+        E1 --- E3[Branch2]
+        E2 --- E4[Leaf1]
+        E2 --- E5[Leaf2]
+        E3 --- E6[Leaf3]
+    end
+```
 
-Hubs have been mostly obsoleted by modern switches; but repeaters are used for long distance links, notably undersea cabling.
+<Tabs>
+  <Tab title="Bus" icon="minus">
+    All nodes connected to a common backbone cable. Used in early Ethernet (10BASE5, 10BASE2). Simple but single point of failure.
+  </Tab>
 
-### Bridges
-A network bridge connects and filters traffic between two network segments at the data link layer (layer 2) of the OSI model to form a single network. This breaks the network's collision domain but maintains a unified broadcast domain. Network segmentation breaks down a large, congested network into an aggregation of smaller, more efficient networks.
+  <Tab title="Star" icon="star">
+    All nodes connected to a central hub/switch. Common in Wireless LANs and modern Ethernet. Easy to manage, hub is single point of failure.
+  </Tab>
 
-Bridges come in three basic types:
+  <Tab title="Ring" icon="circle">
+    Each node connected to left and right neighbors. Used in FDDI. Data travels in one direction.
+  </Tab>
 
-* Local bridges: Directly connect LANs
-* Remote bridges: Can be used to create a wide area network (WAN) link between LANs. Remote bridges, where the connecting link is slower than the end networks, largely have been replaced with routers.
-* Wireless bridges: Can be used to join LANs or connect remote devices to LANs.
+  <Tab title="Mesh" icon="grid">
+    Nodes connected to multiple neighbors. Provides redundancy and fault tolerance. Expensive due to many connections.
+  </Tab>
 
-### Switches
-A network switch is a device that forwards and filters OSI layer 2 datagrams between ports based on the MAC addresses in the packets.\[8\] A switch is distinct from a hub in that it only forwards the frames to the physical ports involved in the communication rather than all ports connected. It can be thought of as a multi-port bridge.\[9\] It learns to associate physical ports to MAC addresses by examining the source addresses of received frames. If an unknown destination is targeted, the switch broadcasts to all ports but the source. Switches normally have numerous ports, facilitating a star topology for devices, and cascading additional switches.
+  <Tab title="Tree" icon="git-branch">
+    Hierarchical arrangement of nodes. Scalable and easy to expand. Root node failure affects entire network.
+  </Tab>
+</Tabs>
 
-Multi-layer switches are capable of routing based on layer 3 addressing or additional logical levels. The term _switch_ is often used loosely to include devices such as routers and bridges, as well as devices that may distribute traffic based on load or based on application content (e.g., a Web URL identifier).
+## Network Nodes and Devices
 
-### Routers
+A **node** is a connection point, redistribution point, or communication endpoint in a network. Physical network nodes are active electronic devices capable of sending, receiving, or forwarding information.
 
-A typical home or small office router showing the ADSL telephone line and Ethernet network cable connections
+### Network Device Types
 
-A router is an internetworking device that forwards packets between networks by processing the routing information included in the packet or datagram (Internet protocol information from layer 3). The routing information is often processed in conjunction with the routing table (or forwarding table). A router uses its routing table to determine where to forward packets. (A destination in a routing table can include a "null" interface, also known as the "black hole" interface because data can go into it, however, no further processing is done for said data.)
+```mermaid
+graph LR
+    subgraph "Layer 1 - Physical"
+        A[Repeaters]
+        B[Hubs]
+    end
+    
+    subgraph "Layer 2 - Data Link"
+        C[Bridges]
+        D[Switches]
+    end
+    
+    subgraph "Layer 3 - Network"
+        E[Routers]
+    end
+    
+    subgraph "Other Devices"
+        F[Modems]
+        G[Firewalls]
+        H[NIC Cards]
+    end
+    
+    A --> C
+    C --> E
+    D --> E
+    F --> E
+    G -.-> E
+    H -.-> A
+```
 
-### Modems
-Modems (MOdulator-DEModulator) are used to connect network nodes via wire not originally designed for digital network traffic, or for wireless. To do this one or more frequencies are modulated by the digital signal to produce an analog signal that can be tailored to give the required properties for transmission. Modems are commonly used for telephone lines, using a Digital Subscriber Line technology.
+<ParamField path="network-interface" param-type="hardware" required="true" deprecated="false">
+  Network Interface Controller (NIC) provides physical connection to network. Has unique MAC address (6 octets) for Ethernet networks.
+</ParamField>
 
-### Firewalls
-A firewall is a network device for controlling network security and access rules. Firewalls are typically configured to reject access requests from unrecognized sources while allowing actions from recognized ones. The vital role firewalls play in network security grows in parallel with the constant increase in cyber attacks.
+<ParamField path="repeater" param-type="hardware" required="false" deprecated="false">
+  Receives, cleans, and regenerates signals to extend network distance. Works at Physical Layer (Layer 1).
+</ParamField>
+
+<ParamField path="hub" param-type="hardware" required="false" deprecated="false">
+  Multi-port repeater. Broadcasts incoming data to all ports. Mostly obsolete, replaced by switches.
+</ParamField>
+
+<ParamField path="bridge" param-type="hardware" required="false" deprecated="false">
+  Connects and filters traffic between network segments at Data Link Layer (Layer 2). Types: Local, Remote, Wireless.
+</ParamField>
+
+<ParamField path="switch" param-type="hardware" required="true" deprecated="false">
+  Forwards and filters Layer 2 datagrams based on MAC addresses. Learns MAC-to-port mappings. More efficient than hubs.
+</ParamField>
+
+<ParamField path="router" param-type="hardware" required="true" deprecated="false">
+  Forwards packets between networks using Layer 3 (IP) addresses. Uses routing tables for path determination.
+</ParamField>
+
+<ParamField path="modem" param-type="hardware" required="false" deprecated="false">
+  Modulates/demodulates signals for transmission over analog media (telephone lines). DSL technology example.
+</ParamField>
+
+<ParamField path="firewall" param-type="security" required="true" deprecated="false">
+  Controls network security and access rules. Rejects unauthorized access while allowing recognized sources.
+</ParamField>
+
+## OSI Model and Device Layers
+
+```mermaid
+graph TB
+    subgraph "Application Layers"
+        A7[Layer 7 - Application]
+        A6[Layer 6 - Presentation]
+        A5[Layer 5 - Session]
+    end
+    
+    subgraph "Transport Layers"
+        A4[Layer 4 - Transport]
+    end
+    
+    subgraph "Network Layers"
+        A3[Layer 3 - Network<br/>Routers]
+        A2[Layer 2 - Data Link<br/>Switches, Bridges]
+        A1[Layer 1 - Physical<br/>Hubs, Repeaters, Cables]
+    end
+    
+    A7 --> A6
+    A6 --> A5
+    A5 --> A4
+    A4 --> A3
+    A3 --> A2
+    A2 --> A1
+    
+    style A1 fill:#4ade80
+    style A2 fill:#4ade80
+    style A3 fill:#60a5fa
+```
+
+<Callout kind="tip" collapsed="false">
+  Understanding which layer each device operates at helps in troubleshooting network issues and designing efficient network architectures.
+</Callout>

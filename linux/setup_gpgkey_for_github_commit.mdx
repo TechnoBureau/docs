@@ -116,14 +116,14 @@ The output will be your public key in ASCII-armored format, which can be shared 
   <Step title="Obtain GPG key file" icon="file" titleType="p">If you have the GPG key file (with a .asc or .gpg extension) from another source, make sure you have it available on your system.</Step>
   <Step title="Import GPG key" icon="download" titleType="p">Open your terminal and run the following command, replacing `<KEY-FILE>` with the path to your GPG key file:
 
-```bash
-gpg --import <KEY_FILE>.pgp
+    ```bash
+    gpg --import <KEY_FILE>.pgp
 
-# or
-# Import Public key from Keybase or other server and import private key separately.
-curl https://keybase.io/<username>/pgp_keys.asc | gpg --import
-```
-</Step>
+    # or
+    # Import Public key from Keybase or other server and import private key separately.
+    curl https://keybase.io/<username>/pgp_keys.asc | gpg --import
+    ```
+  </Step>
 </Steps>
 The GPG key will be imported, and you will see the key details displayed in the terminal.
 
@@ -154,13 +154,14 @@ git config --global user.signingkey <YOUR-SIGNING-KEY-PUB-ID>
 git config --global commit.gpgsign true
 ```
 
-!!! note
+<Callout kind="info">
 
 SHORT keyid format will show the key-id into short format just next to rsa algorithm.
 
 ex:
 
 pub   rsa4096/**`4BF70A73`** 2021-09-08 \[SC] \[expires: 2037-09-04]
+</Callout>
 
 Restart the terminal: After making these configurations, it's recommended to restart the terminal for the changes to take effect.
 

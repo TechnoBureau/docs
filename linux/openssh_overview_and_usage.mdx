@@ -25,28 +25,28 @@ Many people new to computers and protocols tend to create a misconception about 
 
 OpenSSH is a client-server application tool and server and client utilities need to be installed to get access through SSH protocol. openssh-server need to be installed on Server-End. And openssh-client need to be installed on Client-End to access the server.
 
-To install OpenSSH, you need to have superuser permissions on the remote server. The installation process varies depending on the Linux distribution you are using. On Ubuntu/Debian/Linux Mint, you can install OpenSSH by running the following command in the terminal.
+To install OpenSSH, you need to have superuser permissions on the remote server. The installation process varies depending on the Linux distribution you are using. On Ubuntu/Linux Mint, you can install OpenSSH by running the following command in the terminal.
 
 ### OpenSSH Server installation
 
-<CodeGroup show-lines="true" tabs={["Ubuntu/Debian","CentOS/RHEL"]}>
-  ```bash Ubuntu/Debian
+<CodeGroup show-lines="true" tabs={["Ubuntu","CentOS"]}>
+  ```bash Ubuntu
   sudo apt-get install openssh-server
   ```
 
-  ```bash CentOS/RHEL
+  ```bash CentOS
   yum -y install openssh-server
   ```
 </CodeGroup>
 
 ### OpenSSH Client installation
 
-<CodeGroup show-lines="true" tabs={["Ubuntu/Debian","CentOS/RHEL"]}>
-  ```bash Ubuntu/Debian
+<CodeGroup show-lines="true" tabs={["Ubuntu","CentOS"]}>
+  ```bash Ubuntu
   sudo apt-get install openssh-client
   ```
 
-  ```bash CentOS/RHEL
+  ```bash CentOS
   dnf -y install openssh-client
   ```
 </CodeGroup>

@@ -272,12 +272,20 @@ so_keepalive=120:30:5   # Aggressive for cloud environments
 ## Best Practices
 
 <Steps>
-  <Step title="Set keepalive on public listeners" icon="settings" titleType="p">Always set `so_keepalive` on public-facing listeners.</Step>
-  <Step title="Aggressive values for Kubernetes" icon="zap" titleType="p">Use more aggressive values in Kubernetes than bare metal.</Step>
-  <Step title="Monitoring" icon="monitor" titleType="p">Monitor with:
+  <Step title="Set keepalive on public listeners" icon="settings" titleType="p">
+    Always set `so_keepalive` on public-facing listeners.
+  </Step>
+  <Step title="Aggressive values for Kubernetes" icon="zap" titleType="p">
+    Use more aggressive values in Kubernetes than bare metal.
+  </Step>
+  <Step title="Monitoring" icon="monitor" titleType="p">
+    Monitor with:
     - `ss -o state established | grep -E 'keepalive'`
-    - Prometheus metrics for `node_netstat_Tcp_ActiveOpens`.</Step>
-  <Step title="Combine with timeout settings" icon="clock" titleType="p">Combine with `keepalive_timeout 75s;` and `keepalive_requests 1000;`.</Step>
+    - Prometheus metrics for `node_netstat_Tcp_ActiveOpens`.
+  </Step>
+  <Step title="Combine with timeout settings" icon="clock" titleType="p">
+    Combine with `keepalive_timeout 75s;` and `keepalive_requests 1000;`.
+  </Step>
 </Steps>
 
 ---

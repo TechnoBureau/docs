@@ -10,17 +10,6 @@ keywords:
 
 ---
 
-## Table of Contents
-
-1. [Architecture Overview](#1-architecture-overview)
-2. [Cloud Load Balancer Configuration](#2-cloud-load-balancer-configuration)
-3. [TCP Keepalive Fundamentals](#3-tcp-keepalive-fundamentals)
-4. [NGINX Ingress Controllers](#4-nginx-ingress-controllers)
-5. [Pure NGINX Configuration](#5-pure-nginx-configuration)
-6. [Database Proxy Connections](#6-database-proxy-connections)
-7. [Complete Examples](#7-complete-examples)
-
----
 
 ## 1. Architecture Overview
 
@@ -29,7 +18,7 @@ keywords:
 ```mermaid
 graph TD;
     client[Client] -->|HTTP/HTTPS| cloudLB[Cloud Load Balancer];
-    cloudLB -->|TCP| connectionB[Connection B (TCP)];
+    cloudLB -->|TCP| connectionB[Connection B - TCP];
     connectionB -->|TCP/HTTP| nginx[NGINX Ingress Controller];
     nginx -->|Backend| backend[Backend Service / Database];
 
@@ -424,14 +413,14 @@ graph TD;
     idle -->|t = tcp_keepalive_time (e.g., 120s)| probe1["Send KEEPALIVE probe #1"];
     probe1 --> wait1["Wait for ACK"];
     wait1 -->|ACK received| reset1["Reset timer"];
-    wait1 -->|No ACK| intvl1["Wait tcp_keepalive_intvl (e.g., 15s)"];
+    wait1 -->|No ACK| intvl1["Wait tcp_keepalive_intvl. e.g., 15s"];
     intvl1 --> probe2["Send KEEPALIVE probe #2"];
     probe2 --> wait2["Wait for ACK"];
     wait2 -->|ACK received| reset2["Reset timer"];
     wait2 -->|No ACK| intvl2["Wait tcp_keepalive_intvl"];
     intvl2 --> probe3["Send probe #3"];
     probe3 --> continue["Continue…"];
-    continue -->|After N failed probes| dead["Declare connection DEAD\\nSend RST"];
+    continue -->|After N failed probes| dead["Declare connection DEAD<br>Send RST"];
 
 ```
 
@@ -1449,7 +1438,7 @@ flowchart LR
     C --> D[Database]
 
     subgraph Timeout_Layers
-        D1[Database Idle Timeout<br/>(Varies by DB)]
+        D1[Database Idle Timeout<br/>Varies by DB]
         D2[Cloud NAT Idle Timeout<br/>AWS: ~350s<br/>Azure: 240–1800s]
         D3[NGINX Stream Proxy Timeout]
         D4[No "Last Packet" from Idle Connection]

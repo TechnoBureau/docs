@@ -26,40 +26,13 @@ keywords:
 
 ### Multi-Layer Connection Architecture
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                         CLIENT                                      │
-└────────────────────────────┬────────────────────────────────────────┘
-                             │
-                             │ Connection A (HTTP/HTTPS)
-                             │ Controlled by: Cloud LB timeout
-                             ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                    CLOUD LOAD BALANCER                              │
-│  AWS: ALB (60s) / NLB (350s)                                        │
-│  Azure: Standard LB (240s, configurable 4-30 min)                   │
-└────────────────────────────┬────────────────────────────────────────┘
-                             │
-                             │ Connection B (TCP)
-                             │ ⚠️  CRITICAL: Configure TCP keepalive here
-                             │ Controlled by: tcp_keepalive_time
-                             ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                    NGINX INGRESS CONTROLLER                         │
-│  • Terminates client connection (A→B)                               │
-│  • Creates new connection to backend (C)                            │
-│  • Manages connection pooling                                       │
-└────────────────────────────┬────────────────────────────────────────┘
-                             │
-                             │ Connection C (HTTP/TCP)
-                             │ Controlled by: upstream_keepalive_*
-                             │ No Cloud LB timeout (internal)
-                             ▼
-┌──────────────────────────────────────────────────────────────────-───┐
-│                    BACKEND SERVICE / DATABASE                        │
-│  • Application pods                                                  │
-│  • Database servers                                                  │
-└───────────────────────────────────────────────────────────────────-──┘
+```mermaid
+graph TD;
+    client[Client] -->|HTTP/HTTPS| cloudLB[Cloud Load Balancer];
+    cloudLB -->|TCP| connectionB[Connection B (TCP)];
+    connectionB -->|TCP/HTTP| nginx[NGINX Ingress Controller];
+    nginx -->|Backend| backend[Backend Service / Database];
+
 ```
 
 ### Key Observations
@@ -127,19 +100,23 @@ spec:
     app.kubernetes.io/name: ingress-nginx
 ```
 
-**Configure ALB Idle Timeout via AWS CLI:**
+<Steps>
+  <Step title="Configure ALB Idle Timeout via AWS CLI" icon="terminal" titleType="p">
+    Retrieve the ALB ARN and update the idle timeout.
 
-```bash
-# Get the ALB ARN from the service
-ALB_ARN=$(aws elbv2 describe-load-balancers \
-  --query 'LoadBalancers[?contains(LoadBalancerName, `k8s`)].LoadBalancerArn' \
-  --output text)
+    ```bash
+    # Get the ALB ARN from the service
+    ALB_ARN=$(aws elbv2 describe-load-balancers \
+      --query 'LoadBalancers[?contains(LoadBalancerName, `k8s`)].LoadBalancerArn' \
+      --output text)
 
-# Modify idle timeout (60s default → 120s)
-aws elbv2 modify-load-balancer-attributes \
-  --load-balancer-arn $ALB_ARN \
-  --attributes Key=idle_timeout.timeout_seconds,Value=120
-```
+    # Modify idle timeout (60s default → 120s)
+    aws elbv2 modify-load-balancer-attributes \
+      --load-balancer-arn $ALB_ARN \
+      --attributes Key=idle_timeout.timeout_seconds,Value=120
+    ```
+  </Step>
+</Steps>
 
 **Configure ALB via Terraform:**
 
@@ -249,19 +226,12 @@ spec:
 
 **Important NLB Characteristics:**
 
-```
-┌─────────────────────────────────────────────────────────┐
-│  AWS Network Load Balancer (NLB)                        │
-│                                                         │
-│  Idle Timeout: 350 seconds (FIXED)                      │
-│  ✗ Cannot be configured                                 │
-│  ✗ No service annotation                                │
-│  ✗ No CLI/API parameter                                 │
-│  ✗ No Terraform setting                                 │
-│                                                         │
-│  ⚠️  You MUST configure TCP keepalive < 350s            │
-│      Recommended: tcp_keepalive_time = 180s             │
-└─────────────────────────────────────────────────────────┘
+```mermaid
+graph TD;
+    NLB["AWS Network Load Balancer (NLB)"] -->|Idle Timeout| idle["350s (fixed)"];
+    idle -->|Cannot be configured| noConfig["No annotation / CLI / Terraform"];
+    noConfig -->|Requirement| keepalive["Set tcp_keepalive_time < 350s (e.g., 180s)"];
+
 ```
 
 **Official Documentation:**
@@ -448,40 +418,21 @@ spec:
 
 ### How TCP Keepalive Works
 
-```
-Connection established at t=0
-│
-│ [Application is idle, no data sent]
-│
-├─ t = tcp_keepalive_time (e.g., 120s)
-│  │
-│  ├─> Send TCP keepalive probe #1
-│  │   (ACK packet with seq# = last_ack - 1)
-│  │
-│  └─> Wait for ACK response
-│      │
-│      ├─ Response received?
-│      │  └─> YES: Connection alive, reset timer
-│      │
-│      └─> NO: Wait tcp_keepalive_intvl (e.g., 15s)
-│
-├─ t = 120s + 15s = 135s
-│  │
-│  ├─> Send TCP keepalive probe #2
-│  └─> Wait for ACK
-│      └─> NO: Wait tcp_keepalive_intvl
-│
-├─ t = 135s + 15s = 150s
-│  ├─> Send probe #3
-│  └─> Continue...
-│
-├─ After tcp_keepalive_probes (e.g., 9) failed probes
-│  │
-│  └─> t = 120s + (15s × 9) = 255s
-│     │
-│     └─> Declare connection DEAD
-│        Send RST to close connection
-│
+```mermaid
+graph TD;
+    start["Connection established at t=0"] --> idle["Application idle"];
+    idle -->|t = tcp_keepalive_time (e.g., 120s)| probe1["Send KEEPALIVE probe #1"];
+    probe1 --> wait1["Wait for ACK"];
+    wait1 -->|ACK received| reset1["Reset timer"];
+    wait1 -->|No ACK| intvl1["Wait tcp_keepalive_intvl (e.g., 15s)"];
+    intvl1 --> probe2["Send KEEPALIVE probe #2"];
+    probe2 --> wait2["Wait for ACK"];
+    wait2 -->|ACK received| reset2["Reset timer"];
+    wait2 -->|No ACK| intvl2["Wait tcp_keepalive_intvl"];
+    intvl2 --> probe3["Send probe #3"];
+    probe3 --> continue["Continue…"];
+    continue -->|After N failed probes| dead["Declare connection DEAD\\nSend RST"];
+
 ```
 
 ### Load Balancer Flow Table Behavior
@@ -1015,45 +966,15 @@ spec:
 ### Understanding NGINX Connection Flow
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                      NGINX Process                              │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  ┌─────────────────────────────────────────────────────────┐    │
-│  │               HTTP/HTTPS Block                          │    │
-│  │  - Global HTTP settings                                 │    │
-│  │  - keepalive_timeout (client-side)                      │    │
-│  │  - keepalive_requests                                   │    │
-│  └─────────────────────────────────────────────────────────┘    │
-│                           │                                     │
-│                           ↓                                     │
-│  ┌─────────────────────────────────────────────────────────┐    │
-│  │               Upstream Block                            │    │
-│  │  - Backend server pool                                  │    │
-│  │  - keepalive (connection pool size)                     │    │
-│  │  - keepalive_timeout (upstream-side)                    │    │
-│  │  - keepalive_requests                                   │    │
-│  └─────────────────────────────────────────────────────────┘    │
-│                           │                                     │
-│                           ↓                                     │
-│  ┌─────────────────────────────────────────────────────────┐    │
-│  │               Server Block                              │    │
-│  │  - listen 80/443                                        │    │
-│  │  - server_name                                          │    │
-│  │  - keepalive_timeout (can override global)              │    │
-│  └─────────────────────────────────────────────────────────┘    │
-│                           │                                     │
-│                           ↓                                     │
-│  ┌─────────────────────────────────────────────────────────┐    │
-│  │               Location Block                            │    │
-│  │  - proxy_pass                                           │    │
-│  │  - proxy_http_version 1.1                               │    │
-│  │  - proxy_set_header Connection ""                       │    │
-│  │  - proxy_read_timeout                                   │    │
-│  │  - proxy_send_timeout                                   │    │
-│  │  - proxy_connect_timeout                                │    │
-│  └─────────────────────────────────────────────────────────┘    │
-└─────────────────────────────────────────────────────────────────┘
+flowchart LR
+  client[Client] --> http["HTTP/HTTPS Block"]
+  http --> upstream["Upstream Block"]
+  upstream --> server["Server Block"]
+  server --> location["Location Block"]
+  location --> nginx["NGINX Process"]
+
+  classDef box
+      client,http,upstream,server,location,nginx:::box
 ```
 
 ---
@@ -1520,23 +1441,27 @@ location / {
 
 ### Database Connection Challenges
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│          Database Connection Idle Timeout Problem              │
-├────────────────────────────────────────────────────────────────┤
-│                                                                │
-│  Application → NGINX → Cloud NAT → Database                    │
-│                   │                     │                      │
-│                   │                     └─ Has idle timeout    │
-│                   └─ Proxies TCP, needs keepalive              │
-│                                                                │
-│  Common Issues:                                                │
-│  1. Database idle timeout (varies by DB)                       │
-│  2. Cloud NAT idle timeout (AWS: 350s, Azure: 240-1800s)       │
-│  3. NGINX stream proxy timeout                                 │
-│  4. No "last packet" from idle connection                      │
-│  5. Connection reset errors                                    │
-└────────────────────────────────────────────────────────────────┘
+```mermaid
+
+flowchart LR
+    A[Application] --> B[NGINX<br/>Stream Proxy]
+    B --> C[Cloud NAT]
+    C --> D[Database]
+
+    subgraph Timeout_Layers
+        D1[Database Idle Timeout<br/>(Varies by DB)]
+        D2[Cloud NAT Idle Timeout<br/>AWS: ~350s<br/>Azure: 240–1800s]
+        D3[NGINX Stream Proxy Timeout]
+        D4[No "Last Packet" from Idle Connection]
+        D5[Connection Reset Errors]
+    end
+
+    D -.Affected by .-> D1
+    C -.Affected by .-> D2
+    B -.Affected by .-> D3
+    B -.Cause .-> D4
+    D4 -.Leads to .-> D5
+
 ```
 
 ### Database-Specific Idle Timeouts
@@ -1876,19 +1801,39 @@ connection_pool = mysql.connector.pooling.MySQLConnectionPool(
 
 #### Problem: Connection Closed Without Final Packet
 
-```
-Timeline of "No Last Packet" Error:
+```mermaid
+sequenceDiagram
+    participant APP as 🖥️ Application
+    participant NGX as ⚙️ NGINX
+    participant DB as 🗄️ Database
 
-t=0      Application establishes connection to DB via NGINX
-t=1      Application sends query
-t=2      Database responds
-t=10     Connection becomes idle
-t=310    NGINX proxy_timeout (300s) expires
-         ❌ NGINX closes connection WITHOUT sending FIN/RST
-         ❌ Application doesn't know connection is dead
-t=320    Application tries to send query
-         ❌ Error: "connection reset by peer"
-         ❌ Error: "no last packet sent"
+    Note over APP,DB: t=0 — Connection Established
+    APP->>NGX: Connect
+    NGX->>DB: Connect
+    Note over APP,DB: ✅ TCP Connection Open
+
+    Note over APP,DB: t=1 — Query Sent
+    APP->>NGX: Send Query
+    NGX->>DB: Forward Query
+
+    Note over APP,DB: t=2 — Response Received
+    DB->>NGX: Query Response
+    NGX->>APP: Forward Response
+    Note over APP,DB: ✅ Connection Now Idle at t=10
+
+    Note over APP,DB: ⏳ Silence... 300 seconds pass...
+
+    Note over NGX: t=310 — NGINX proxy_timeout expires ❌
+    Note over NGX: ❌ NGINX silently closes connection
+    Note over NGX: ❌ No FIN sent to Application
+    Note over NGX: ❌ No RST sent to Application
+    Note over APP: ❌ Application still thinks connection is ALIVE
+
+    Note over APP,DB: t=320 — Application tries to reuse connection
+    APP->>NGX: Send Query ❌
+    NGX-->>APP: Connection Reset / Refused
+    Note over APP: ❌ Error: connection reset by peer
+    Note over APP: ❌ Error: no last packet sent
 ```
 
 #### Solution 1: Shorter proxy_timeout
@@ -1987,35 +1932,17 @@ keepalive_thread.start()
 
 #### 1. Layered Timeout Strategy
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│              Timeout Layer Stack                            │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│  Application Query Timeout: 30s                             │
-│  ├─ Prevents long-running queries                           │
-│  └─ Fast failure for application                            │
-│                                                             │
-│  Application Connection Pool Idle: 5min                     │
-│  ├─ Recycles idle connections                               │
-│  └─ Prevents stale connections in pool                      │
-│                                                             │
-│  NGINX proxy_timeout: 5min                                  │
-│  ├─ Closes truly idle connections                           │
-│  └─ Aligned with app pool timeout                           │
-│                                                             │
-│  TCP Keepalive: 60s / 10s / 9 probes                        │
-│  ├─ Detects network failures                                │
-│  └─ Total detection: 150s                                   │
-│                                                             │
-│  Cloud NAT Timeout: 240-350s                                │
-│  ├─ External constraint                                     │
-│  └─ Must configure keepalive < this                         │
-│                                                             │
-│  Database wait_timeout: 8 hours (MySQL)                     │
-│  ├─ Server-side safety net                                  │
-│  └─ Should never be reached                                 │
-└─────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    A["🔵 Application Query Timeout\n━━━━━━━━━━━━━━━━━━━━\n⏱ 30 seconds\n✔ Prevents long-running queries\n✔ Fast failure for application"]
+    B["🔵 Application Connection Pool Idle\n━━━━━━━━━━━━━━━━━━━━\n⏱ 5 minutes\n✔ Recycles idle connections\n✔ Prevents stale connections in pool"]
+    C["🟠 NGINX proxy_timeout\n━━━━━━━━━━━━━━━━━━━━\n⏱ 5 minutes\n✔ Closes truly idle connections\n✔ Aligned with app pool timeout"]
+    D["🟢 TCP Keepalive\n━━━━━━━━━━━━━━━━━━━━\n⏱ 60s interval / 10s retry / 9 probes\n✔ Detects network failures\n✔ Total detection time: 150s"]
+    E["🔴 Cloud NAT Timeout\n━━━━━━━━━━━━━━━━━━━━\n⏱ 240s – 350s\n⚠ External constraint\n⚠ Keepalive MUST be less than this"]
+    F["🟣 Database wait_timeout\n━━━━━━━━━━━━━━━━━━━━\n⏱ 8 hours (MySQL)\n✔ Server-side safety net\n✔ Should never be reached"]
+
+    A --> B --> C --> D --> E --> F
+
 ```
 
 #### 2. Connection Pool Sizing

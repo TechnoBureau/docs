@@ -166,7 +166,7 @@
   },
   "template": "atlas",
   "ai": {
-    "ai-assistant:enabled": false,
+    "ai-assistant:enabled": true,
     "page-actions": [
       "copy",
       "view",

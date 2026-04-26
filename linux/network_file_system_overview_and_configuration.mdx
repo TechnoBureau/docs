@@ -54,14 +54,14 @@ And following RPC Services facilities the NFS Services.
 
 In Server side we need to install **nfs-kernel-server** and **nfs-common** packages need to install for further configuration and using the NFS service.
 
-<CodeGroup show-lines="true" tabs={["Ubuntu/Debian","CentOS"]}>
+<CodeGroup show-lines="true" tabs={["Ubuntu/Debian","CentOS/Redhat"]}>
   ```bash Ubuntu/Debian
   apt-get install nfs-kernel-server
 
   apt-get install nfs-common
   ```
 
-  ```bash CentOS
+  ```bash CentOS/Redhat
   yum install nfs-utils nfs-utils-lib
   ```
 </CodeGroup>
@@ -70,12 +70,12 @@ In Server side we need to install **nfs-kernel-server** and **nfs-common** packa
 
 In client side we need an **nfs-common** package required to using the NFS Service.
 
-<CodeGroup show-lines="true" tabs={["Ubuntu","CentOS"]}>
-  ```bash Ubuntu
+<CodeGroup show-lines="true" tabs={["Ubuntu/Debian","CentOS/Redhat"]}>
+  ```bash Ubuntu/Debian
   apt-get install nfs-common
   ```
 
-  ```bash CentOS
+  ```bash CentOS/Redhat
   yum install nfs-utils nfs-utils-lib
   ```
 </CodeGroup>

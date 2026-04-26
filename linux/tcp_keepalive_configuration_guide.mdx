@@ -410,7 +410,7 @@ spec:
 ```mermaid
 graph TD;
     start["Connection established at t=0"] --> idle["Application idle"];
-    idle -->|t = tcp_keepalive_time (e.g., 120s)| probe1["Send KEEPALIVE probe #1"];
+    idle -->|t = tcp_keepalive_time e.g., 120s| probe1["Send KEEPALIVE probe #1"];
     probe1 --> wait1["Wait for ACK"];
     wait1 -->|ACK received| reset1["Reset timer"];
     wait1 -->|No ACK| intvl1["Wait tcp_keepalive_intvl. e.g., 15s"];

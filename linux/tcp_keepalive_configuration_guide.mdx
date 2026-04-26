@@ -426,43 +426,49 @@ graph TD;
 
 ### Load Balancer Flow Table Behavior
 
+#### With Keepalive:
+
+```mermaid
+
+flowchart TB
+    T0["t=0<br/>━━━━━━━━━━━━━━━━━━<br/>🟢 Connection Established<br/>Flow Entry Created<br/>Client:12345 ↔ Backend:80"]
+
+    T120["t=120<br/>━━━━━━━━━━━━━━━━━━<br/>📤 Last Data Packet<br/>⏱️ Idle Timer STARTS<br/>Timeout Setting: 240s"]
+
+    T200["t=200 (80 seconds idle)<br/>━━━━━━━━━━━━━━━━━━<br/>✅ TCP Keepalive Probe Arrives<br/>⏱️ Idle Timer RESETS to 0<br/>Flow Entry: ACTIVE"]
+
+    T320["t=320 (120 seconds after last keepalive)<br/>━━━━━━━━━━━━━━━━━━<br/>✅ TCP Keepalive Probe Arrives<br/>⏱️ Idle Timer RESETS to 0<br/>Flow Entry: ACTIVE"]
+
+    T440["t=440, t=560, t=680...<br/>━━━━━━━━━━━━━━━━━━<br/>✅ Keepalives Continue<br/>⏱️ Timer Keeps Resetting<br/>Flow Entry: ACTIVE"]
+
+    RESULT["✅ RESULT<br/>━━━━━━━━━━━━━━━━━━<br/>🟢 Connection Stays ALIVE<br/>🟢 Flow Entry Maintained<br/>🟢 No Connection Errors<br/>🟢 Application Works Fine"]
+
+    T0 --> T120 --> T200 --> T320 --> T440 --> RESULT
 ```
-┌──────────────────────────────────────────────────────────┐
-│             LOAD BALANCER FLOW TABLE                     │
-├──────────────────────────────────────────────────────────┤
-│                                                          │
-│  Flow Entry: Client:12345 ←→ Backend:80                  │
-│  Created at: t=0                                         │
-│  Last Packet: t=120                                      │
-│  Idle Timer: 240s                                        │
-│                                                          │
-│  ┌─────────────────────────────────────────-┐            │
-│  │  Timeline:                               │            │
-│  │                                          │            │
-│  │  t=0     Connection established          │            │
-│  │  t=120   Last data packet                │            │
-│  │          [Idle timer starts]             │            │
-│  │  t=200   TCP keepalive probe arrives ✓   │            │
-│  │          [Idle timer RESETS to 0]        │            │
-│  │  t=320   Another keepalive probe ✓       │            │
-│  │          [Idle timer RESETS to 0]        │            │
-│  │                                          │            │
-│  │  ✅ Connection stays alive               │            │
-│  └─────────────────────────────────────────-┘            │
-│                                                          │
-│  Without keepalive:                                      │
-│  ┌─────────────────────────────────────────-┐            │
-│  │  t=0     Connection established          │            │
-│  │  t=120   Last data packet                │            │
-│  │          [Idle timer starts]             │            │
-│  │  t=360   Idle timeout (240s elapsed)     │            │
-│  │          [Flow entry REMOVED]            │            │
-│  │  t=400   Client sends packet             │            │
-│  │          ❌ No flow entry found          │            │
-│  │          → Send TCP RST to both sides    │            │
-│  └─────────────────────────────────────────-┘            │
-└──────────────────────────────────────────────────────────┘
+
+#### Without Keepalive:
+
+```mermaid
+flowchart TB
+    T0["t=0<br/>━━━━━━━━━━━━━━━━━━<br/>🟢 Connection Established<br/>Flow Entry Created<br/>Client:12345 ↔ Backend:80"]
+
+    T120["t=120<br/>━━━━━━━━━━━━━━━━━━<br/>📤 Last Data Packet<br/>⏱️ Idle Timer STARTS<br/>Timeout Setting: 240s"]
+
+    T200["t=200 (80 seconds idle)<br/>━━━━━━━━━━━━━━━━━━<br/>💤 No Keepalive Sent<br/>⏱️ Idle Timer: 80/240s<br/>Flow Entry: ACTIVE (but counting...)"]
+
+    T300["t=300 (180 seconds idle)<br/>━━━━━━━━━━━━━━━━━━<br/>💤 Still No Packet<br/>⏱️ Idle Timer: 180/240s<br/>Flow Entry: ACTIVE (but counting...)"]
+
+    T360["t=360 (240 seconds idle)<br/>━━━━━━━━━━━━━━━━━━<br/>⏰ IDLE TIMEOUT REACHED!<br/>🗑️ Flow Entry REMOVED<br/>Load Balancer Forgets Connection"]
+
+    T400["t=400<br/>━━━━━━━━━━━━━━━━━━<br/>📤 Client Tries to Send Packet<br/>❌ Load Balancer: No Flow Entry Found<br/>❌ Connection Mapping Lost"]
+
+    RESULT["❌ RESULT<br/>━━━━━━━━━━━━━━━━━━<br/>🔴 Load Balancer Sends TCP RST to Client<br/>🔴 Load Balancer Sends TCP RST to Backend<br/>🔴 Error: 'connection reset by peer'<br/>🔴 Application Must Reconnect"]
+
+    T0 --> T120 --> T200 --> T300 --> T360 --> T400 --> RESULT
+
 ```
+
+
 
 ### Recommended Values by Cloud Provider
 

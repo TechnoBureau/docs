@@ -54,8 +54,8 @@ And following RPC Services facilities the NFS Services.
 
 In Server side we need to install **nfs-kernel-server** and **nfs-common** packages need to install for further configuration and using the NFS service.
 
-<CodeGroup show-lines="true" tabs={["Ubuntu","CentOS"]}>
-  ```bash Ubuntu
+<CodeGroup show-lines="true" tabs={["Ubuntu/Debian","CentOS"]}>
+  ```bash Ubuntu/Debian
   apt-get install nfs-kernel-server
 
   apt-get install nfs-common
@@ -147,13 +147,9 @@ We can pass the nfs version to mount when server version is different from clien
 mount -t nfs -o nfsvers=3 192.168.1.50:/home/nfs /home/nfslocal
 ```
 
-
-
 <Callout kind="alert" collapsed="false">
   Kindly note that this mounted network file system will not be accesible once client rebooted and need to mount again to get access the same.
 </Callout>
-
-
 
 #### Common NFS Mount Options
 

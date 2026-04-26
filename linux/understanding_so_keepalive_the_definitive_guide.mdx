@@ -101,9 +101,9 @@ When a connection is idle:
 
 - Connection remains **ESTABLISHED** and healthy
 
-```mermaid wrap="true"
+```mermaid
 flowchart LR
-    A[Connection ESTABLISHED<br/>Idle starts] --> B[Wait 300s - <br> keepidle]
+    A[Connection ESTABLISHED<br/>Idle starts] --> B[Wait 300s - <br/> keepidle]
     B --> C[Send TCP Keepalive Probe]
     C --> D{ACK Received?}
     D -->|Yes| E[Reset Idle Timer]

@@ -1,24 +1,27 @@
 ---
-title: "OpenSSH - Overview and Usage"
-description: "Secure Shell is an application protocol and software suite that allows secure network services over an insecure network such as the public internet by strong encryption and authentication. It can be used for remote terminal connections,remote file copy and forwarding X11 sessions as well as arbitrary TCP ports through a secure tunnel.It replaces the other insecure protocols such as Telnet and FTP."
+title: OpenSSH - Overview and Usage
+description: >-
+  Secure Shell is an application protocol and software suite that allows secure
+  network services over an insecure network such as the public internet by
+  strong encryption and authentication. It can be used for remote terminal
+  connections,remote file copy and forwarding X11 sessions as well as arbitrary
+  TCP ports through a secure tunnel.It replaces the other insecure protocols
+  such as Telnet and FTP.
 author: Ganapathi Chidambaram
-date: 2023-03-22
 keywords:
   - Linux
   - SSH
   - OpenSSH
 ---
-
 ## What is Secure Shell(SSH) ?
+
 Secure Shell is an application protocol and software suite that allows secure network services over an insecure network such as the public internet by strong encryption and authentication. It can be used for remote terminal connections,remote file copy and forwarding X11 sessions as well as arbitrary TCP ports through a secure tunnel.It replaces the other insecure protocols such as Telnet and FTP.
 
 OpenSSH is a free and open-source set of computer tools that are used to provide secure and encrypted communication over a computer network using the ssh protocol. OpenSSH is commonly used to connect to a remote Linux shell, but it can also be used for other purposes, such as file transfer, tunneling, and port forwarding.
 
-
-| Service Name | Port Number |	Transport Protocol    |
-|--------------|-------------|------------------------|
-| ssh          | 22	         | TCP/UDP/SCTP           |
-
+| Service Name | Port Number | Transport Protocol |
+| ------------ | ----------- | ------------------ |
+| ssh          | 22          | TCP/UDP/SCTP       |
 
 Remote accessing of Linux PCs from another Linux PC or server is an essential capability that is required in many scenarios, especially for system administrators and developers. It allows users to access a remote server, execute commands, transfer files, and perform other essential tasks from the comfort of their workstation or laptop. Fortunately, the process of accessing a Linux PC or server remotely is straightforward and can be accomplished using a set of computer tools called OpenSSH.
 
@@ -32,28 +35,26 @@ To install OpenSSH, you need to have superuser permissions on the remote server.
 
 ### OpenSSH Server installation
 
-<CodeGroup tag="BASH" label="Installation of OpenSSH Server">
+<CodeGroup show-lines="true" tabs={["Ubuntu/Debian","CentOS/RHEL"]}>
+  ```bash Ubuntu/Debian
+  sudo apt-get install openssh-server
+  ```
 
-    ```bash {{ title: 'Ubuntu/Debian' }}
-    sudo apt-get install openssh-server
-    ```
-
-    ```bash {{ title: 'CentOS/RHEL' }}
-    yum -y install openssh-server
-    ```
+  ```bash CentOS/RHEL
+  yum -y install openssh-server
+  ```
 </CodeGroup>
 
 ### OpenSSH Client installation
 
-<CodeGroup tag="BASH" label="Installation of OpenSSH Client">
+<CodeGroup show-lines="true" tabs={["Ubuntu/Debian","CentOS/RHEL"]}>
+  ```bash Ubuntu/Debian
+  sudo apt-get install openssh-client
+  ```
 
-    ```bash {{ title: 'Ubuntu/Debian' }}
-    sudo apt-get install openssh-client
-    ```
-
-    ```bash {{ title: 'CentOS/RHEL' }}
-    dnf -y install openssh-client
-    ```
+  ```bash CentOS/RHEL
+  dnf -y install openssh-client
+  ```
 </CodeGroup>
 
 ## Configuration
@@ -61,8 +62,8 @@ To install OpenSSH, you need to have superuser permissions on the remote server.
 Configurations files are located under the */etc/ssh* Directory and configurations files are mentioned below.
 
 !! note
-    Server Configuration File - */etc/ssh/sshd_config*
-    Client Configurations File - */etc/ssh/ssh_config* or *~/.ssh/config*
+Server Configuration File - */etc/ssh/sshd\_config*
+Client Configurations File - */etc/ssh/ssh\_config* or *\~/.ssh/config*
 
 And here are few configuration and its usage are :
 
@@ -84,64 +85,64 @@ And here are few configuration and its usage are :
 
 - **CompressionLevel**
 
-    Specifies the compression level to use if compression is enabled.The argument must be an integer from 1 (fast) to 9(slow,best).
-    The default level is 6, which is good for most applications.The meaning of the values is the same as in gzip(1).Note that this
-    option applies to protocol version 1 only.
+  Specifies the compression level to use if compression is enabled.The argument must be an integer from 1 (fast) to 9(slow,best).
+  The default level is 6, which is good for most applications.The meaning of the values is the same as in gzip(1).Note that this
+  option applies to protocol version 1 only.
 
 - **ConnectionAttempts**
 
-    Specifies the number of tries (one per second) to make before exiting.The argument must be an integer.This may be useful in scripts if the connection sometimes fails.The default is 1.
+  Specifies the number of tries (one per second) to make before exiting.The argument must be an integer.This may be useful in scripts if the connection sometimes fails.The default is 1.
 
 - **ConnectTimeout**
 
-    Specifies the timeout (in seconds) used when connecting to the SSH server, instead of using the default system TCP timeout.
-    This value is used only when the target is down or really unreachable, not when it refuses the connection.
+  Specifies the timeout (in seconds) used when connecting to the SSH server, instead of using the default system TCP timeout.
+  This value is used only when the target is down or really unreachable, not when it refuses the connection.
 
 - **GlobalKnownHostsFile**
 
-    Specifies one or more files to use for the global host key data‐base, separated by whitespace.The default is /etc/ssh/
-    ssh_known_hosts, /etc/ssh/ssh_known_hosts2.
+  Specifies one or more files to use for the global host key data‐base, separated by whitespace.The default is /etc/ssh/
+  ssh\_known\_hosts, /etc/ssh/ssh\_known\_hosts2.
 
 - **UserKnownHostsFile**
 
-    Specifies one or more files to use for the user host key database, separated by whitespace. The default is ~/.ssh/known_hosts,
-    ~/.ssh/known_hosts2.
+  Specifies one or more files to use for the user host key database, separated by whitespace. The default is \~/.ssh/known\_hosts,
+  \~/.ssh/known\_hosts2.
 
 - **HostbasedAuthentication**
 
-    Specifies whether to try rhosts based authentication with public key authentication.The argument must be “yes” or “no”.The
-    default is “no”.  This option applies to protocol version 2 only and is similar to RhostsRSAAuthentication.
+  Specifies whether to try rhosts based authentication with public key authentication.The argument must be “yes” or “no”.The
+  default is “no”.  This option applies to protocol version 2 only and is similar to RhostsRSAAuthentication.
 
 - **NumberOfPasswordPrompts**
 
-    Specifies the number of password prompts before giving up.The argument to this keyword must be an integer.The default is 3.
+  Specifies the number of password prompts before giving up.The argument to this keyword must be an integer.The default is 3.
 
 - **PasswordAuthentication**
 
-    Specifies whether to use password authentication. The argument to this keyword must be “yes” or “no”.The default is “yes”.
+  Specifies whether to use password authentication. The argument to this keyword must be “yes” or “no”.The default is “yes”.
 
 - **PreferredAuthentications**
 
-    Specifies the order in which the client should try protocol 2 authentication methods.This allows a client to prefer one
-    method (e.g. keyboard-interactive) over another method (e.g.password).The default is:( gssapi-with-mic,hostbased,publickey,
-    keyboard-interactive,password ).
+  Specifies the order in which the client should try protocol 2 authentication methods.This allows a client to prefer one
+  method (e.g. keyboard-interactive) over another method (e.g.password).The default is:( gssapi-with-mic,hostbased,publickey,
+  keyboard-interactive,password ).
 
 - **Protocol**
 
-    Specifies the protocol versions ssh(1) should support in order of preference.The possible values are ‘1’ and ‘2’.Multiple
-    versions must be comma-separated.When this option is set to “2,1”.ssh will try version 2 and fall back to version 1 if version
-    2 is not available.The default is ‘2’.
+  Specifies the protocol versions ssh(1) should support in order of preference.The possible values are ‘1’ and ‘2’.Multiple
+  versions must be comma-separated.When this option is set to “2,1”.ssh will try version 2 and fall back to version 1 if version
+  2 is not available.The default is ‘2’.
 
 - **StrictHostKeyChecking**
 
-    If this flag is set to “yes”, ssh(1) will never automatically add host keys to the ~/.ssh/known_hosts file, and refuses to
-    connect to hosts whose host key has changed.  This provides maximum protection against trojan horse attacks, though it can be
-    annoying when the /etc/ssh/ssh_known_hosts file is poorly maintained or when connections to new hosts are frequently made.This
-    option forces the user to manually add all new hosts.If this flag is set to “no”, ssh will automatically add new host keys to
-    the user known hosts files.If this flag is set to “ask”, new host keys will be added to the user known host files only after
-    the user has confirmed that is what they really want to do, and ssh will refuse to connect to hosts whose host key has changed.
-    The host keys of known hosts will be verified automatically in all cases.The argument must be “yes”, “no”, or “ask”.The
-    default is “ask”.
+  If this flag is set to “yes”, ssh(1) will never automatically add host keys to the \~/.ssh/known\_hosts file, and refuses to
+  connect to hosts whose host key has changed.  This provides maximum protection against trojan horse attacks, though it can be
+  annoying when the /etc/ssh/ssh\_known\_hosts file is poorly maintained or when connections to new hosts are frequently made.This
+  option forces the user to manually add all new hosts.If this flag is set to “no”, ssh will automatically add new host keys to
+  the user known hosts files.If this flag is set to “ask”, new host keys will be added to the user known host files only after
+  the user has confirmed that is what they really want to do, and ssh will refuse to connect to hosts whose host key has changed.
+  The host keys of known hosts will be verified automatically in all cases.The argument must be “yes”, “no”, or “ask”.The
+  default is “ask”.
 
 ## Login Procedure - Windows
 
@@ -150,29 +151,32 @@ Once the OpenSSH server is installed on the remote Linux PC/Server, we can use a
 To log in to the remote Linux PC/Server using PuTTY, follow these steps:
 
 1. Open PuTTY and select "ssh" as the connection type.
+
 2. Enter the hostname or the remote server's DNS name or remote IP in the Host Name field. For example, hostname: technobureuau.com
+
 3. Enter your identity information, including your username and password.
+
 4. Download and install WinSCP or FileZilla application if you don't have it, to transfer files between your Windows and Linux PC/Server.
 
-
 ## Login Procedure - Linux
+
 To access the remote Linux PC/Server from another Linux PC/Server, you need to install the OpenSSH client on the source system. This will allow you to log in to the remote system from the source system.
 
-* To log in to the remote Linux shell, open a terminal and type:
+- To log in to the remote Linux shell, open a terminal and type:
 
 ```sh
 ssh -X <your_username>@<host_name>
 ```
+
 The hostname is the remote server's DNS name or remote IP, such as technobureau.com. You will be asked to enter the password, which you can simply type and press Enter. Once you are logged in, you can execute commands, transfer files, and perform other essential tasks on the remote server.
 
-
-* To transfer files between the local and remote Linux PC or server, you can use the scp command. The scp command allows you to copy files securely between two Linux computers. To copy files to the server, run the following command on your workstation or laptop:
+- To transfer files between the local and remote Linux PC or server, you can use the scp command. The scp command allows you to copy files securely between two Linux computers. To copy files to the server, run the following command on your workstation or laptop:
 
 ```sh
 scp -r <path_from_directory> <your_username>@<host_name>:<path_to_directory>
 ```
 
-* To copy files from the server, run the following command on your workstation or laptop:
+- To copy files from the server, run the following command on your workstation or laptop:
 
 ```sh
 scp -r <your_username>@<host_name>:<path_from_directory> <path_to_directory>

@@ -15,19 +15,19 @@ keywords:
 ---
 We will assume the following server details for our setup:
 
-MySQL Server1:
+MySQL Server Identification:
 
-```
-Server IP : 192.168.0.1
-hostname  : mysqldb1
-```
+<CodeGroup default-tab="0" show-lines="true" tabs={["MySQL1","MySQL2"]}>
+  ```text MySQL1
+  Server IP : 192.168.0.1
+  hostname  : mysqldb1
+  ```
 
-MySQL Server2:
-
-```
-Server IP : 192.168.0.2
-hostname  : mysqldb2
-```
+  ```text MySQL2
+  Server IP : 192.168.0.2
+  hostname  : mysqldb2
+  ```
+</CodeGroup>
 
 ## Configure MySQL Cluster
 
@@ -71,7 +71,7 @@ To configure MySQL Server for replication, add the following configuration under
 
 Next, we need to create a replica user on each server to establish replication. Run the following commands on MySQL Server1 and MySQL Server2, respectively:
 
-<CodeGroup default-tab="1" show-lines="true" tabs={["MySQL1","MySQL2"]}>
+<CodeGroup show-lines="true" tabs={["MySQL1","MySQL2"]}>
   ```bash MySQL1
   mysql -uroot -p -e "GRANT REPLICATION SLAVE ON *.* TO 'replicauser'@'192.168.0.2' IDENTIFIED BY 'replica';"
   mysql -uroot -p -e "FLUSH PRIVILEGES;"
@@ -87,7 +87,7 @@ Next, we need to create a replica user on each server to establish replication. 
 
 After creating the replica user, restart the MariaDB service on both servers to apply the configuration changes:
 
-<CodeGroup default-tab="1" show-lines="true" tabs={["MySQL1","MySQL2"]}>
+<CodeGroup show-lines="true" tabs={["MySQL1","MySQL2"]}>
   ```bash MySQL1
   systemctl restart mariadb
   ```

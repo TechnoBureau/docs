@@ -205,7 +205,7 @@ tshark -r keepalive_3306.pcap \
   -e tcp.seq \
   -e tcp.ack \
   -E header=y \
-  -E separator='\t'
+  -E separator=$'\t'
 ```
 
 ### Live Capture with tshark
@@ -216,7 +216,7 @@ tshark -i eth0 \
   -T fields \
   -e frame.time -e ip.src -e ip.dst \
   -e tcp.srcport -e tcp.dstport -e tcp.seq -e tcp.ack \
-  -E header=y -E separator='\t'
+  -E header=y -E separator=$'\t'
 ```
 
 ### Sample Output
@@ -280,7 +280,7 @@ When the unacknowledged probe count reaches `tcp_keepalive_probes`, the OS drops
 
 ## 7. Go Client Implementation
 
-Production-ready client supporting both JDBC URL format and direct DSN format.
+Production-ready client supporting both JDBC URL format and direct DSN format to test keep alive probe packet flow with its kernel settings.
 
 ```go
 package main
@@ -549,11 +549,8 @@ tcp_keepalive_probes=  6 – 9                (balance detection speed vs tolera
 | Provider | LB Type | LB Idle Timeout | Recommended `keepalive_time` | Configurable? |
 |---|---|---|---|---|
 | AWS | ALB | 60s (default) | 30s | Yes — 1 to 4000s |
-| AWS | ALB | 120s (custom) | 60s | Yes |
 | AWS | NLB | 350s (**fixed**) | 180s | **No** |
 | Azure | Standard LB | 240s (default) | 120s | Yes — 4 to 30 min |
-| Azure | Standard LB | 600s (10 min) | 300s | Yes |
-| Azure | Standard LB | 1800s (30 min) | 900s | Yes |
 
 ### AWS ALB — Configure Idle Timeout
 
@@ -650,11 +647,8 @@ metadata:
 | Environment | LB Timeout | `keepalive_time` | NGINX `keep-alive` |
 |---|---|---|---|
 | AWS ALB default | 60s | 30s | 50s |
-| AWS ALB 120s custom | 120s | 60s | 100s |
 | AWS NLB (fixed) | 350s | 180s | 300s |
 | Azure default | 240s | 120s | 120s |
-| Azure 10 min | 600s | 300s | 540s |
-| Azure 30 min | 1800s | 900s | 1620s |
 
 ---
 
@@ -682,45 +676,9 @@ stream {
 }
 ```
 
-### Layered Timeout Strategy
-
-```mermaid
-flowchart TB
-    A["🔵 App Query Timeout — 30s\nPrevents long-running queries"]
-    B["🔵 Connection Pool Idle — 5 min\nRecycles stale pool connections"]
-    C["🟠 NGINX proxy_timeout — 5 min\nCloses truly idle proxy connections"]
-    D["🟢 TCP Keepalive — 60s idle · 10s retry · 9 probes\nDetects network-level failures · Total detection: 150s"]
-    E["🔴 Cloud NAT Timeout — 240s–350s\nExternal constraint — keepalive must fire before this"]
-    F["🟣 Database wait_timeout — 8h (MySQL)\nServer-side safety net"]
-
-    A --> B --> C --> D --> E --> F
-```
-
-### Connection Failure — Root Cause Flow
-
-```mermaid
-sequenceDiagram
-    participant APP as 🖥️ Application
-    participant NGX as ⚙️ NGINX Proxy
-    participant DB as 🗄️ Database
-
-    APP->>NGX: Connect + Query
-    NGX->>DB: Forward
-    DB->>NGX: Response
-    NGX->>APP: Forward
-
-    Note over APP,DB: ⏳ 300s of silence — proxy_timeout expires
-
-    Note over NGX: NGINX silently closes connection (no FIN sent)
-    Note over APP: App still thinks connection is ALIVE
-
-    APP->>NGX: Reuse connection — send query
-    NGX-->>APP: ❌ connection reset by peer
-```
+### Database Idle Timeout Reference
 
 **Fix:** Ensure `proxy_timeout` is shorter than the application's connection pool idle time, and enable `proxy_socket_keepalive on`.
-
-### Database Idle Timeout Reference
 
 | Database | Default Idle Timeout | Relevant Parameters |
 |---|---|---|
@@ -761,33 +719,6 @@ All of the above result in the same syscall: `setsockopt(fd, SOL_SOCKET, SO_KEEP
 ---
 
 ## 12. Troubleshooting
-
-### Decision Tree
-
-```mermaid
-flowchart TD
-    START["Connection reset / timeout error?"]
-    Q1{"ss shows\ntimer keepalive?"}
-    Q2{"tcpdump sees\npackets on port 3306?"}
-    Q3{"tshark shows\nkeep_alive rows?"}
-    Q4{"Probe interval\nmatches sysctl?"}
-
-    FIX_KA["SO_KEEPALIVE not set\n→ Add KeepAlive: -1 to dialer\nor tcpKeepAlive=true in JDBC URL"]
-    FIX_IF["Wrong interface\n→ Check ip link or tcpdump -D"]
-    FIX_CTX["pcap missing handshake\n→ Recapture without BPF filter:\nsudo tcpdump 'tcp port 3306'"]
-    FIX_APP["App sends periodic queries\n→ Remove SELECT 1 heartbeat\nLet connection go fully idle"]
-    OK["✅ Keepalive working\n→ Check LB timeout alignment\nand proxy_timeout values"]
-
-    START --> Q1
-    Q1 -->|No| FIX_KA
-    Q1 -->|Yes| Q2
-    Q2 -->|No| FIX_IF
-    Q2 -->|Yes| Q3
-    Q3 -->|No| FIX_CTX
-    Q3 -->|Yes| Q4
-    Q4 -->|No| FIX_APP
-    Q4 -->|Yes| OK
-```
 
 ### Common Issues
 

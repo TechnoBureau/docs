@@ -549,7 +549,7 @@ tcp_keepalive_probes=  6 – 9                (balance detection speed vs tolera
 | Provider | LB Type | LB Idle Timeout | Recommended `keepalive_time` | Configurable? |
 |---|---|---|---|---|
 | AWS | ALB | 60s (default) | 30s | Yes — 1 to 4000s |
-| AWS | NLB | 350s (**fixed**) | 180s | **No** |
+| AWS | NLB | 350s (**fixed**) | 180s | Yes - 60-6000 seconds |
 | Azure | Standard LB | 240s (default) | 120s | Yes — 4 to 30 min |
 
 ### AWS ALB — Configure Idle Timeout

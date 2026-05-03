@@ -175,9 +175,5 @@
       "grok",
       "mcp"
     ]
-  },
-  "feedback": {
-    "github-issues": true,
-    "github-repo": "https://github.com/TechnoBureau/docs"
   }
 }

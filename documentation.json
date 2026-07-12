@@ -169,6 +169,7 @@
     "ai-assistant:enabled": false,
     "page-actions": [
       "copy",
+      "download-pdf",
       "view",
       "claude",
       "chatgpt",

@@ -169,8 +169,6 @@
 
     var article = findArticleContent();
     if (!article) return null;
-    var pageTitle = article.querySelector("h1");
-    if (pageTitle && pageTitle.textContent.trim() !== config.title) return null;
 
     var data = window.TB_ARTICLE_INDEX_DATA || {};
     var articles = data[config.key];

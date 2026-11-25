@@ -190,6 +190,14 @@
   "customCss": [
     {
       "src": "styles/custom.css"
+    },
+    {
+      "src": "styles/giscus.css"
+    }
+  ],
+  "scripts": [
+    {
+      "src": "scripts/giscus.js"
     }
   ],
   "fonts": {

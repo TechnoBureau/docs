@@ -1,0 +1,132 @@
+/*
+ * giscus comments for TechnoBureau (Documentation.AI, Atlas template).
+ *
+ * Loaded after styles/custom.css, so it can reuse the shared --tb-* tokens and
+ * theme CSS variables (--brand, --heading, --body).
+ *
+ * The comment thread itself is rendered in a cross-origin iframe by giscus, so
+ * only its frame can be styled here; colours inside the iframe come from the
+ * giscus theme (see CONFIG.themes in scripts/giscus.js).
+ */
+
+.tb-giscus {
+  --tb-giscus-border: color-mix(in srgb, var(--brand, #4f46e5) 18%, transparent);
+  --tb-giscus-muted: color-mix(in srgb, var(--body, #475569) 82%, transparent);
+  --tb-giscus-skeleton: color-mix(in srgb, var(--brand, #4f46e5) 7%, transparent);
+  --tb-giscus-skeleton-strong: color-mix(in srgb, var(--brand, #4f46e5) 14%, transparent);
+
+  margin-top: 3.5rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--tb-giscus-border);
+  scroll-margin-top: 6rem;
+}
+
+.dark .tb-giscus {
+  --tb-giscus-border: color-mix(in srgb, var(--brand, #818cf8) 26%, transparent);
+  --tb-giscus-muted: color-mix(in srgb, var(--body, #cbd5e1) 84%, transparent);
+  --tb-giscus-skeleton: color-mix(in srgb, var(--brand, #818cf8) 12%, transparent);
+  --tb-giscus-skeleton-strong: color-mix(in srgb, var(--brand, #818cf8) 22%, transparent);
+}
+
+/* Header ------------------------------------------------------------------ */
+
+.tb-giscus .tb-giscus-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1.25rem;
+  max-width: 100%;
+}
+
+.tb-giscus .tb-giscus-header .tb-giscus-title {
+  margin: 0;
+  max-width: none;
+  font-size: 1.35rem;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: var(--heading, inherit);
+  text-wrap: balance;
+}
+
+.tb-giscus .tb-giscus-header .tb-giscus-intro {
+  margin: 0;
+  max-width: 72ch;
+  font-size: 0.925rem;
+  line-height: 1.65;
+  color: var(--tb-giscus-muted);
+  text-wrap: pretty;
+}
+
+/* Mount point and loading skeleton ---------------------------------------- */
+
+.tb-giscus .tb-giscus-body {
+  width: 100%;
+}
+
+.tb-giscus .giscus {
+  position: relative;
+  min-height: 180px;
+}
+
+.tb-giscus:not([data-tb-giscus-ready]) .giscus::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--tb-radius, 12px);
+  background: linear-gradient(
+    100deg,
+    var(--tb-giscus-skeleton) 30%,
+    var(--tb-giscus-skeleton-strong) 50%,
+    var(--tb-giscus-skeleton) 70%
+  );
+  background-size: 220% 100%;
+  animation: tb-giscus-loading 1.6s ease-in-out infinite;
+}
+
+@keyframes tb-giscus-loading {
+  from {
+    background-position: 100% 0;
+  }
+
+  to {
+    background-position: -120% 0;
+  }
+}
+
+/* giscus iframe ------------------------------------------------------------ */
+
+.tb-giscus iframe.giscus-frame {
+  width: 100%;
+  min-height: 180px;
+  border: 0;
+  border-radius: var(--tb-radius, 12px);
+  background: transparent;
+  color-scheme: light dark;
+}
+
+/* Small screens ------------------------------------------------------------ */
+
+@media (max-width: 640px) {
+  .tb-giscus {
+    margin-top: 2.5rem;
+    padding-top: 1.25rem;
+  }
+
+  .tb-giscus .tb-giscus-header .tb-giscus-title {
+    font-size: 1.2rem;
+  }
+}
+
+/* Accessibility and print -------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .tb-giscus:not([data-tb-giscus-ready]) .giscus::before {
+    animation: none;
+  }
+}
+
+@media print {
+  .tb-giscus {
+    display: none;
+  }
+}

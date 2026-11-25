@@ -39,9 +39,9 @@
           }
         ],
         "path": "devops",
-        "show-toc": false,
+        "show-toc": true,
         "show-parent-label": false,
-        "show-page-navigation": false,
+        "show-page-navigation": true,
         "ask-feedback": false,
         "content-width": "wide"
       },
@@ -66,9 +66,9 @@
           }
         ],
         "path": "kubernetes",
-        "show-toc": false,
+        "show-toc": true,
         "show-parent-label": false,
-        "show-page-navigation": false,
+        "show-page-navigation": true,
         "ask-feedback": false,
         "content-width": "wide"
       },
@@ -145,9 +145,9 @@
           }
         ],
         "path": "linux",
-        "show-toc": false,
+        "show-toc": true,
         "show-parent-label": false,
-        "show-page-navigation": false,
+        "show-page-navigation": true,
         "ask-feedback": false,
         "content-width": "wide"
       },
@@ -160,9 +160,9 @@
           }
         ],
         "path": "career",
-        "show-toc": false,
+        "show-toc": true,
         "show-parent-label": false,
-        "show-page-navigation": false,
+        "show-page-navigation": true,
         "ask-feedback": false,
         "content-width": "wide"
       }
@@ -182,7 +182,7 @@
     ]
   },
   "favicon": "https://blob-cdn.documentation.ai/org-ccd4d7b0-3c34-4e0d-ab8b-3ca7ee7105b8/doc-ce9b87ea-bace-4c61-8f17-3afcb945adad/1777810220105-tkwnxwrmvo8-android-chrome-512x512.png?fm=auto&auto=compress%2Cformat",
-  "description": "We offers a wealth of information, news, and insights into the ever-evolving world of technology. Whether you are a tech enthusiast, professional, or simply curious about the latest trends, TechnoBureau provides you with a one-stop hub to stay up-to-date and explore the fascinating realm of innovation.",
+  "description": "We offer a wealth of information, news, and insights into the ever-evolving world of technology. Whether you are a tech enthusiast, professional, or simply curious about the latest trends, TechnoBureau provides you with a one-stop hub to stay up-to-date and explore the fascinating realm of innovation.",
   "customCss": [
     {
       "src": "styles/custom.css"

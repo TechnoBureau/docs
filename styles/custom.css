@@ -1,13 +1,23 @@
 /*
- * Maximize content width across all screen sizes and resolutions.
- * Keeps layout responsive while removing restrictive max-width caps.
+ * Modern documentation UI/UX enhancements for TechnoBureau (Atlas template).
+ * - Expands layout to use available viewport width
+ * - Preserves readable line length for prose
+ * - Improves keyboard/screen accessibility and responsive behavior
  */
 
 :root {
   --content-width: 100%;
   --content-max-width: 100%;
+  --tb-prose-max-width: 88ch;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Full-width layout containers while keeping responsive behavior */
 .dai-layout-atlas .dai-content-area,
 .dai-layout-atlas .dai-content-column,
 .dai-layout-atlas .dai-page,
@@ -16,4 +26,51 @@
 .dai-layout-atlas .dai-page-nav,
 .dai-layout-atlas .dai-footer {
   max-width: 100% !important;
+}
+
+/* Readable prose measure on wide screens; media/code/tables remain full width */
+.dai-layout-atlas .dai-article > :where(p, ul, ol, blockquote) {
+  max-width: var(--tb-prose-max-width);
+}
+
+.dai-layout-atlas .dai-article > :where(h1, h2, h3, h4) {
+  max-width: min(100%, 90ch);
+}
+
+/* Keep long-form technical content scannable */
+.dai-layout-atlas .dai-article :where(p, li) {
+  line-height: 1.75;
+  overflow-wrap: break-word;
+}
+
+.dai-layout-atlas .dai-article :where(h1, h2, h3, h4) {
+  text-wrap: balance;
+}
+
+.dai-layout-atlas .dai-article :where(p) {
+  text-wrap: pretty;
+}
+
+/* Responsive media and code */
+.dai-layout-atlas .dai-article :where(img, video, iframe) {
+  max-width: 100%;
+  height: auto;
+}
+
+.dai-layout-atlas .dai-article :where(pre) {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.dai-layout-atlas .dai-article :where(table) {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Clear keyboard focus for interactive elements */
+.dai-layout-atlas :where(a, button, input, select, textarea, summary):focus-visible {
+  outline: 2px solid var(--brand, #f97316);
+  outline-offset: 2px;
 }

@@ -125,34 +125,18 @@ curl http://localhost:8080  # Output: "Hello from snooze!"
 
 Snooze operates on a simple yet effective architecture:
 
-```
-┌─────────────┐
-│   Client    │
-└──────┬──────┘
-       │ HTTP Request
-       ▼
-┌─────────────────────────────┐
-│   Snooze Container (Pod)    │
-│  ┌─────────────────────┐    │
-│  │  Single Binary      │    │
-│  │  - HTTP Server      │    │
-│  │  - JSON Logger      │    │
-│  │  - Signal Handler   │    │
-│  └─────────────────────┘    │
-└─────────────┬───────────────┘
-              │
-              ▼
-   ┌──────────────────────┐
-   │  Mode Selection      │
-   └──────┬───────────────┘
-          │
-    ┌─────┴─────┐
-    │           │
-    ▼           ▼
-┌────────┐  ┌────────────┐
-│ Static │  │   Proxy    │
-│Response│  │  Upstream  │
-└────────┘  └────────────┘
+```mermaid
+flowchart TD
+    Client["Client"] -->|"HTTP request"| Server
+
+    subgraph Server["Snooze Container (Pod)"]
+        direction TB
+        App["Single binary\n• HTTP server\n• JSON logger\n• Signal handler"]
+    end
+
+    Server --> Mode{"Mode selection"}
+    Mode -->|"Static mode"| Static["Static response"]
+    Mode -->|"Proxy mode"| Proxy["Proxy to upstream"]
 ```
 
 ### Design Principles

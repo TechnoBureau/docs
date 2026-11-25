@@ -513,28 +513,37 @@ jdbc:mysql://mysql.internal:3306/mydb?useSSL=true&requireSSL=true&characterEncod
 
 ### How Modern Apps Enable Keepalive
 
-Applications set **only `SO_KEEPALIVE`** on the socket. The kernel applies all three sysctl values automatically — the app never reads or sets them directly.
+Applications set **only `SO_KEEPALIVE`** on the socket. The kernel applies the sysctl values automatically — the app does not read or set them directly.
+
+| Language | Enable keepalive |
+| --- | --- |
+| Java | `socket.setKeepAlive(true)` |
+| Go | `SetKeepAlive(true)` (and `SetKeepAlivePeriod` if needed) |
+| Python | `sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)` |
 
 ```mermaid
 flowchart TD
-    A["App sets SO_KEEPALIVE = 1\njava: socket.setKeepAlive(true)\ngo: KeepAlive: -1\npython: setsockopt(SOL_SOCKET, SO_KEEPALIVE, 1)"]
-    B["OS kernel takes over"]
-    C["Waits tcp_keepalive_time\nidle before first probe"]
-    D["Sends probe every tcp_keepalive_intvl"]
-    E{"ACK received?"}
-    F["Reset timer ✅"]
-    G["Increment probe count"]
-    H{"Count = tcp_keepalive_probes?"}
-    I["Drop connection\nApp gets error on next read/write ❌"]
-
-    A --> B --> C --> D --> E
-    E -->|Yes| F --> C
-    E -->|No| G --> H
-    H -->|No| D
-    H -->|Yes| I
+    A["App enables SO_KEEPALIVE"] --> B["OS kernel manages probes"]
+    B --> C["tcp_keepalive_time\nidle wait"]
+    B --> D["tcp_keepalive_intvl\nprobe interval"]
+    B --> E["tcp_keepalive_probes\nretry limit"]
 ```
 
-> **Do not** set `TCP_KEEPIDLE`, `TCP_KEEPINTVL`, or `TCP_KEEPCNT` in application code unless you have a per-connection requirement that must differ from the system default. Hardcoding these prevents operators from tuning keepalive via sysctl without a code deployment.
+### Kernel Probe Cycle
+
+```mermaid
+flowchart TD
+    A["Connection idle"] --> B["Wait tcp_keepalive_time"]
+    B --> C["Send keepalive probe"]
+    C --> D{"ACK received?"}
+    D -->|"Yes"| E["Reset idle timer"]
+    E --> B
+    D -->|"No"| F["Increment probe count"]
+    F --> G{"Count >= tcp_keepalive_probes?"}
+    G -->|"No"| H["Wait tcp_keepalive_intvl"]
+    H --> C
+    G -->|"Yes"| I["Close connection\nApp sees error on next I/O"]
+```
 
 ### Timeout Formula
 

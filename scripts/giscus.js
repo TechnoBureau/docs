@@ -30,25 +30,25 @@
 
     // Discussion category used for new threads. "Announcements" keeps creation
     // restricted to maintainers and the giscus bot.
-    category: "Announcements",
+    category: "General",
     // Paste the `data-category-id` value from https://giscus.app here.
-    categoryId: "",
+    categoryId: "DIC_kwDORdh4IM4DL-RS",
 
     // Page <-> discussion mapping.
     // "pathname" is the right choice for this site: one discussion per doc URL.
-    mapping: "pathname",
+    mapping: "title",
     strict: "0",
     reactionsEnabled: "1",
     emitMetadata: "0",
-    inputPosition: "bottom",
+    inputPosition: "top",
     lang: "en",
     loading: "lazy",
 
     // giscus theme per site appearance. Any giscus theme name works, or a URL to
     // a custom theme stylesheet (for example a hosted giscus-theme.css).
     themes: {
-      light: "light",
-      dark: "dark",
+      light: "light_protanopia",
+      dark: "dark_protanopia",
     },
 
     // Widget copy.
@@ -103,10 +103,10 @@
   function isConfigured() {
     return Boolean(
       CONFIG.repo &&
-        /^[^/\s]+\/[^/\s]+$/.test(CONFIG.repo) &&
-        /^R_/.test(CONFIG.repoId || "") &&
-        CONFIG.category &&
-        /^DIC_/.test(CONFIG.categoryId || ""),
+      /^[^/\s]+\/[^/\s]+$/.test(CONFIG.repo) &&
+      /^R_/.test(CONFIG.repoId || "") &&
+      CONFIG.category &&
+      /^DIC_/.test(CONFIG.categoryId || ""),
     );
   }
 
@@ -282,7 +282,9 @@
           sync();
         }, CONFIG.retryDelay);
       } else {
-        console.warn("[giscus] Could not find the article container to mount into.");
+        console.warn(
+          "[giscus] Could not find the article container to mount into.",
+        );
       }
       return;
     }
@@ -301,7 +303,9 @@
     section = buildSection(path);
 
     // Keep the widget above the previous/next navigation and the page footer.
-    var trailing = target.querySelector(":scope > .dai-page-nav, :scope > .dai-footer");
+    var trailing = target.querySelector(
+      ":scope > .dai-page-nav, :scope > .dai-footer",
+    );
     if (trailing) {
       target.insertBefore(section, trailing);
     } else {
@@ -365,7 +369,8 @@
 
     // Drop the old thread right away, then mount after the new article renders.
     var existing = document.querySelector(SECTION_SELECTOR);
-    if (existing && existing.parentNode) existing.parentNode.removeChild(existing);
+    if (existing && existing.parentNode)
+      existing.parentNode.removeChild(existing);
     section = null;
     retries = 0;
     staleWaits = 0;

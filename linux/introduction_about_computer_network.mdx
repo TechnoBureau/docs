@@ -149,33 +149,34 @@ A **node** is a connection point, redistribution point, or communication endpoin
 ### Network Device Types
 
 ```mermaid
-graph LR
-    subgraph "Layer 1 - Physical"
-        A[Repeaters]
-        B[Hubs]
+flowchart TD
+    subgraph L1["Layer 1 - Physical"]
+        direction LR
+        A["Repeaters"]
+        B["Hubs"]
     end
 
-    subgraph "Layer 2 - Data Link"
-        C[Bridges]
-        D[Switches]
+    subgraph L2["Layer 2 - Data Link"]
+        direction LR
+        C["Bridges"]
+        D["Switches"]
     end
 
-    subgraph "Layer 3 - Network"
-        E[Routers]
+    subgraph L3["Layer 3 - Network"]
+        E["Routers"]
     end
 
-    subgraph "Other Devices"
-        F[Modems]
-        G[Firewalls]
-        H[NIC Cards]
+    subgraph Other["Other devices"]
+        direction LR
+        F["Modems"]
+        G["Firewalls"]
+        H["NIC cards"]
     end
 
-    A --> C
-    C --> E
-    D --> E
-    F --> E
-    G -.-> E
-    H -.-> A
+    L1 --> L2 --> L3
+    F --> L3
+    G -.-> L3
+    H -.-> L1
 ```
 
 <ParamField path="network-interface" param-type="hardware" required="true" deprecated="false">

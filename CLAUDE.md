@@ -507,16 +507,29 @@ Example of Update component for version releases:
 
 ### Mermaid diagrams
 
-Example of Mermaid diagram for visualizations:
+Use Mermaid for architecture, flow, sequence, and relationship diagrams instead of ASCII box art. Diagrams should be readable at normal content width without requiring zoom.
+
+Rules:
+
+- Prefer `flowchart TD` (top-down) for most diagrams so they fit narrow/content-width layouts; use `LR` only when the diagram remains compact.
+- Keep node labels short. Move long explanations, command examples, or parameter lists into surrounding text, tables, or callouts.
+- Split large or wide diagrams into multiple focused diagrams (for example: overview + detail, or success path + failure path) instead of one dense diagram.
+- Avoid very long single-line labels. Use `<br/>` sparingly, or split content across nodes.
+- Use plain code fences only for actual code, commands, or file trees; do not use ASCII diagrams for system architecture.
+- Verify Mermaid diagrams render correctly in both GitHub Markdown and the documentation site.
+
+Example of a compact flowchart:
 
 ```mermaid
-graph TD
-    A[User Request] --> B{Authentication}
-    B -->|Valid| C[Process Request]
-    B -->|Invalid| D[Return 401]
-    C --> E[Fetch Data]
-    E --> F[Return Response]
+flowchart TD
+    A[User request] --> B{Authenticated?}
+    B -->|Yes| C[Process request]
+    B -->|No| D[Return 401]
+    C --> E[Fetch data]
+    E --> F[Return response]
 ```
+
+Example of a sequence diagram:
 
 ```mermaid
 sequenceDiagram
@@ -524,7 +537,7 @@ sequenceDiagram
     participant API
     participant Database
     User->>API: POST /api/docs
-    API->>Database: INSERT document
+    API->>Database: Insert document
     Database-->>API: Document ID
     API-->>User: 201 Created
 ```

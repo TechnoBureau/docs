@@ -20,14 +20,28 @@ RAID levels are specific schemes or architectures that determine how data is dis
 ### RAID 0 - Data Striping
 RAID 0 utilizes data striping, which involves dividing logically sequential data and distributing it across multiple storage devices. This technique significantly improves input/output (I/O) performance but does not provide redundancy.
 
+```mermaid
+flowchart TD
+    Data["Logical data blocks\nA1, A2, A3, A4"] --> S["Striping"]
+    S --> D1["Disk 1\nA1, A3"]
+    S --> D2["Disk 2\nA2, A4"]
+```
+
 - Excellent performance (Striping)
-- Data Blocks are striped between the disks.
+- Data blocks are striped between the disks.
 - Minimum of 2 disks
 - No Redundancy/Mirror/Parity.
 - Not advisable for any critical system.
 
 ### RAID 1 - Data Mirroring
 RAID 1 involves data mirroring, where the same set of data blocks is stored across multiple storage devices. This redundancy technique ensures that if one storage device fails within a mirrored group, the data remains accessible.
+
+```mermaid
+flowchart TD
+    Data["Data blocks\nA1, A2"] --> M["Mirroring"]
+    M --> D1["Disk 1\nA1, A2"]
+    M --> D2["Disk 2\nA1, A2 (copy)"]
+```
 
 - Excellent Redundancy (Mirroring)
 - Good Performance
@@ -36,6 +50,16 @@ RAID 1 involves data mirroring, where the same set of data blocks is stored acro
 
 ### RAID Parity - Data Parity
 RAID parity employs the technique of storing parity information on dedicated disks or distributing it across all disks in a RAID group. Parity information represents the XOR sum of the elements stored on the remaining disks in the RAID. In the event of a single disk failure, the lost data can be reconstructed by subtracting the remaining data across the RAID set.
+
+```mermaid
+flowchart TD
+    subgraph RAID5["RAID 5 (distributed parity)"]
+        direction LR
+        D1["Disk 1\nA1\nB1\nCp"]
+        D2["Disk 2\nA2\nBp\nC1"]
+        D3["Disk 3\nAp\nB2\nC2"]
+    end
+```
 
 - Good Performance (Data Striping)
 - Good redundancy (Distributed parity)

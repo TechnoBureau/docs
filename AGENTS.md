@@ -656,9 +656,9 @@ type: "reference"  # or "guide", "tutorial", etc.
 - Use **Callouts** to highlight important information without breaking flow
 
 - Use **Card** components inside **Columns** for navigation grids and feature showcases
-- For long article index pages, use one full-width `<Card horizontal={true}>` per row (do not use a multi-column grid); use the full frontmatter description for a useful preview, a varied icon, a clear `cta="Read more"`, and date/comment/reaction metadata when available from Giscus
+- Keep section index MDX pages to their title, description, and intro; do not hand-maintain repeated article cards there. Generate the article manifest from the section Markdown files with `python3 scripts/generate-index-pages.py`, then let the registered client script render full-width single-row cards from each file's frontmatter.
 
-- Paginate article index lists at five items per page and sort newest Markdown modification date first; keep the `data-tb-article-list` / `data-tb-article-item` / `data-date` hooks and regenerate them with `python3 scripts/generate-index-pages.py`
+- Article index cards use full descriptions, varied icons, and date/comment/reaction metadata when available from Giscus; paginate five items per page and sort newest Markdown modification date first.
 
 - Use **Columns** with `<div>` wrappers for side-by-side comparisons or mixed content
 

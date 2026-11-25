@@ -250,6 +250,9 @@
       "src": "scripts/giscus.js"
     },
     {
+      "src": "scripts/article-index-data.js"
+    },
+    {
       "src": "scripts/article-pagination.js"
     }
   ],

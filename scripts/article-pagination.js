@@ -3,22 +3,14 @@
  *
  * Documentation.AI (Atlas template) loads this file once per full page load and then
  * swaps page content on client-side navigation, so this script:
- *   - finds the article list on the current index page ([data-tb-article-list]),
- *   - sorts items by data-date descending (newest modified first),
- *   - shows PAGE_SIZE items per page with Prev / numbered / Next controls,
+ *   - creates article cards from the generated frontmatter manifest,
+ *   - sorts them by Markdown modified date (newest first),
+ *   - shows five items per page with Prev / numbered / Next controls,
+ *   - fetches Giscus stats for the visible cards,
  *   - re-initialises when the route changes.
  *
- * Index pages opt in by wrapping their article cards like this:
- *
- *   <div className="tb-article-list" data-tb-article-list data-page-size="5">
- *     <div className="tb-article-item" data-tb-article-item data-date="2026-11-26">
- *       <Card ... horizontal={true} cta="Read more">Summary…</Card>
- *     </div>
- *     …
- *   </div>
- *
- * Without JavaScript every article stays visible (progressive enhancement).
- * To regenerate index pages sorted by git modified date, run:
+ * The three index MDX files contain only their title and intro. To regenerate
+ * the manifest after changing article files, run:
  *   python3 scripts/generate-index-pages.py
  */
 (function () {
@@ -39,6 +31,25 @@
     category: "General",
     // The site maps each page to a discussion by its page title.
     strict: "false",
+  };
+  var INDEX_SECTIONS = {
+    "/devops": { key: "devops", title: "DevOps Tutorials" },
+    "/kubernetes": { key: "kubernetes", title: "Kubernetes Tutorials" },
+    "/linux": { key: "linux", title: "Linux Tutorials" },
+  };
+  var ARTICLE_ICON_PATHS = {
+    sparkles: '<path d="m12 3 1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2L12 3z"/><path d="m19 14 1.2 2.8L23 18l-2.8 1.2L19 22l-1.2-2.8L15 18l2.8-1.2L19 14z"/>',
+    "code-xml": '<path d="m8 8-4 4 4 4M16 8l4 4-4 4M14 4l-4 16"/>',
+    "layers-3": '<path d="m12 2 9 5-9 5-9-5 9-5zM3 12l9 5 9-5M3 17l9 5 9-5"/>',
+    server: '<rect x="3" y="3" width="18" height="8" rx="2"/><rect x="3" y="13" width="18" height="8" rx="2"/><path d="M7 7h.01M7 17h.01M11 7h6M11 17h6"/>',
+    cpu: '<rect x="5" y="5" width="14" height="14" rx="2"/><path d="M9 9h6v6H9zM9 1v4M15 1v4M9 19v4M15 19v4M1 9h4M1 15h4M19 9h4M19 15h4"/>',
+    database: '<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5M3 12c0 1.7 4 3 9 3s9-1.3 9-3"/>',
+    network: '<circle cx="12" cy="5" r="3"/><circle cx="5" cy="19" r="3"/><circle cx="19" cy="19" r="3"/><path d="m10.5 7.5-4 9M13.5 7.5l4 9M8 19h8"/>',
+    terminal: '<path d="m4 17 6-6-6-6M12 19h8"/>',
+    "shield-check": '<path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/><path d="m9 12 2 2 4-4"/>',
+    workflow: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><path d="M10 6h4a3 3 0 0 1 3 3v5M17 10l-3-3 3-3"/>',
+    boxes: '<path d="m12 2 9 5-9 5-9-5 9-5zM3 12l9 5 9-5M3 17l9 5 9-5"/>',
+    "book-open": '<path d="M12 7v14M3 18V5a2 2 0 0 1 2-2h2a5 5 0 0 1 5 5 5 5 0 0 1 5-5h2a2 2 0 0 1 2 2v13h-4a5 5 0 0 0-5 3 5 5 0 0 0-5-3H3z"/>',
   };
 
   function normalizePath(pathname) {
@@ -78,6 +89,114 @@
     svg.setAttribute("aria-hidden", "true");
     svg.innerHTML = paths[kind];
     return svg;
+  }
+
+  function makeArticleIcon(name) {
+    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.setAttribute("width", "23");
+    svg.setAttribute("height", "23");
+    svg.setAttribute("fill", "none");
+    svg.setAttribute("stroke", "currentColor");
+    svg.setAttribute("stroke-width", "1.65");
+    svg.setAttribute("stroke-linecap", "round");
+    svg.setAttribute("stroke-linejoin", "round");
+    svg.setAttribute("aria-hidden", "true");
+    svg.innerHTML = ARTICLE_ICON_PATHS[name] || ARTICLE_ICON_PATHS.sparkles;
+    return svg;
+  }
+
+  function createArticleItem(article) {
+    var item = document.createElement("div");
+    item.className = "tb-article-item";
+    item.setAttribute("data-tb-article-item", "");
+    item.setAttribute("data-date", article.modifiedDate || "");
+    item.setAttribute("data-display-date", article.displayDate || article.modifiedDate || "");
+    item.setAttribute("data-date-kind", article.dateKind || "Updated");
+    item.setAttribute("data-title", article.title || "");
+    item.setAttribute("data-href", article.path || "#");
+
+    var link = document.createElement("a");
+    link.className = "tb-generated-card";
+    link.href = article.path || "#";
+
+    var icon = document.createElement("span");
+    icon.className = "tb-generated-card-icon";
+    icon.appendChild(makeArticleIcon(article.icon));
+
+    var content = document.createElement("span");
+    content.className = "tb-generated-card-content";
+
+    var title = document.createElement("span");
+    title.className = "tb-generated-card-title";
+    title.textContent = article.title || "Untitled article";
+
+    var summary = document.createElement("span");
+    summary.className = "tb-generated-card-description";
+    summary.textContent = article.description || "Open this guide to explore the topic.";
+
+    var cta = document.createElement("span");
+    cta.className = "tb-generated-card-cta";
+    cta.textContent = "Read more →";
+
+    content.appendChild(title);
+    content.appendChild(summary);
+    content.appendChild(cta);
+    link.appendChild(icon);
+    link.appendChild(content);
+    item.appendChild(link);
+    return item;
+  }
+
+  function findArticleContent() {
+    return document.querySelector(".dai-article") ||
+      document.querySelector(".dai-page-main") ||
+      document.querySelector("main");
+  }
+
+  function ensureIndexPage(path) {
+    var config = INDEX_SECTIONS[path];
+    var existingFeed = document.querySelector("[data-tb-article-feed]");
+    if (!config) {
+      if (existingFeed && existingFeed.parentNode) existingFeed.parentNode.removeChild(existingFeed);
+      return null;
+    }
+
+    if (existingFeed && existingFeed.getAttribute("data-section") === config.key) {
+      return existingFeed.querySelector(LIST_SELECTOR);
+    }
+    if (existingFeed && existingFeed.parentNode) existingFeed.parentNode.removeChild(existingFeed);
+
+    var article = findArticleContent();
+    if (!article) return null;
+    var pageTitle = article.querySelector("h1");
+    if (pageTitle && pageTitle.textContent.trim() !== config.title) return null;
+
+    var data = window.TB_ARTICLE_INDEX_DATA || {};
+    var articles = data[config.key];
+    if (!Array.isArray(articles) || articles.length === 0) return null;
+
+    var feed = document.createElement("section");
+    feed.className = "tb-article-feed";
+    feed.setAttribute("data-tb-article-feed", "");
+    feed.setAttribute("data-section", config.key);
+
+    var heading = document.createElement("h2");
+    heading.className = "tb-article-feed-heading";
+    heading.textContent = "Latest articles";
+
+    var list = document.createElement("div");
+    list.className = "tb-article-list";
+    list.setAttribute("data-tb-article-list", "");
+    list.setAttribute("data-page-size", String(DEFAULT_PAGE_SIZE));
+    articles.forEach(function (entry) {
+      list.appendChild(createArticleItem(entry));
+    });
+
+    feed.appendChild(heading);
+    feed.appendChild(list);
+    article.appendChild(feed);
+    return list;
   }
 
   function formattedDate(item) {
@@ -308,7 +427,7 @@
 
   function sync() {
     var path = normalizePath(window.location.pathname);
-    var list = document.querySelector(LIST_SELECTOR);
+    var list = ensureIndexPage(path);
 
     if (list) {
       if (list !== currentList || path !== lastPath) {
@@ -372,6 +491,7 @@
     lastPath = normalizePath(window.location.pathname);
     patchHistory();
     observePage();
+    window.addEventListener("tb:article-index-data-ready", handleNavigation);
     sync();
   }
 

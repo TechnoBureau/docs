@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
 """
-Regenerate DevOps / Kubernetes / Linux index pages (devops.mdx, kubernetes.mdx,
-linux.mdx) as single-row article lists sorted by git modified date (newest first).
-
-Each index page lists every article in its section as a full-width horizontal
-Card (one article per row, like a blog feed), wrapped in a
-[data-tb-article-list] container. scripts/article-pagination.js paginates the
-list client-side (5 per page by default, see data-page-size).
+Regenerate minimal DevOps / Kubernetes / Linux index pages and the generated
+article data manifest. Index MDX keeps only its title/frontmatter and intro;
+scripts/article-pagination.js renders full-width cards from the manifest and
+paginates them client-side (5 per page by default).
 
 Usage:
     python3 scripts/generate-index-pages.py
@@ -16,20 +13,19 @@ matches the latest git modified dates. Card titles and full previews are drawn
 from each article's frontmatter; icon choices are varied but repeatable.
 """
 import hashlib
-import html
+import json
 import re
 import subprocess
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-PAGE_SIZE = 5
 ICON_POOL = [
     "sparkles", "code-xml", "layers-3", "server", "cpu", "database",
     "network", "terminal", "shield-check", "workflow", "boxes", "book-open",
 ]
 
-# section -> index file, intro paragraph, [(article path, icon, short summary)]
+# section -> index file, intro paragraph, [(article path, legacy icon, fallback summary)]
 SECTIONS = {
     "DevOps": (
         "devops.mdx",
@@ -145,70 +141,70 @@ def article_icon(rel_path: str) -> str:
 
 
 def render_section(section: str) -> str:
-    index_file, intro, articles = SECTIONS[section]
+    """Keep the MDX landing page focused on its section title and intro."""
+    index_file, intro, _ = SECTIONS[section]
     title, description = FRONTMATTER[section]
-
-    # Automatically include every article and use its full frontmatter
-    # description so index cards provide a useful preview, not a short teaser.
-    fallback_summaries = {path: summary for path, _, summary in articles}
-    article_paths = sorted(
-        fp.relative_to(ROOT).with_suffix("").as_posix()
-        for fp in (ROOT / section.lower()).glob("*.mdx")
-    )
-    rows = []
-    for path in article_paths:
-        art_title = article_title(path)
-        modified = git_modified_date(path)
-        summary = frontmatter_value(path, "description")
-        if len(summary) < 120:
-            summary = fallback_summaries.get(path) or (
-                f"Explore the {section} guide “{art_title}”, with practical concepts, "
-                "examples, and implementation details to help you apply it."
-            )
-        published = frontmatter_value(path, "date")
-        date_kind = "Published" if published else "Updated"
-        published = published or modified
-        rows.append((modified, published, date_kind, path, article_icon(path), summary, art_title))
-
-    # Newest modified first; paths provide deterministic ordering for date ties.
-    rows.sort(key=lambda r: r[3])
-    rows.sort(key=lambda r: r[0], reverse=True)
-
-    lines = [
+    return "\n".join([
         "---",
-        f"title: {title}",
-        f"description: '{description}'",
+        f'title: "{title}"',
+        f'description: "{description}"',
         "hidden: true",
         "landingPage: true",
         "---",
         "",
         intro,
         "",
-        "## Articles",
-        "",
-        f'<div className="tb-article-list" data-tb-article-list data-page-size="{PAGE_SIZE}">',
-    ]
-    for modified, published, date_kind, path, icon, summary, art_title in rows:
-        safe_title = html.escape(art_title, quote=True)
-        safe_published = html.escape(published, quote=True)
-        lines += [
-            f'  <div className="tb-article-item" data-tb-article-item data-date="{modified}" data-display-date="{safe_published}" data-date-kind="{date_kind}" data-title="{safe_title}" data-href="/{path}">',
-            f'    <Card title="{safe_title}" href="/{path}" icon="{icon}" horizontal={{true}} cta="Read more">',
-            f"      {summary}",
-            "    </Card>",
-            "  </div>",
-            "",
-        ]
-    lines.append("</div>")
-    lines.append("")
-    return "\n".join(lines)
+    ])
+
+
+def collect_section_articles(section: str) -> list[dict[str, str]]:
+    """Build card data from the section's MDX frontmatter and git history."""
+    _, _, curated = SECTIONS[section]
+    fallback_summaries = {path: summary for path, _, summary in curated}
+    article_paths = sorted(
+        fp.relative_to(ROOT).with_suffix("").as_posix()
+        for fp in (ROOT / section.lower()).glob("*.mdx")
+    )
+    entries = []
+    for path in article_paths:
+        title = article_title(path)
+        modified = git_modified_date(path)
+        summary = frontmatter_value(path, "description")
+        if len(summary) < 120:
+            summary = fallback_summaries.get(path) or (
+                f"Explore the {section} guide “{title}”, with practical concepts, "
+                "examples, and implementation details to help you apply it."
+            )
+        published = frontmatter_value(path, "date")
+        entries.append({
+            "path": "/" + path,
+            "title": title,
+            "description": summary,
+            "icon": article_icon(path),
+            "modifiedDate": modified,
+            "displayDate": published or modified,
+            "dateKind": "Published" if published else "Updated",
+        })
+    entries.sort(key=lambda item: item["path"])
+    entries.sort(key=lambda item: item["modifiedDate"], reverse=True)
+    return entries
 
 
 def main() -> int:
+    manifest = {}
     for section, (index_file, _, _) in SECTIONS.items():
-        out = ROOT / index_file
-        out.write_text(render_section(section))
-        print(f"wrote {index_file}")
+        (ROOT / index_file).write_text(render_section(section))
+        manifest[section.lower()] = collect_section_articles(section)
+        print(f"wrote minimal index {index_file}")
+
+    manifest_path = ROOT / "scripts" / "article-index-data.js"
+    manifest_path.write_text(
+        "/* Generated by scripts/generate-index-pages.py; do not edit by hand. */\n"
+        "window.TB_ARTICLE_INDEX_DATA = "
+        + json.dumps(manifest, ensure_ascii=False, separators=(",", ":"))
+        + ";\nwindow.dispatchEvent(new Event(\"tb:article-index-data-ready\"));\n"
+    )
+    print(f"wrote {manifest_path.relative_to(ROOT)}")
     return 0
 
 

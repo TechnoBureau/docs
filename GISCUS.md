@@ -10,7 +10,8 @@ request read-only discussion totals from Giscus for comment and reaction badges.
 | File | Purpose |
 | --- | --- |
 | [`scripts/giscus.js`](scripts/giscus.js) | Mounts the widget, handles SPA navigation, theme sync, and per-page opt-out. |
-| [`scripts/article-pagination.js`](scripts/article-pagination.js) | Paginates article cards and adds dates plus Giscus comment/reaction totals to visible index cards. |
+| [`scripts/article-pagination.js`](scripts/article-pagination.js) | Renders and paginates article cards, then adds dates plus Giscus comment/reaction totals to visible index cards. |
+| [`scripts/article-index-data.js`](scripts/article-index-data.js) | Generated article metadata manifest; regenerate from MDX files with `python3 scripts/generate-index-pages.py`. |
 | [`styles/giscus.css`](styles/giscus.css) | Styles the comments section and loading skeleton. |
 | [`documentation.json`](documentation.json) | Registers the script (`scripts`) and stylesheet (`customCss`). |
 

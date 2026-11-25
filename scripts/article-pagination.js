@@ -33,6 +33,13 @@
   var lastPath = "";
   var currentList = null;
   var currentPage = 1;
+  var discussionCache = Object.create(null);
+  var GISCUS = {
+    repo: "TechnoBureau/docs",
+    category: "General",
+    // The site maps each page to a discussion by its page title.
+    strict: "false",
+  };
 
   function normalizePath(pathname) {
     return (pathname || "").replace(/\/+$/, "") || "/";
@@ -48,6 +55,137 @@
     var raw = item.getAttribute("data-date") || "";
     var time = Date.parse(raw);
     return isNaN(time) ? 0 : time;
+  }
+
+  function makeIcon(kind) {
+    var paths = {
+      calendar:
+        '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/>',
+      comments:
+        '<path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5z"/>',
+      reactions:
+        '<path d="M7 10v12M15 5.9 14 10h6.1a2 2 0 0 1 2 2.4l-1.4 7A2 2 0 0 1 18.8 21H5a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3.1l4.1-6.2A1.8 1.8 0 0 1 15 5.9z"/>',
+    };
+    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.setAttribute("width", "16");
+    svg.setAttribute("height", "16");
+    svg.setAttribute("fill", "none");
+    svg.setAttribute("stroke", "currentColor");
+    svg.setAttribute("stroke-width", "1.8");
+    svg.setAttribute("stroke-linecap", "round");
+    svg.setAttribute("stroke-linejoin", "round");
+    svg.setAttribute("aria-hidden", "true");
+    svg.innerHTML = paths[kind];
+    return svg;
+  }
+
+  function formattedDate(item) {
+    var raw = item.getAttribute("data-display-date") || item.getAttribute("data-date");
+    var date = new Date(raw + "T00:00:00");
+    if (isNaN(date.getTime())) return raw || "Date unavailable";
+    return new Intl.DateTimeFormat(undefined, {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    }).format(date);
+  }
+
+  function compactCount(value) {
+    var count = Number(value);
+    if (!isFinite(count) || count < 0) return "—";
+    return new Intl.NumberFormat(undefined, {
+      notation: count >= 1000 ? "compact" : "standard",
+      maximumFractionDigits: 1,
+    }).format(count);
+  }
+
+  function getDiscussionStats(title) {
+    if (discussionCache[title]) return discussionCache[title];
+    var params = new URLSearchParams({
+      repo: GISCUS.repo,
+      term: title,
+      category: GISCUS.category,
+      number: "0",
+      strict: GISCUS.strict,
+      first: "1",
+    });
+    discussionCache[title] = fetch("https://giscus.app/api/discussions?" + params.toString(), {
+      method: "GET",
+      mode: "cors",
+      credentials: "omit",
+      headers: { Accept: "application/json" },
+    })
+      .then(function (response) {
+        if (response.status === 404) return { comments: 0, reactions: 0 };
+        if (!response.ok) throw new Error("Giscus metadata request failed");
+        return response.json();
+      })
+      .then(function (data) {
+        if (!data || !data.discussion) {
+          if (data && /discussion not found/i.test(data.error || "")) {
+            return { comments: 0, reactions: 0 };
+          }
+          return null;
+        }
+        return {
+          comments: data.discussion.totalCommentCount || 0,
+          reactions: data.discussion.reactionCount || 0,
+        };
+      })
+      .catch(function () {
+        return null;
+      });
+    return discussionCache[title];
+  }
+
+  function createMetaValue(kind, label, value) {
+    var node = document.createElement("span");
+    node.className = "tb-article-meta-value tb-article-meta-" + kind;
+    node.appendChild(makeIcon(kind));
+    var text = document.createElement("span");
+    text.className = "tb-article-meta-text";
+    text.textContent = value;
+    node.appendChild(text);
+    node.setAttribute("aria-label", label + ": " + value);
+    return node;
+  }
+
+  function renderArticleMeta(item) {
+    var existing = item.querySelector(":scope > .tb-article-meta");
+    if (existing) return;
+
+    var dateKind = item.getAttribute("data-date-kind") || "Updated";
+    var title = item.getAttribute("data-title") || "";
+    var href = item.getAttribute("data-href") || "#";
+    var row = document.createElement("div");
+    row.className = "tb-article-meta";
+    row.setAttribute("aria-label", "Article details");
+
+    row.appendChild(createMetaValue("calendar", dateKind, formattedDate(item)));
+
+    var comments = document.createElement("a");
+    comments.className = "tb-article-meta-value tb-article-meta-comments";
+    comments.href = href + "#comments";
+    comments.appendChild(makeIcon("comments"));
+    var commentText = document.createElement("span");
+    commentText.className = "tb-article-meta-text";
+    commentText.textContent = "Comments …";
+    comments.appendChild(commentText);
+    row.appendChild(comments);
+
+    row.appendChild(createMetaValue("reactions", "Reactions", "…"));
+    item.appendChild(row);
+
+    getDiscussionStats(title).then(function (stats) {
+      var commentValue = stats ? compactCount(stats.comments) : "—";
+      var reactionValue = stats ? compactCount(stats.reactions) : "—";
+      commentText.textContent = "Comments " + commentValue;
+      comments.setAttribute("aria-label", "Comments: " + commentValue + ". Open discussion.");
+      var reactionNode = row.querySelector(".tb-article-meta-reactions .tb-article-meta-text");
+      reactionNode.textContent = reactionValue;
+      row.querySelector(".tb-article-meta-reactions").setAttribute("aria-label", "Reactions: " + reactionValue);
+    });
   }
 
   function sortByModifiedDate(items) {
@@ -132,7 +270,9 @@
     var end = start + pageSize;
 
     items.forEach(function (item, index) {
-      item.style.display = index >= start && index < end ? "" : "none";
+      var visible = index >= start && index < end;
+      item.style.display = visible ? "" : "none";
+      if (visible) renderArticleMeta(item);
     });
 
     renderPagination(list, totalPages, page);

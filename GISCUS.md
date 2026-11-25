@@ -3,12 +3,14 @@
 This repository renders page comments with [giscus](https://giscus.app), backed by
 GitHub Discussions in [`TechnoBureau/docs`](https://github.com/TechnoBureau/docs).
 
-The integration is intentionally dependency-free: one custom script and one custom
-stylesheet, loaded by Documentation.AI from `documentation.json`.
+The integration is intentionally dependency-free: custom scripts and stylesheets,
+loaded by Documentation.AI from `documentation.json`. The article index pages also
+request read-only discussion totals from Giscus for comment and reaction badges.
 
 | File | Purpose |
 | --- | --- |
 | [`scripts/giscus.js`](scripts/giscus.js) | Mounts the widget, handles SPA navigation, theme sync, and per-page opt-out. |
+| [`scripts/article-pagination.js`](scripts/article-pagination.js) | Paginates article cards and adds dates plus Giscus comment/reaction totals to visible index cards. |
 | [`styles/giscus.css`](styles/giscus.css) | Styles the comments section and loading skeleton. |
 | [`documentation.json`](documentation.json) | Registers the script (`scripts`) and stylesheet (`customCss`). |
 
@@ -19,12 +21,12 @@ can appear.
 
 1. **Enable Discussions.** Open **Settings → General → Features** in
    `https://github.com/TechnoBureau/docs` and turn on **Discussions**. GitHub
-   creates the default categories, including **Announcements**.
+   creates the default categories, including **General**.
 2. **Install the giscus app.** Install <https://github.com/apps/giscus> and grant it
    access to `TechnoBureau/docs`. Visitors cannot comment or react until the app is
    installed.
 3. **Copy the category ID.** Run the query below (or read the generated snippet on
-   <https://giscus.app>) and copy the `DIC_…` id of the **Announcements** category.
+   <https://giscus.app>) and copy the `DIC_…` id of the **General** category.
 4. **Paste it into the script.** Set `CONFIG.categoryId` in
    [`scripts/giscus.js`](scripts/giscus.js), publish, and open any documentation page.
 
@@ -53,7 +55,7 @@ All knobs live in the `CONFIG` object at the top of `scripts/giscus.js`.
 | --- | --- | --- |
 | `repo` | `TechnoBureau/docs` | Public repository that stores the threads. |
 | `repoId` | `R_kgDORdh4IA` | GraphQL node id of that repository. |
-| `category` | `Announcements` | Category for new threads. Announcements restricts creation to maintainers and giscus. |
+| `category` | `General` | Category for new threads and index-card discussion lookups. |
 | `categoryId` | — | Required. `DIC_…` id from the step above. |
 | `mapping` | `pathname` | One thread per documentation URL. |
 | `strict` | `0` | Set to `1` only if existing threads contain the SHA-1 of their title. |
@@ -83,6 +85,12 @@ All knobs live in the `CONFIG` object at the top of `scripts/giscus.js`.
 
 `styles/giscus.css` reuses the site tokens from `styles/custom.css`
 (`--brand`, `--heading`, `--body`, `--tb-radius`) and adapts to the `.dark` class.
+
+On article index pages, the pagination script requests each visible card's discussion
+summary from `https://giscus.app/api/discussions` using the configured repository,
+category, and title mapping. It shows an em dash when the metadata request is
+unavailable; no comment or reaction totals are fabricated. The actual discussion
+widget remains the source of truth.
 
 The thread itself is a cross-origin iframe served by giscus, so page CSS cannot
 restyle its internals. To change colours inside the thread, point

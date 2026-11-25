@@ -13,7 +13,7 @@
  *      (Settings -> General -> Features -> Discussions).
  *   2. Install the giscus app and grant it access to the repository:
  *      https://github.com/apps/giscus
- *   3. Open https://giscus.app, choose TechnoBureau/docs and the "Announcements"
+ *   3. Open https://giscus.app, choose TechnoBureau/docs and the "General"
  *      category, then copy the generated `data-category-id` (starts with `DIC_`)
  *      into CONFIG.categoryId below.
  *
@@ -28,8 +28,7 @@
     repo: "TechnoBureau/docs",
     repoId: "R_kgDORdh4IA",
 
-    // Discussion category used for new threads. "Announcements" keeps creation
-    // restricted to maintainers and the giscus bot.
+    // Discussion category used for new threads and for index-card metadata lookups.
     category: "General",
     // Paste the `data-category-id` value from https://giscus.app here.
     categoryId: "DIC_kwDORdh4IM4DL-RS",

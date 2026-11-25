@@ -12,9 +12,11 @@ Usage:
     python3 scripts/generate-index-pages.py
 
 Run this after adding, renaming, or updating articles so the index order
-matches the latest git modified dates. Short summaries below are curated for
-the index cards; article titles come from each article's frontmatter.
+matches the latest git modified dates. Card titles and full previews are drawn
+from each article's frontmatter; icon choices are varied but repeatable.
 """
+import hashlib
+import html
 import re
 import subprocess
 import sys
@@ -22,6 +24,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 PAGE_SIZE = 5
+ICON_POOL = [
+    "sparkles", "code-xml", "layers-3", "server", "cpu", "database",
+    "network", "terminal", "shield-check", "workflow", "boxes", "book-open",
+]
 
 # section -> index file, intro paragraph, [(article path, icon, short summary)]
 SECTIONS = {
@@ -132,26 +138,40 @@ def article_title(rel_path: str) -> str:
     return frontmatter_value(rel_path, "title") or rel_path.rsplit("/", 1)[-1].replace("_", " ").replace("-", " ").title()
 
 
+def article_icon(rel_path: str) -> str:
+    """Choose a varied, repeatable icon per article so rebuilds stay clean."""
+    digest = hashlib.sha256(rel_path.encode("utf-8")).digest()
+    return ICON_POOL[int.from_bytes(digest[:4], "big") % len(ICON_POOL)]
+
+
 def render_section(section: str) -> str:
     index_file, intro, articles = SECTIONS[section]
     title, description = FRONTMATTER[section]
 
-    # Keep hand-written summaries/icons where provided, while automatically
-    # including any new Markdown articles added to the section directory.
-    card_metadata = {path: (icon, summary) for path, icon, summary in articles}
+    # Automatically include every article and use its full frontmatter
+    # description so index cards provide a useful preview, not a short teaser.
+    fallback_summaries = {path: summary for path, _, summary in articles}
     article_paths = sorted(
         fp.relative_to(ROOT).with_suffix("").as_posix()
         for fp in (ROOT / section.lower()).glob("*.mdx")
     )
     rows = []
     for path in article_paths:
-        title = article_title(path)
-        default_summary = frontmatter_value(path, "description") or f"Read the {section} guide: {title}."
-        icon, summary = card_metadata.get(path, ("book-open", default_summary))
-        rows.append((git_modified_date(path), path, icon, summary, title))
+        art_title = article_title(path)
+        modified = git_modified_date(path)
+        summary = frontmatter_value(path, "description")
+        if len(summary) < 120:
+            summary = fallback_summaries.get(path) or (
+                f"Explore the {section} guide “{art_title}”, with practical concepts, "
+                "examples, and implementation details to help you apply it."
+            )
+        published = frontmatter_value(path, "date")
+        date_kind = "Published" if published else "Updated"
+        published = published or modified
+        rows.append((modified, published, date_kind, path, article_icon(path), summary, art_title))
 
     # Newest modified first; paths provide deterministic ordering for date ties.
-    rows.sort(key=lambda r: r[1])
+    rows.sort(key=lambda r: r[3])
     rows.sort(key=lambda r: r[0], reverse=True)
 
     lines = [
@@ -168,10 +188,11 @@ def render_section(section: str) -> str:
         "",
         f'<div className="tb-article-list" data-tb-article-list data-page-size="{PAGE_SIZE}">',
     ]
-    for date, path, icon, summary, art_title in rows:
-        safe_title = art_title.replace('"', "&quot;")
+    for modified, published, date_kind, path, icon, summary, art_title in rows:
+        safe_title = html.escape(art_title, quote=True)
+        safe_published = html.escape(published, quote=True)
         lines += [
-            f'  <div className="tb-article-item" data-tb-article-item data-date="{date}">',
+            f'  <div className="tb-article-item" data-tb-article-item data-date="{modified}" data-display-date="{safe_published}" data-date-kind="{date_kind}" data-title="{safe_title}" data-href="/{path}">',
             f'    <Card title="{safe_title}" href="/{path}" icon="{icon}" horizontal={{true}} cta="Read more">',
             f"      {summary}",
             "    </Card>",

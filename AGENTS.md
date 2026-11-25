@@ -656,7 +656,7 @@ type: "reference"  # or "guide", "tutorial", etc.
 - Use **Callouts** to highlight important information without breaking flow
 
 - Use **Card** components inside **Columns** for navigation grids and feature showcases
-- For long article index pages, use one full-width `<Card horizontal={true}>` per row (do not use a multi-column grid); provide a concise summary and a clear `cta="Read more"`
+- For long article index pages, use one full-width `<Card horizontal={true}>` per row (do not use a multi-column grid); use the full frontmatter description for a useful preview, a varied icon, a clear `cta="Read more"`, and date/comment/reaction metadata when available from Giscus
 
 - Paginate article index lists at five items per page and sort newest Markdown modification date first; keep the `data-tb-article-list` / `data-tb-article-item` / `data-date` hooks and regenerate them with `python3 scripts/generate-index-pages.py`
 

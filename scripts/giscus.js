@@ -53,12 +53,18 @@
 
     // Widget copy.
     heading: "Comments",
-    intro:
-      "Share questions, corrections, or extra context for this page. The thread lives in GitHub Discussions.",
+    intro: "Share questions, corrections, or extra context for this page.",
 
     // Paths without comments (home page, landing pages). A trailing "/*" matches
     // every path under that prefix.
-    excludedPaths: ["/", "/README"],
+    excludedPaths: [
+      "/",
+      "/README",
+      "/devops",
+      "/kubernetes",
+      "/linux",
+      "/career",
+    ],
 
     // Mount retry behaviour while the framework renders the article.
     retryDelay: 120,

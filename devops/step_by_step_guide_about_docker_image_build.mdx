@@ -108,39 +108,36 @@ To install Docker Engine on a new host machine, it is important to first set up 
 
 It provide instructions to set up the necessary repository and prerequisites for installing the Docker engine based on the operating system (OS) in use.
 
-<CodeGroup tag="BASH" label="setup repository">
+<CodeGroup show-lines="true" tabs={["Ubuntu/Debian","CentOS/RHEL"]}>
+  ```bash Ubuntu/Debian
+  sudo apt-get update
+  sudo apt-get install \
+      ca-certificates \
+      curl \
+      gnupg \
+      lsb-release
+  sudo mkdir -p /etc/apt/keyrings
+  curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+  echo \
+      "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
+      $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  ```
 
-```bash {{ title: 'Ubuntu/Debian' }}
-sudo apt-get update
-sudo apt-get install \
-    ca-certificates \
-    curl \
-    gnupg \
-    lsb-release
-sudo mkdir -p /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-echo \
-    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
-    $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-```
-
-```bash {{ title: 'CentOS/RHEL' }}
-sudo yum install -y yum-utils
-sudo yum-config-manager \
-          --add-repo \
-          https://download.docker.com/linux/centos/docker-ce.repo
-```
+  ```bash CentOS/RHEL
+  sudo yum install -y yum-utils
+  sudo yum-config-manager \
+            --add-repo \
+            https://download.docker.com/linux/centos/docker-ce.repo
+  ```
 </CodeGroup>
 
-<CodeGroup tag="BASH" label="Install Docker Engine">
+<CodeGroup show-lines="true" tabs={["Ubuntu/Debian","CentOS/RHEL"]}>
+  ```bash Ubuntu/Debian
+  sudo apt-get update
+  sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+  ```
 
-```bash {{ title: 'Ubuntu/Debian' }}
-  $ sudo apt-get update
-  $ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
-```
-
-```bash {{ title: 'CentOS/RHEL' }}
+  ```bash CentOS/RHEL
   yum install docker-ce docker-ce-cli containerd.io docker-compose-plugin
-```
-
+  ```
 </CodeGroup>

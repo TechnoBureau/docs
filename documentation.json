@@ -2,10 +2,14 @@
   "name": "TechnoBureau",
   "colors": {
     "light": {
-      "brand": "#F97316"
+      "brand": "#4F46E5",
+      "heading": "#0F172A",
+      "text": "#334155"
     },
     "dark": {
-      "brand": "#FDBA74"
+      "brand": "#818CF8",
+      "heading": "#F1F5F9",
+      "text": "#CBD5E1"
     }
   },
   "navigation": {
@@ -187,5 +191,16 @@
     {
       "src": "styles/custom.css"
     }
-  ]
+  ],
+  "fonts": {
+    "heading": {
+      "family": "Plus Jakarta Sans"
+    },
+    "body": {
+      "family": "Inter"
+    },
+    "code": {
+      "family": "JetBrains Mono"
+    }
+  }
 }

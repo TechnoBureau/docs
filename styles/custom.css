@@ -1,14 +1,29 @@
 /*
  * Modern documentation UI/UX enhancements for TechnoBureau (Atlas template).
- * - Expands layout to use available viewport width
- * - Preserves readable line length for prose
- * - Improves keyboard/screen accessibility and responsive behavior
+ * - Full-width layout with readable prose measure
+ * - Distinctive brand styling, typography rhythm, and code presentation
+ * - Responsive and accessible defaults
  */
 
 :root {
   --content-width: 100%;
   --content-max-width: 100%;
   --tb-prose-max-width: 88ch;
+  --tb-radius: 12px;
+  --tb-radius-sm: 8px;
+  --tb-code-border: color-mix(in srgb, var(--brand, #4f46e5) 18%, transparent);
+  --tb-code-bg: color-mix(in srgb, var(--brand, #4f46e5) 4%, transparent);
+  --tb-code-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.04);
+  --tb-inline-code-bg: color-mix(in srgb, var(--brand, #4f46e5) 10%, transparent);
+  --tb-inline-code-border: color-mix(in srgb, var(--brand, #4f46e5) 16%, transparent);
+}
+
+.dark {
+  --tb-code-border: color-mix(in srgb, var(--brand, #818cf8) 24%, transparent);
+  --tb-code-bg: color-mix(in srgb, var(--brand, #818cf8) 10%, transparent);
+  --tb-code-shadow: 0 1px 2px rgba(0, 0, 0, 0.25), 0 10px 30px rgba(0, 0, 0, 0.22);
+  --tb-inline-code-bg: color-mix(in srgb, var(--brand, #818cf8) 16%, transparent);
+  --tb-inline-code-border: color-mix(in srgb, var(--brand, #818cf8) 24%, transparent);
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -37,7 +52,7 @@
   max-width: min(100%, 90ch);
 }
 
-/* Keep long-form technical content scannable */
+/* Typography rhythm */
 .dai-layout-atlas .dai-article :where(p, li) {
   line-height: 1.75;
   overflow-wrap: break-word;
@@ -45,32 +60,96 @@
 
 .dai-layout-atlas .dai-article :where(h1, h2, h3, h4) {
   text-wrap: balance;
+  letter-spacing: -0.015em;
+}
+
+.dai-layout-atlas .dai-article :where(h1) {
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+}
+
+.dai-layout-atlas .dai-article :where(h2) {
+  margin-top: 2.25rem;
+  line-height: 1.25;
+}
+
+.dai-layout-atlas .dai-article :where(h3) {
+  line-height: 1.35;
 }
 
 .dai-layout-atlas .dai-article :where(p) {
   text-wrap: pretty;
 }
 
-/* Responsive media and code */
-.dai-layout-atlas .dai-article :where(img, video, iframe) {
-  max-width: 100%;
-  height: auto;
+/* Links */
+.dai-layout-atlas .dai-article a:not([class]) {
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.18em;
 }
 
-.dai-layout-atlas .dai-article :where(pre) {
+/* Code blocks */
+.dai-layout-atlas .dai-article pre {
+  border: 1px solid var(--tb-code-border);
+  border-radius: var(--tb-radius);
+  box-shadow: var(--tb-code-shadow);
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  margin: 1.25rem 0;
 }
 
+.dai-layout-atlas .dai-article pre code {
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+/* Inline code */
+.dai-layout-atlas .dai-article :not(pre) > code {
+  padding: 0.15em 0.4em;
+  border-radius: 0.4em;
+  border: 1px solid var(--tb-inline-code-border);
+  background: var(--tb-inline-code-bg);
+  font-size: 0.875em;
+  word-break: break-word;
+}
+
+/* Tables */
 .dai-layout-atlas .dai-article :where(table) {
   display: block;
   max-width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  border-radius: var(--tb-radius-sm);
 }
 
-/* Clear keyboard focus for interactive elements */
+.dai-layout-atlas .dai-article :where(th, td) {
+  vertical-align: top;
+}
+
+/* Images/media */
+.dai-layout-atlas .dai-article :where(img, video, iframe) {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--tb-radius-sm);
+}
+
+/* Blockquotes/callout-adjacent readability */
+.dai-layout-atlas .dai-article :where(blockquote) {
+  border-left: 3px solid var(--brand, #4f46e5);
+  padding-left: 1rem;
+  margin-inline: 0;
+}
+
+/* Selection and anchor offset */
+.dai-layout-atlas ::selection {
+  background: color-mix(in srgb, var(--brand, #4f46e5) 24%, transparent);
+}
+
+.dai-layout-atlas .dai-article :where(h2, h3, h4, h5, h6) {
+  scroll-margin-top: 6rem;
+}
+
+/* Keyboard focus */
 .dai-layout-atlas :where(a, button, input, select, textarea, summary):focus-visible {
-  outline: 2px solid var(--brand, #f97316);
+  outline: 2px solid var(--brand, #4f46e5);
   outline-offset: 2px;
 }

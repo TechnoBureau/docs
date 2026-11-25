@@ -656,6 +656,9 @@ type: "reference"  # or "guide", "tutorial", etc.
 - Use **Callouts** to highlight important information without breaking flow
 
 - Use **Card** components inside **Columns** for navigation grids and feature showcases
+- For long article index pages, use one full-width `<Card horizontal={true}>` per row (do not use a multi-column grid); provide a concise summary and a clear `cta="Read more"`
+
+- Paginate article index lists at five items per page and sort newest Markdown modification date first; keep the `data-tb-article-list` / `data-tb-article-item` / `data-date` hooks and regenerate them with `python3 scripts/generate-index-pages.py`
 
 - Use **Columns** with `<div>` wrappers for side-by-side comparisons or mixed content
 

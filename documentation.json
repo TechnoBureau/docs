@@ -248,6 +248,9 @@
   "scripts": [
     {
       "src": "scripts/giscus.js"
+    },
+    {
+      "src": "scripts/article-pagination.js"
     }
   ],
   "fonts": {

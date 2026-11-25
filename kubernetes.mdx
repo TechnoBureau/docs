@@ -1,36 +1,37 @@
 ---
-title: Kubernetes Tutorials
+title: Snooze Ultra Minimal Webserver for Kubernetes
 description: 'Practical Kubernetes guides for learning, deploying, and operating clusters.'
 hidden: true
 landingPage: true
 ---
 
-This section collects practical Kubernetes guides for learning how clusters run and how workloads are managed in production.
+This section collects practical Kubernetes guides for learning how clusters run and how workloads are managed in production. Articles are sorted by most recently updated.
 
 ## Articles
 
-<Columns cols="2">
-  <Card title="Introduction About Kubernetes" href="/kubernetes/introduction_about_kubernetes_and_basics" icon="boxes" horizontal="false">
-    Understand Kubernetes core concepts, architecture, and how it manages containerized workloads across clusters.
+<div className="tb-article-list" data-tb-article-list data-page-size="5">
+  <div className="tb-article-item" data-tb-article-item data-date="2026-11-26">
+    <Card title="Introduction About Kubernetes" href="/kubernetes/introduction_about_kubernetes_and_basics" icon="boxes" horizontal={true} cta="Read more">
+      Understand Kubernetes core concepts, architecture, and how it manages containerized workloads across clusters.
+    </Card>
+  </div>
 
-    [Read more →](/kubernetes/introduction_about_kubernetes_and_basics)
-  </Card>
+  <div className="tb-article-item" data-tb-article-item data-date="2026-11-26">
+    <Card title="Propagating a SIGTERM Signal to the Main Process in a Kubernetes Pod" href="/kubernetes/propagate_sigterm_to_k8s_pod" icon="activity" horizontal={true} cta="Read more">
+      Learn why SIGTERM may not reach your app in a pod and how to handle graceful shutdowns correctly.
+    </Card>
+  </div>
 
-  <Card title="Propagating a SIGTERM Signal to the Main Process in a Kubernetes Pod" href="/kubernetes/propagate_sigterm_to_k8s_pod" icon="activity" horizontal="false">
-    Learn why SIGTERM may not reach your app in a pod and how to handle graceful shutdowns correctly.
+  <div className="tb-article-item" data-tb-article-item data-date="2026-11-26">
+    <Card title="Redis-Cluster Deployment on Kubernetes" href="/kubernetes/redis-cluster_deployment_on_kubernetes" icon="database" horizontal={true} cta="Read more">
+      Deploy and configure a Redis Cluster on Kubernetes for scalable, highly available in-memory data storage.
+    </Card>
+  </div>
 
-    [Read more →](/kubernetes/propagate_sigterm_to_k8s_pod)
-  </Card>
+  <div className="tb-article-item" data-tb-article-item data-date="2026-11-26">
+    <Card title="Snooze Ultra Minimal Webserver for Kubernetes" href="/kubernetes/snooze_ultra_minimal_webserver_which_does_nothing" icon="server" horizontal={true} cta="Read more">
+      Use Snooze as a lightweight HTTP server for Kubernetes testing, service mesh validation, and reverse-proxy scenarios.
+    </Card>
+  </div>
 
-  <Card title="Redis-Cluster Deployment on Kubernetes" href="/kubernetes/redis-cluster_deployment_on_kubernetes" icon="database" horizontal="false">
-    Deploy and configure a Redis Cluster on Kubernetes for scalable, highly available in-memory data storage.
-
-    [Read more →](/kubernetes/redis-cluster_deployment_on_kubernetes)
-  </Card>
-
-  <Card title="Snooze Ultra Minimal Webserver for Kubernetes" href="/kubernetes/snooze_ultra_minimal_webserver_which_does_nothing" icon="server" horizontal="false">
-    Use Snooze as a lightweight HTTP server for Kubernetes testing, service mesh validation, and reverse-proxy scenarios.
-
-    [Read more →](/kubernetes/snooze_ultra_minimal_webserver_which_does_nothing)
-  </Card>
-</Columns>
+</div>

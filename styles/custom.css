@@ -1,0 +1,19 @@
+/*
+ * Maximize content width across all screen sizes and resolutions.
+ * Keeps layout responsive while removing restrictive max-width caps.
+ */
+
+:root {
+  --content-width: 100%;
+  --content-max-width: 100%;
+}
+
+.dai-layout-atlas .dai-content-area,
+.dai-layout-atlas .dai-content-column,
+.dai-layout-atlas .dai-page,
+.dai-layout-atlas .dai-page-main,
+.dai-layout-atlas .dai-article,
+.dai-layout-atlas .dai-page-nav,
+.dai-layout-atlas .dai-footer {
+  max-width: 100% !important;
+}

@@ -31,21 +31,27 @@
         "pages": [
           {
             "title": "Bruno the next evolution of git friendly api testing tool",
-            "path": "devops/bruno-the-next-evolution-of-git-friendly-api-testing-tool"
+            "path": "devops/bruno-the-next-evolution-of-git-friendly-api-testing-tool",
+            "show-toc": true,
+            "show-page-navigation": true
           },
           {
             "title": "Introduction about terraform",
-            "path": "devops/introduction_about_terraform"
+            "path": "devops/introduction_about_terraform",
+            "show-toc": true,
+            "show-page-navigation": true
           },
           {
             "title": "Step by step guide about docker image build",
-            "path": "devops/step_by_step_guide_about_docker_image_build"
+            "path": "devops/step_by_step_guide_about_docker_image_build",
+            "show-toc": true,
+            "show-page-navigation": true
           }
         ],
         "path": "devops",
-        "show-toc": true,
+        "show-toc": false,
         "show-parent-label": false,
-        "show-page-navigation": true,
+        "show-page-navigation": false,
         "ask-feedback": false,
         "content-width": "wide"
       },
@@ -54,25 +60,33 @@
         "pages": [
           {
             "title": "Introduction about kubernetes and basics",
-            "path": "kubernetes/introduction_about_kubernetes_and_basics"
+            "path": "kubernetes/introduction_about_kubernetes_and_basics",
+            "show-toc": true,
+            "show-page-navigation": true
           },
           {
             "title": "Propagate sigterm to k8s pod",
-            "path": "kubernetes/propagate_sigterm_to_k8s_pod"
+            "path": "kubernetes/propagate_sigterm_to_k8s_pod",
+            "show-toc": true,
+            "show-page-navigation": true
           },
           {
             "title": "Redis-cluster deployment on kubernetes",
-            "path": "kubernetes/redis-cluster_deployment_on_kubernetes"
+            "path": "kubernetes/redis-cluster_deployment_on_kubernetes",
+            "show-toc": true,
+            "show-page-navigation": true
           },
           {
             "title": "Snooze ultra minimal webserver which does nothing",
-            "path": "kubernetes/snooze_ultra_minimal_webserver_which_does_nothing"
+            "path": "kubernetes/snooze_ultra_minimal_webserver_which_does_nothing",
+            "show-toc": true,
+            "show-page-navigation": true
           }
         ],
         "path": "kubernetes",
-        "show-toc": true,
+        "show-toc": false,
         "show-parent-label": false,
-        "show-page-navigation": true,
+        "show-page-navigation": false,
         "ask-feedback": false,
         "content-width": "wide"
       },
@@ -81,77 +95,111 @@
         "pages": [
           {
             "title": "Booting process of computer system",
-            "path": "linux/booting_process_of_computer_system"
+            "path": "linux/booting_process_of_computer_system",
+            "show-toc": true,
+            "show-page-navigation": true
           },
           {
             "title": "Configure mysql cluster master master synchronization",
-            "path": "linux/configure_mysql_cluster_master_master_synchronization"
+            "path": "linux/configure_mysql_cluster_master_master_synchronization",
+            "show-toc": true,
+            "show-page-navigation": true
           },
           {
             "title": "Filesystem overview functionality",
-            "path": "linux/filesystem_overview_functionality"
+            "path": "linux/filesystem_overview_functionality",
+            "show-toc": true,
+            "show-page-navigation": true
           },
           {
             "title": "How to disable ipv6 on centos",
-            "path": "linux/how_to_disable_ipv6_on_centos"
+            "path": "linux/how_to_disable_ipv6_on_centos",
+            "show-toc": true,
+            "show-page-navigation": true
           },
           {
             "title": "How to mount qcow2 image in linux",
-            "path": "linux/how_to_mount_qcow2_image_in_linux"
+            "path": "linux/how_to_mount_qcow2_image_in_linux",
+            "show-toc": true,
+            "show-page-navigation": true
           },
           {
             "title": "Introduction about computer network",
-            "path": "linux/introduction_about_computer_network"
+            "path": "linux/introduction_about_computer_network",
+            "show-toc": true,
+            "show-page-navigation": true
           },
           {
             "title": "Linux users and groups management",
-            "path": "linux/linux_users_and_groups_management"
+            "path": "linux/linux_users_and_groups_management",
+            "show-toc": true,
+            "show-page-navigation": true
           },
           {
             "title": "Mysql high availability with keepalived and haproxy",
-            "path": "linux/mysql_high_availability_with_keepalived_and_haproxy"
+            "path": "linux/mysql_high_availability_with_keepalived_and_haproxy",
+            "show-toc": true,
+            "show-page-navigation": true
           },
           {
             "title": "Network file system overview and configuration",
-            "path": "linux/network_file_system_overview_and_configuration"
+            "path": "linux/network_file_system_overview_and_configuration",
+            "show-toc": true,
+            "show-page-navigation": true
           },
           {
             "title": "Openssh overview and usage",
-            "path": "linux/openssh_overview_and_usage"
+            "path": "linux/openssh_overview_and_usage",
+            "show-toc": true,
+            "show-page-navigation": true
           },
           {
             "title": "Raid overview and functionalities",
-            "path": "linux/raid_overview_and_functionalities"
+            "path": "linux/raid_overview_and_functionalities",
+            "show-toc": true,
+            "show-page-navigation": true
           },
           {
             "title": "Recursive directory list in c using linux system calls",
-            "path": "linux/recursive_directory_list_in_c_using_linux_system_calls"
+            "path": "linux/recursive_directory_list_in_c_using_linux_system_calls",
+            "show-toc": true,
+            "show-page-navigation": true
           },
           {
             "title": "Setup gpgkey for github commit",
-            "path": "linux/setup_gpgkey_for_github_commit"
+            "path": "linux/setup_gpgkey_for_github_commit",
+            "show-toc": true,
+            "show-page-navigation": true
           },
           {
             "title": "Tcp keepalive configuration guide",
-            "path": "linux/tcp_keepalive_configuration_guide"
+            "path": "linux/tcp_keepalive_configuration_guide",
+            "show-toc": true,
+            "show-page-navigation": true
           },
           {
             "title": "Understanding swap in linux",
-            "path": "linux/understanding_swap_in_linux"
+            "path": "linux/understanding_swap_in_linux",
+            "show-toc": true,
+            "show-page-navigation": true
           },
           {
             "title": "Useful commands with find utility",
-            "path": "linux/useful_commands_with_find_utility"
+            "path": "linux/useful_commands_with_find_utility",
+            "show-toc": true,
+            "show-page-navigation": true
           },
           {
             "title": "Understanding so_keepalive - The Definitive Guide",
-            "path": "linux/understanding_so_keepalive_the_definitive_guide"
+            "path": "linux/understanding_so_keepalive_the_definitive_guide",
+            "show-toc": true,
+            "show-page-navigation": true
           }
         ],
         "path": "linux",
-        "show-toc": true,
+        "show-toc": false,
         "show-parent-label": false,
-        "show-page-navigation": true,
+        "show-page-navigation": false,
         "ask-feedback": false,
         "content-width": "wide"
       },
@@ -160,13 +208,15 @@
         "pages": [
           {
             "title": "Tell me about yourself",
-            "path": "career/tell_me_about_yourself"
+            "path": "career/tell_me_about_yourself",
+            "show-toc": true,
+            "show-page-navigation": true
           }
         ],
         "path": "career",
-        "show-toc": true,
+        "show-toc": false,
         "show-parent-label": false,
-        "show-page-navigation": true,
+        "show-page-navigation": false,
         "ask-feedback": false,
         "content-width": "wide"
       }
